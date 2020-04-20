@@ -1,0 +1,43 @@
+version: '3'
+services:
+  web:
+    image: "nginx:1.17.5"
+    container_name: "gong_nginx"
+    ports:
+      - "10302:80"
+    volumes:
+      - ./:/var/www/html/
+      - ./dockercnf/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./dockercnf/nginx/ssl/:/etc/nginx/ssl/
+    depends_on:
+      - php
+  php:
+    build: ./dockercnf/php7.3-fpm/
+    image: "gong-php:7.3-fpm"
+    container_name: "gong_php"
+    privileged: true
+    volumes:
+      - ./:/var/www/html/
+    depends_on:
+      - db
+      - redis_db
+  db:
+    image: "mysql:5.7.28"
+    container_name: "gong_mysql"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    privileged: true
+    volumes:
+      - ./dockercnf/mysql5.7/conf/mysql.conf.d:/etc/mysql/mysql.conf.d
+      - ./dockercnf/mysql5.7/conf/conf.d:/etc/mysql/conf.d
+      - ./dockercnf/mysql5.7/db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: yourpassword
+      MYSQL_DATABASE: gong
+  redis_db:
+    image: "redis:5.0.7"
+    container_name: "gong_redis"
+    volumes:
+      - ./dockercnf/redis/gong_redis_db/:/data
