@@ -9,6 +9,7 @@ services:
       - ./:/var/www/html/
       - ./dockercnf/nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./dockercnf/nginx/ssl/:/etc/nginx/ssl/
+      - ./dockercnf/run:/sock
     depends_on:
       - php
   php:
@@ -17,7 +18,9 @@ services:
     container_name: "gong_php"
     privileged: true
     volumes:
+      - ./dockercnf/run:/sock
       - ./:/var/www/html/
+      - ./dockercnf/php7.3-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf 
     depends_on:
       - db
       - redis_db

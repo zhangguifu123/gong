@@ -8,6 +8,7 @@ if [ ! -f ".env" ]; then
 
   sleep 2
   sudo cp .env.example .env
+  sudo chmod -R 777 .env
   # 删除之前的sql文件,上线部署后不执行该步骤
 
   sudo docker exec -it gong_php php artisan key:generate
