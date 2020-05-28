@@ -20,7 +20,7 @@ services:
     volumes:
       - ./dockercnf/run:/sock
       - ./:/var/www/html/
-      - ./dockercnf/php7.3-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf 
+      - ./dockercnf/php7.3-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf
     depends_on:
       - db
       - redis_db
@@ -35,6 +35,7 @@ services:
       - ./dockercnf/mysql5.7/conf/mysql.conf.d:/etc/mysql/mysql.conf.d
       - ./dockercnf/mysql5.7/conf/conf.d:/etc/mysql/conf.d
       - ./dockercnf/mysql5.7/db_data:/var/lib/mysql
+      - ./dockercnf/run/mysql:/var/run/mysqld
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: yourpassword
