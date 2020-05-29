@@ -50,6 +50,6 @@ class __TwigTemplate_7dd2507b06144e10265ca850e84942e76057b04472ff5d0b3529e117696
 
     public function getSourceContext()
     {
-        return new Source("", "config/form_display/form_bottom.twig", "/var/www/html/phpmyadmin/templates/config/form_display/form_bottom.twig");
+        return new Source("", "config/form_display/form_bottom.twig", "/var/www/html/public/mathjucool/templates/config/form_display/form_bottom.twig");
     }
 }

@@ -32,10 +32,10 @@ services:
       - --collation-server=utf8mb4_unicode_ci
     privileged: true
     volumes:
-      - ./dockercnf/mysql5.7/conf/mysql.conf.d:/etc/mysql/mysql.conf.d
-      - ./dockercnf/mysql5.7/conf/conf.d:/etc/mysql/conf.d
+#      - ./dockercnf/mysql5.7/conf/mysql.conf.d:/etc/mysql/mysql.conf.d
+#      - ./dockercnf/mysql5.7/conf/conf.d:/etc/mysql/conf.d
       - ./dockercnf/mysql5.7/db_data:/var/lib/mysql
-      - ./dockercnf/run/mysql:/var/run/mysqld
+#      - ./dockercnf/run/mysql:/var/run/mysqld
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: yourpassword

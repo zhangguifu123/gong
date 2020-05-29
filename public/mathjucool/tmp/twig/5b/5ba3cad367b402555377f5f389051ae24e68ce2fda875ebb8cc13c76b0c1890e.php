@@ -527,6 +527,6 @@ class __TwigTemplate_599d320544523d62f6b65e3ee33d2211e8bdcb3ae267055bd3b39c68da8
 
     public function getSourceContext()
     {
-        return new Source("", "home/index.twig", "/var/www/html/phpmyadmin/templates/home/index.twig");
+        return new Source("", "home/index.twig", "/var/www/html/public/mathjucool/templates/home/index.twig");
     }
 }

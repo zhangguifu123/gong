@@ -274,6 +274,6 @@ class __TwigTemplate_976d6d6c74841a7d86830ab551c37b34f2b05d9f88ab6c2deeec0993d44
 
     public function getSourceContext()
     {
-        return new Source("", "navigation/main.twig", "/var/www/html/phpmyadmin/templates/navigation/main.twig");
+        return new Source("", "navigation/main.twig", "/var/www/html/public/mathjucool/templates/navigation/main.twig");
     }
 }

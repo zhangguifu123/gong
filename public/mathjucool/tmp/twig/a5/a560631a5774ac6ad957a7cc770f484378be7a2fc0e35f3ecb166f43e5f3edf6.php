@@ -88,6 +88,6 @@ class __TwigTemplate_eb34cbed03371e99320d3329bbd45c03047f6698db44fc0c800079ead87
 
     public function getSourceContext()
     {
-        return new Source("", "console/toolbar.twig", "/var/www/html/phpmyadmin/templates/console/toolbar.twig");
+        return new Source("", "console/toolbar.twig", "/var/www/html/public/mathjucool/templates/console/toolbar.twig");
     }
 }

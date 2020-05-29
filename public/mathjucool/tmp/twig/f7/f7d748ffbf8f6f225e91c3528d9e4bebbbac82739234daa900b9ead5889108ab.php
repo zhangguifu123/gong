@@ -108,6 +108,6 @@ class __TwigTemplate_51c0c9fd797cfc57664657c4657544bc91d9f024258ce8f68ab2b4f770d
 
     public function getSourceContext()
     {
-        return new Source("", "config/form_display/fieldset_top.twig", "/var/www/html/phpmyadmin/templates/config/form_display/fieldset_top.twig");
+        return new Source("", "config/form_display/fieldset_top.twig", "/var/www/html/public/mathjucool/templates/config/form_display/fieldset_top.twig");
     }
 }

@@ -83,6 +83,6 @@ class __TwigTemplate_183c50c6d8b602f8bee1755a8f5ae91312e74e6168aa061dcb955313720
 
     public function getSourceContext()
     {
-        return new Source("", "navigation/tree/state.twig", "/var/www/html/phpmyadmin/templates/navigation/tree/state.twig");
+        return new Source("", "navigation/tree/state.twig", "/var/www/html/public/mathjucool/templates/navigation/tree/state.twig");
     }
 }

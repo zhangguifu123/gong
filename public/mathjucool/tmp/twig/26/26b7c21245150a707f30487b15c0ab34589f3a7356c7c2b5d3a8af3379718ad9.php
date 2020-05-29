@@ -95,6 +95,6 @@ class __TwigTemplate_368595d99ef3cfcdb53a94d6cc3728e86555ba007c47337a7a481e8dd52
 
     public function getSourceContext()
     {
-        return new Source("", "database/create_table.twig", "/var/www/html/phpmyadmin/templates/database/create_table.twig");
+        return new Source("", "database/create_table.twig", "/var/www/html/public/mathjucool/templates/database/create_table.twig");
     }
 }

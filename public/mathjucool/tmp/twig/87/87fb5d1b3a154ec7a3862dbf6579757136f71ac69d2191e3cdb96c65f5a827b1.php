@@ -108,6 +108,6 @@ class __TwigTemplate_5ee91f553b538c006d44b549c9c9ae38d1d0792a21df641b96b5433f228
 
     public function getSourceContext()
     {
-        return new Source("", "database/structure/index.twig", "/var/www/html/phpmyadmin/templates/database/structure/index.twig");
+        return new Source("", "database/structure/index.twig", "/var/www/html/public/mathjucool/templates/database/structure/index.twig");
     }
 }

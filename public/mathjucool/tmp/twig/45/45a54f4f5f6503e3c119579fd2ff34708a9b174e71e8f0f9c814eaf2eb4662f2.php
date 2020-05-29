@@ -105,6 +105,6 @@ class __TwigTemplate_673d9b5c74d6794f4dec19768c410f19e9d1a4e0eae03ae03d35995cdde
 
     public function getSourceContext()
     {
-        return new Source("", "list/unordered.twig", "/var/www/html/phpmyadmin/templates/list/unordered.twig");
+        return new Source("", "list/unordered.twig", "/var/www/html/public/mathjucool/templates/list/unordered.twig");
     }
 }

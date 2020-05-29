@@ -12,8 +12,8 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* javascript/display.twig */
-class __TwigTemplate_143fbbacecf09521aa3af1cb968e3c7537cbc1f92b8ef07a76601a9d197a67ba extends \Twig\Template
+/* filter.twig */
+class __TwigTemplate_6aa90f0b97bfeb1b76555434e9e13206c0b18c8c0f635ae9a6d3e881108a59fe extends \Twig\Template
 {
     private $source;
     private $macros = [];
@@ -34,23 +34,29 @@ class __TwigTemplate_143fbbacecf09521aa3af1cb968e3c7537cbc1f92b8ef07a76601a9d197
     {
         $macros = $this->macros;
         // line 1
-        echo "<script type=\"text/javascript\">
-if (typeof configInlineParams === \"undefined\" || !Array.isArray(configInlineParams)) configInlineParams = [];
-configInlineParams.push(function() {
-";
+        echo "<fieldset id=\"tableFilter\">
+    <legend>";
+        // line 2
+        echo _gettext("Filters");
+        echo "</legend>
+    <div class=\"formelement\">
+        <label for=\"filterText\">";
         // line 4
-        echo twig_join_filter(($context["js_array"] ?? null), ";
-");
-        echo ";
-});
-if (typeof configScriptLoaded !== \"undefined\" && configInlineParams) loadInlineConfig();
-</script>
+        echo _gettext("Containing the word:");
+        echo "</label>
+        <input name=\"filterText\" type=\"text\" id=\"filterText\"
+               value=\"";
+        // line 6
+        echo twig_escape_filter($this->env, ($context["filter_value"] ?? null), "html", null, true);
+        echo "\">
+    </div>
+</fieldset>
 ";
     }
 
     public function getTemplateName()
     {
-        return "javascript/display.twig";
+        return "filter.twig";
     }
 
     public function isTraitable()
@@ -60,11 +66,11 @@ if (typeof configScriptLoaded !== \"undefined\" && configInlineParams) loadInlin
 
     public function getDebugInfo()
     {
-        return array (  42 => 4,  37 => 1,);
+        return array (  50 => 6,  45 => 4,  40 => 2,  37 => 1,);
     }
 
     public function getSourceContext()
     {
-        return new Source("", "javascript/display.twig", "/var/www/html/public/mathjucool/templates/javascript/display.twig");
+        return new Source("", "filter.twig", "/var/www/html/public/mathjucool/templates/filter.twig");
     }
 }
