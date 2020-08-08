@@ -1,0 +1,2352 @@
+openapi: "3.0.0"
+info:
+  title: 拱拱API
+  version: "2.0"
+servers:
+  - url: "http://{domain}/{basePath}"
+    description: Sky31 拱拱 API
+    variables:
+      domain:
+        description: API服务器域名
+        default: gonggong.sky31.com
+        enum:
+          - gonggong.sky31.com
+          - 测试服务器域名
+      basePath:
+        description: API服务器地址Ø
+        default: api
+# 全局认证
+security:
+  - jwtToken: []
+tags:
+  - name: user
+    description: 用户 API
+  - name: gulu
+    description: 咕噜 API
+  - name: course
+    description: 课表 API（包括空课表/教室）
+  - name: timer
+    description: 倒计时
+  - name: eatest
+    description: Eatest 评测
+  - name: library
+    description: 图书馆
+  - name: notice
+    description: 消息
+  - name: score
+    description: 成绩
+  - name: consume
+    description: 消费
+  - name: campus_guide
+    description: 校园向导
+  - name: admin
+    description: 管理 API
+paths:
+  # 用户
+  /users/login:
+    post:
+      tags:
+        - user
+      summary: 登录
+      description: 三翼通行证登录
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  description: 用户名
+                  type: string
+                password:
+                  description: 密码
+                  type: string
+      responses:
+        200:
+          description: 登录成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    description: jwt token
+                    type: string
+                  user:
+                    $ref: "#/components/schemas/UserInfo"
+          links:
+            me:
+              operationId: 获取用户信息
+              parameters:
+                Authentication: $response.body#/token
+        403:
+          description: 登录失败
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users/me:
+    get:
+      summary: 获取用户信息
+      operationId: 获取用户信息
+      description: 可用于判断用户是否登录，或者拉取用户信息
+      tags:
+        - user
+      responses:
+        200:
+          description: 获取登录信息成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserInfo"
+        403:
+          $ref: "#/components/responses/NotAuthorization"
+  # 咕噜
+  /gulu:
+    get:
+      summary: 咕噜列表
+      operationId: 咕噜列表
+      tags:
+        - gulu
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/order"
+        - $ref: "#/components/parameters/search"
+        - $ref: "#/components/parameters/me"
+      responses:
+        200:
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    description: 页码
+                    type: integer
+                  limit:
+                    description: 每页限制
+                    type: integer
+                  total:
+                    description: 总页数
+                    type: integer
+                  data:
+                    description: 咕噜消息列表
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/GuluMessageStatus"
+        403:
+          $ref: "#/components/responses/InvalidProperties"
+    post:
+      summary: 咕噜一下
+      operationId: 咕噜一下
+      tags:
+        - gulu
+      requestBody:
+        description: 咕噜消息内容
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  description: 咕噜消息正文
+                  type: string
+            example:
+              content: 咕噜一下
+      responses:
+        200:
+          description: 发布成功
+          content:
+            application/json:
+              schema:
+                description: 咕噜消息发布后定位信息
+                type: object
+                properties:
+                  id:
+                    description: 消息id
+                    type: integer
+              example:
+                id: 1
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/IllegalContent"
+  /gulu/me/comments:
+    get:
+      summary: 我的评论
+      tags:
+        - gulu
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/GuluCommentStatus"
+  /gulu/me/comments/reply:
+    get:
+      summary: 回复我的评论
+      tags:
+        - gulu
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/GuluCommentStatus"
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+  /gulu/{guluid}:
+    # 通用参数
+    parameters:
+      - name: guluid
+        description: 咕噜消息id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 1
+    get:
+      summary: 访问指定咕噜消息
+      operationId: 访问指定咕噜消息
+      tags:
+        - gulu
+      security: []
+      responses:
+        200:
+          description: 访问成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GuluMessageStatus"
+        404:
+          $ref: "#/components/responses/NotFound"
+    put:
+      summary: 修改指定咕噜消息
+      operationId: 修改指定咕噜消息
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GuluMessage"
+      tags:
+        - gulu
+      responses:
+        200:
+          description: 修改成功
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+    delete:
+      summary: 删除指定咕噜消息
+      operationId: 删除指定咕噜消息
+      tags:
+        - gulu
+      responses:
+        200:
+          description: 删除成功
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+  # 咕噜 圈子
+  /gulu/groups:
+    get:
+      summary: 访问圈子列表
+      operationId: 访问圈子列表
+      tags:
+        - gulu
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/order"
+        - $ref: "#/components/parameters/search"
+        - $ref: "#/components/parameters/me"
+      responses:
+        200:
+          description: 访问成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    description: 当前页码
+                    type: integer
+                  limit:
+                    description: 每页限制
+                    type: integer
+                  total:
+                    description: 总页数
+                    type: integer
+                  data:
+                    description: 圈子数据列表
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/GuluGroupStatus"
+        403:
+          $ref: "#/components/responses/InvalidProperties"
+    post:
+      summary: 创建圈子
+      operationId: 创建圈子
+      tags:
+        - gulu
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GuluGroup"
+      responses:
+        200:
+          description: 创建成功
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+  /gulu/groups/:
+    get:
+      summary: 访问指定圈子
+      operationId: 访问指定圈子
+      tags:
+        - gulu
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/order"
+        - $ref: "#/components/parameters/search"
+
+      responses:
+        200:
+          description: 访问圈子成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    description: 圈子标题
+                    type: string
+                  description:
+                    description: 圈子描述
+                    type: string
+                  lastupdated:
+                    description: 圈子最后更新时间
+                    type: string
+                  messages:
+                    description: 圈子内的消息列表
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/GuluMessageStatus"
+        # TODO 可能不需要的特性
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+    put:
+      summary: 修改圈子信息
+      operationId: 修改圈子信息
+      tags:
+        - gulu
+      requestBody:
+        description: 圈子修改后数据
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GuluGroup"
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+    delete:
+      summary: 删除圈子
+      operationId: 删除圈子
+      tags:
+        - gulu
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+  # 咕噜 话题
+  /gulu/topic:
+    get:
+      summary: 咕噜话题列表
+      operationId: 咕噜话题列表
+      tags:
+        - gulu
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/order"
+        - $ref: "#/components/parameters/search"
+      responses:
+        200:
+          description: 话题列表相关信息
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    description: 当前页码
+                    type: integer
+                  # TODO 页码限制 更好的展示方式
+                  limit:
+                    description: 每页限制
+                    type: integer
+                  total:
+                    description: 总数
+                    type: integer
+                  data:
+                    description: 咕噜话题列表
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/GuluTopicStatus"
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+    post:
+      summary: 添加话题
+      operationId: 添加话题
+      tags:
+        - gulu
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GuluTopic"
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+  /gulu/topics/{topicid}:
+    parameters:
+      - name: topicid
+        description: 话题id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: 获取指定话题消息
+      operationId: 获取指定话题消息
+      tags:
+        - gulu
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/order"
+        - $ref: "#/components/parameters/search"
+      responses:
+        200:
+          description: 成功获取指定话题信息
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    description: 页码
+                    type: integer
+                  limit:
+                    description: 每页限制
+                    type: integer
+                  total:
+                    description: 话题下消息总数
+                    type: integer
+                  data:
+                    description: 当前页消息数据
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/GuluMessageStatus"
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/InvalidProperties"
+    put:
+      summary: 修改话题名称
+      operationId: 修改话题名称
+      tags:
+        - gulu
+      requestBody:
+        description: 修改后的话题
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GuluTopic"
+      responses:
+        200:
+          description: 修改成功
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+    delete:
+      summary: 删除话题
+      operationId: 删除话题
+      tags:
+        - gulu
+      responses:
+        200:
+          description: 删除成功
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+  # 咕噜 评论
+  /gulu/{guluid}/comments:
+    parameters:
+      - name: guluid
+        description: 消息id
+        required: true
+        in: path
+        schema:
+          type: integer
+    get:
+      summary: 获取指定消息评论
+      operationId: 获取指定消息评论
+      tags:
+        - gulu
+      security: []
+      responses:
+        200:
+          description: 读取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    description: 页码
+                    type: integer
+                  limit:
+                    description: 每页限制
+                    type: integer
+                  total:
+                    description: 总页数
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/GuluCommentStatus"
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+    post:
+      summary: 发布评论
+      operationId: 发布评论
+      tags:
+        - gulu
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GuluMessage"
+      responses:
+        200:
+          description: 发布成功
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+  /gulu/{guluid}/comments/{commentid}:
+    parameters:
+      - name: guluid
+        description: 消息id
+        required: true
+        in: path
+        schema:
+          type: integer
+      - name: commentid
+        description: 评论id
+        required: true
+        in: path
+        schema:
+          type: integer
+    post:
+      summary: 回复评论
+      operationId: 回复评论
+      tags:
+        - gulu
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GuluMessage"
+      responses:
+        200:
+          description: 回复成功
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+    delete:
+      summary: 删除评论
+      operationId: 删除评论
+      tags:
+        - gulu
+      responses:
+        200:
+          description: 删除成功
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+  # 课表
+  /course:
+    get:
+      summary: 查看课表
+      tags:
+        - course
+      parameters:
+        - name: stu_id
+          description: 学号
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+              example:
+                code: 0
+                status: 成功
+                data:
+                  1:
+                    1:
+                      - course: 数据结构
+                        location: 计算机中心406
+                        teacher: 谢勇
+                        week: [2, 3, 4, 5, 6, 7, 8, 9]
+                        section_length: 2
+                        section_start: 1
+                        section_end: 2
+                      - course: 宏观经济学
+                        location: 计算机中心406
+                        teacher: 谢勇
+                        week: [2, 3, 4, 5, 6, 7, 8, 9]
+                        section_length: 2
+                        section_start: 1
+                        section_end: 2
+                    2:
+                      - course: 软件工程
+                        location: 计算机中心306
+                        teacher: 谢智
+                        week: [2, 3, 4, 5, 6, 7, 8, 9]
+                        section_length: 2
+                        section_start: 1
+                        section_end: 2
+                      - course: 软件测试
+                        location: 计算机中心206
+                        teacher: 谢伟
+                        week: [9, 10, 11, 12, 13, 14, 15, 16]
+                        section_length: 4
+                        section_start: 5
+                        section_end: 8
+                  2:
+                    1:
+                      - course: 数据结构
+                        location: 计算机中心406
+                        teacher: 谢勇
+                        week: [2, 3, 4, 5, 6, 7, 8, 9]
+                        section_length: 2
+                        section_start: 1
+                        section_end: 2
+                      - course: 宏观经济学
+                        location: 计算机中心406
+                        teacher: 谢勇
+                        week: [2, 3, 4, 5, 6, 7, 8, 9]
+                        section_length: 2
+                        section_start: 1
+                        section_end: 2
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+    post:
+      summary: 关联课表
+      tags:
+        - course
+
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+
+  /course/extra:
+    post:
+      summary: 添加课程
+      tags:
+        - course
+
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+    put:
+      summary: 修改课程
+      tags:
+        - course
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+    delete:
+      summary: 删除课程
+      operationId: 删除评测
+      tags:
+        - course
+      parameters:
+        - name: stu_id
+          description: 学号
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: id
+          description: 需删课程id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+
+  # 倒计时
+  /timer:
+    get:
+      summary: 查看倒计时
+      tags:
+        - timer
+      parameters:
+        - name: stu_id
+          description: 学号
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Timer"
+              example:
+                code: 0
+                status: 成功
+                data:
+                  - id: 1
+                    target: 线性代数
+                    deal: null
+                    closingtime: 2020-03-09 15:00~17:00
+                    location: 逸夫楼-111
+
+                  - id: 2
+                    target: 高等数学
+                    deal: null
+                    closingtime: 2020-03-11 09:00~11:00
+                    location: 逸夫楼-102
+
+                  - id: 3
+                    target: 周末海底捞
+                    deal: 周末都给我嗨起来!
+                    closingtime: 2020-03-22 15:00~17:00
+                    location: 万达
+
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+    post:
+      summary: 添加倒计时
+      tags:
+        - timer
+      
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+    put:
+      summary: 修改倒计时
+      tags:
+        - timer
+      
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+    delete:
+      summary: 删除倒计时
+      tags:
+        - timer
+      parameters:
+        - name: stu_id
+          description: 学号
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: id
+          description: 需删倒计时id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+
+      deprecated: false
+  # eatest评测
+  /eatest:
+    get:
+      summary: 评测列表
+      operationId: 评测列表
+      tags:
+        - eatest
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/order"
+        - $ref: "#/components/parameters/search"
+        - $ref: "#/components/parameters/me"
+      responses:
+        200:
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    description: 页码
+                    type: integer
+                  limit:
+                    description: 每页限制
+                    type: integer
+                  total:
+                    description: 总页数
+                    type: integer
+                  data:
+                    description: 美食评测列表
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/EatestMessage"
+              example:
+                page: 1
+                limit: 1
+                total: 2
+                data:
+                  - id: 1
+                    stu_id: 20185710601
+                    publisher_name: 张桂福
+                    evaluation_time: 2020.03.09
+                    evaluation_tag: 三汁焖锅
+                    evaluation_content: 真的真的好吃！！
+                    location: 联建
+                    thumbs_up_counts: 666
+                    collection_counts: 6666
+                  - id: 2
+                    stu_id: 20185710602
+                    publisher_name: 张月
+                    evaluation_time: 2020.03.09
+                    evaluation_tag: 书亦烧仙草
+                    evaluation_content: 真的真的好喝！！
+                    location: 联建
+                    thumbs_up_counts: 233
+                    collection_counts: 2333
+        403:
+          $ref: "#/components/responses/InvalidProperties"
+    post:
+      summary: 发布评测
+      operationId: 发布评测
+      tags:
+        - eatest
+      requestBody:
+        $ref: "#/components/requestBodies/EatestBody"
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+    put:
+      summary: 修改评测
+      operationId: 修改评测
+      tags:
+        - eatest
+      
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+    delete:
+      summary: 删除评测
+      operationId: eatest_delete
+      tags:
+        - eatest
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+  /eatest/me:
+    get:
+      summary: 我的评测
+      tags:
+        - eatest
+      responses:
+        200:
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    description: 页码
+                    type: integer
+                  limit:
+                    description: 每页限制
+                    type: integer
+                  total:
+                    description: 总页数
+                    type: integer
+                  data:
+                    description: 我的评测列表
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/EatestMessage"
+              example:
+                page: 1
+                limit: 1
+                total: 2
+                data:
+                  - eatest_id: 1
+                    stu_id: 20185710601
+                    name: 张桂福
+                    published: 2020.03.09
+                    target: 三汁焖锅
+                    content: 真的真的好吃！！
+                    location: 联建
+                    thumbs_up_counts: 666
+                    views: 6666
+                  - eatest_id: 2
+                    stu_id: 20185710601
+                    name: 张桂福
+                    published: 2020.03.09
+                    target: 书亦烧仙草
+                    content: 真的真的好喝！！
+                    location: 联建
+                    thumbs_up_counts: 233
+                    views: 2333
+        403:
+          $ref: "#/components/responses/InvalidProperties"
+  /eatest/me/comments:
+    get:
+      summary: 我的评论
+      tags:
+        - eatest
+      
+      responses:
+        200:
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    description: 页码
+                    type: integer
+                  limit:
+                    description: 每页限制
+                    type: integer
+                  total:
+                    description: 总页数
+                    type: integer
+                  data:
+                    description: 我的评测列表
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/EatestCommentStatus"
+    post:
+      summary: 发布评论
+      tags:
+        - eatest
+      requestBody:
+        $ref: "#/components/requestBodies/CommentBody"
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+    delete:
+      summary: 删除评论
+      operationId: del_eatest_comment
+      tags:
+        - eatest
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+  /eatest/me/comments/reply:
+    post:
+      summary: 发布评论
+      tags:
+        - eatest
+      requestBody:
+        $ref: "#/components/requestBodies/CommentBody"
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+
+  # 成绩
+  /score/all/{stu_id}:
+    get:
+      summary: 成绩详单
+      operationId: 成绩详单
+      tags:
+        - score
+      parameters:
+        - $ref: "#/components/parameters/stu_id"
+        - name: Semester
+          description: 学年-学期(选填)
+          in: query
+          required: false
+          schema:
+            type: string
+          example: 2020-02
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                    example: 0
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  data:
+                    description: 成绩列表
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Score"
+                example:
+                  code: 0
+                  status: 成功
+                  data:
+                    - id: 1
+                      stu_id: 201805710601
+                      course: 高等数学I
+                      type: 必修
+                      credit: 6
+                      daily_grade: 90
+                      exam_grade: 80
+                      comp_grade: 80.4
+                      term: 2018-2019-1
+                      study_time: 64
+                      class_type: 公共基础课
+                      isPass: 1
+                    - id: 2
+                      stu_id: 201805710601
+                      course: 高等数学II
+                      type: 必修
+                      credit: 6
+                      daily_grade: 90
+                      exam_grade: 90
+                      comp_grade: 90
+                      term: 2018-2019-2
+                      study_time: 64
+                      class_type: 公共基础课
+                      isPass: 1
+
+        403:
+          $ref: "#/components/responses/NoPermission"
+  /score/{stu_id}:
+    get:
+      summary: 绩点及排名
+      operationId: 绩点及排名
+      tags:
+        - score
+      parameters:
+        - $ref: "#/components/parameters/stu_id"
+        - name: Semester
+          description: 学年-学期(选填)
+          in: query
+          required: false
+          schema:
+            type: string
+          example: 2020-02
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                    example: 0
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  data:
+                    description: 成绩列表
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/point"
+        403:
+          $ref: "#/components/responses/NoPermission"
+  # 图书馆
+  /library/{search}:
+    get:
+      summary: 搜索图书
+      operationId: 搜索图书
+      tags:
+        - library
+      parameters:
+        - name: search
+          description: 搜索关键字
+          in: path
+          required: true
+          schema:
+            type: string
+          example: 高等数学
+      responses:
+        200:
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                    example: 0
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  data:
+                    description: 搜索列表
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/LibrarySearch"
+                example:
+                  code: 0
+                  status: 成功
+                  data:
+                    - book: 高等数学I
+                      author: Jhon Kolko
+                      translator: 方舟
+                      publisher: 湘潭大学出版社
+                      CableNumber:
+                      position:
+                    - book: 高等数学II
+                      author: 罗翔
+                      translator: 无
+                      publisher: B站出版社
+                      CableNumber:
+                      position:
+        403:
+          $ref: "#/components/responses/NoPermission"
+  /library:
+    get:
+      summary: 在借列表
+      operationId: 在借列表
+      tags:
+        - library
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/order"
+        - $ref: "#/components/parameters/search"
+        - $ref: "#/components/parameters/me"
+      responses:
+        200:
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    description: 页码
+                    type: integer
+                  limit:
+                    description: 每页限制
+                    type: integer
+                  total:
+                    description: 总页数
+                    type: integer
+                  data:
+                    description: 图书列表
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/LibrarySearch"
+        403:
+          $ref: "#/components/responses/NoPermission"
+    post:
+      summary: 借书
+      operationId: 借书
+      tags:
+        - library
+      requestBody:
+        $ref: "#/components/requestBodies/LibraryBody"
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+  /library/collect:
+    get:
+      summary: 收藏列表
+      operationId: 收藏列表
+      tags:
+        - library
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/order"
+        - $ref: "#/components/parameters/search"
+        - $ref: "#/components/parameters/me"
+      responses:
+        200:
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    description: 页码
+                    type: integer
+                  limit:
+                    description: 每页限制
+                    type: integer
+                  total:
+                    description: 总页数
+                    type: integer
+                  data:
+                    description: 图书列表
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/LibrarySearch"
+        403:
+          $ref: "#/components/responses/NoPermission"
+    post:
+      summary: 收藏
+      operationId: 收藏
+      tags:
+        - library
+      requestBody:
+        $ref: "#/components/requestBodies/LibraryBody"
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+    delete:
+      summary: 取消收藏
+      operationId: 取消收藏
+      tags:
+        - library
+      
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Success"
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+  # 消费
+  /consume/{stu_id}:
+    get:
+      summary: 查看消费
+      tags:
+        - consume
+      parameters:
+        - name: stu_id
+          description: 学号
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                    example: 0
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  data:
+                    description: 成绩列表
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Consume"
+                example:
+                  code: 0
+                  status: 成功
+                  data:
+                    - id: 1
+                      location: 南苑新食堂一楼益禾堂
+                      money: "-6.00"
+                      datatime: "2019-11-30 10:45:00"
+                    - id: 2
+                      location: 校园卡充值
+                      money: "+100"
+                      datatime: "2019-12-25 12:35:00"
+  /backend/{stu_id}:
+    get:
+      summary: 消费余额
+      tags:
+        - consume
+      parameters:
+        - name: stu_id
+          description: 学号
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                    example: 0
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  data:
+                    description: 成绩列表
+                    type: object
+                    $ref: "#/components/schemas/Bankcard"
+              example:
+                code: 0
+                status: 成功
+                data:
+                  id: 1
+                  card: 6XXX XXXX XXXX XXXX XXX
+                  money: "20.00"
+                  wait_money: "100.00"
+  # 校园向导
+  /guide/search:
+    get:
+      summary: 搜索地点
+      operationId: 搜索地点
+      tags:
+        - campus_guide
+      
+      responses:
+        200:
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                    example: 0
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  data:
+                    description: 搜索列表
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/GuideMessage"
+              example:
+                code: 0
+                status: 成功
+                data:
+                  - location: 邮政快递
+                    phone: 1233214567
+                    details:
+                      - 东门篮球场下教师公寓门口
+                      - 东门左转100米午夜阳光KTV
+                  - location: 顺丰快递
+                    phone: 1233214567
+                    details:
+                      - 金翰林商业街三楼
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+  /guide:
+    get:
+      summary: 地点信息
+      operationId: 地点信息
+      tags:
+        - campus_guide
+      responses:
+        200:
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                    example: 0
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  data:
+                    description: 搜索列表
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/GuideMessage"
+              example:
+                code: 0
+                status: 成功
+                data:
+                  - location: 邮政快递
+                    phone: 1233214567
+                    details:
+                      - 东门篮球场下教师公寓门口
+                      - 东门左转100米午夜阳光KTV
+                  - location: 顺丰快递
+                    phone: 1233214567
+                    details:
+                      - 金翰林商业街三楼
+        401:
+          $ref: "#/components/responses/NotAuthorization"
+        403:
+          $ref: "#/components/responses/NoPermission"
+        404:
+          $ref: "#/components/responses/NotFound"
+components:
+  requestBodies:
+    # 借书请求
+    LibraryBody:
+      description: 借书信息
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              stu_id:
+                type: integer
+                description: 学号
+                example: 201805710601
+              book:
+                type: string
+                description: 图书名称
+                example: 高等数学II
+              author:
+                description: 作者
+                type: string
+                example: 罗翔
+              translator:
+                description: 翻译(选填)
+                type: string
+                example: 方舟
+              publisher:
+                description: 出版社
+                type: string
+                example: 湘潭大学出版社
+              CableNumber:
+                description: 索书号
+                type: string
+                example:
+              position:
+                description: 位置
+                type: string
+                example:
+    # 评测请求
+    EatestBody:
+      description: 评测消息
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              stu_id:
+                type: integer
+                description: 学号
+                example: 201805710601
+              publisher_name:
+                type: string
+                description: 发布者姓名
+                example: 张桂福
+              evaluation_tag:
+                type: string
+                description: 评测标题
+                example: 三汁焖锅
+              evaluation_content:
+                type: string
+                description: 评测内容
+                example: 贼tm好吃！！
+              location:
+                type: string
+                description: 美食地点
+                example: 联建
+
+          encoding:
+            # Don't percent-encode reserved characters in the values of "bar" and "baz" fields
+            bar:
+              allowReserved: true
+            baz:
+              allowReserved: true
+    CommentBody:
+      description: 评论消息
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              user_id:
+                type: integer
+                description: 发布者编号
+                example: 1
+              content:
+                type: string
+                description: 评测内容
+                example: 贼tm好吃！！
+              reply:
+                type: integer
+                description: 回复评论编号(选填)
+                example: 3
+
+  parameters:
+    stu_id:
+      name: stu_id
+      description: 学号
+      required: true
+      in: path
+      schema:
+        type: integer
+        example: 201805710601
+    page:
+      name: page
+      description: 页码
+      required: false
+      in: query
+      schema:
+        type: integer
+        example: 1
+    order:
+      name: order
+      description: 数据排序依据
+      required: false
+      in: query
+      schema:
+        type: string
+        enum:
+          - hot
+          - new
+    search:
+      name: q
+      description: 搜索关键字
+      required: false
+      in: query
+      schema:
+        type: string
+    me:
+      name: me
+      description: 我的
+      required: false
+      in: query
+      schema:
+        type: boolean
+  # 概要 带 Status 后缀说明是返回数据使用，包含状态信息
+  schemas:
+    MessagesInforMation:
+      type: object
+      properties:
+        page:
+          description: 页码
+          type: integer
+        limit:
+          description: 每页限制
+          type: integer
+        total:
+          description: 总页数
+          type: integer
+    Success:
+      description: 返回成功信息
+      type: object
+      properties:
+        code:
+          description: 状态码
+          type: integer
+          example: 0
+        status:
+          description: 状态
+          type: string
+          example: 成功
+    Error:
+      description: 错误返回信息
+      type: object
+      properties:
+        error:
+          description: 详细错误信息
+          type: string
+    UserInfo:
+      type: object
+      properties:
+        name:
+          description: 用户昵称
+          type: string
+        avatar:
+          description: 用户头像链接
+          type: string
+        info:
+          description: 用户详细信息
+          type: object
+          properties:
+            uid:
+              description: 学号
+              type: integer
+            # TODO 添加用户详细信息字段
+    # 图书馆模块参数
+    LibrarySearch:
+      description: 图书信息
+      type: object
+      properties:
+        book:
+          description: 图书名称
+          type: string
+          example: 高等数学
+        author:
+          description: 作者
+          type: string
+          example: Jhon Kolko
+        translator:
+          description: 翻译(选)
+          type: string
+          example: 方舟
+        publisher:
+          description: 出版社
+          type: string
+          example: 湘潭大学出版社
+        CableNumber:
+          description: 索书号
+          type: string
+          example:
+        position:
+          description: 位置
+          type: string
+          example:
+    # 消费模块参数
+    Consume:
+      description: 消费信息
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 编号
+          example: 1
+        location:
+          type: string
+          description: 消费地点
+          example: 南苑新食堂一楼益禾堂
+        money:
+          type: string
+          description: 消费金额
+          example: "-6.00"
+        datatime:
+          type: string
+          description: 消费日期
+          example: "2019-11-30 10:45:00"
+    Bankcard:
+      description: 消费余额
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 编号
+          example: 1
+        card:
+          type: string
+          description: 银行卡号
+          example: 6XXX XXXX XXXX XXXX XXX
+        money:
+          description: 余额
+          type: integer
+          example: "20.00"
+        wait_money:
+          description: 待圈存
+          type: integer
+          example: "100.00"
+    # 成绩模块参数
+    Score:
+      description: 成绩列表
+      type: object
+      properties:
+        id:
+          description: 数据编号
+          type: string
+          example: 1
+        stu_id:
+          description: 学号
+          type: integer
+          example: 201805710601
+        course:
+          description: 课程名称
+          type: string
+          example: 高等数学I
+        type:
+          description: 课程类型
+          type: string
+          example: 必修
+        credit:
+          description: 学分
+          type: string
+          example: 6
+        daily_grade:
+          description: 平时成绩
+          type: string
+          example: 90
+        exam_grade:
+          description: 考试成绩
+          type: string
+          example: 80
+        comp_grade:
+          description: 综合成绩
+          type: string
+          example: 80.3
+        term:
+          description: 学期
+          type: integer
+          example: 2018-2019-1
+        test_way:
+          description: 考试方式
+          type: string
+          example: 考试
+        study_time:
+          description: 学时
+          type: integer
+          example: 64
+        class_type:
+          description: 课程性质
+          type: string
+          example: 公共基础课
+        isPass:
+          description: 是否及格
+          type: integer
+          example: 1
+    point:
+      description: 绩点及排名
+      type: object
+      properties:
+        stu_id:
+          description: 学号
+          type: integer
+          example: 201805710601
+        gpa:
+          description: 绩点
+          type: integer
+          example: 2.666
+        average_grade:
+          description: 平均成绩
+          type: integer
+          example: 73.64
+        gpa_class_rank:
+          description: 绩点班级排名
+          type: integer
+          example: 25
+        gpa_major_rank:
+          description: 绩点专业排名
+          type: integer
+          example: 34
+    # Eatest模块参数
+    EatestMessage:
+      description: 美食评测列表
+      type: array
+      items:
+        description: 单条信息
+        type: object
+        properties:
+          id:
+            description: 编号
+            type: string
+            example: 1
+          stu_id:
+            description: 发布者学号
+            type: string
+            example: 201805710601
+          evaluation_time:
+            description: 发���时间
+            type: string
+            example: 2020.03.09
+          evaluation_tag:
+            description: 评测标题
+            type: string
+            example: 三汁焖锅
+          evaluation_content:
+            description: 评测内容
+            type: string
+            example: 真的真的好吃！！
+          location:
+            description: 地点
+            type: string
+            example: 联建
+          thumbs_up_counts:
+            description: 点赞量
+            type: integer
+            example: 666
+          collection_counts:
+            description: 点击量
+            type: integer
+            example: 6666
+    EatestCommentStatus:
+      description: Eatest消息状态
+      type: object
+      properties:
+        id:
+          type: integer
+        author:
+          type: object
+          properties:
+            name:
+              description: 作者昵称
+              type: string
+              example: 张桂福
+            avatar:
+              description: 作者头像链接
+              type: string
+              example: Ego
+        reply:
+          description: 回复的评论 id，默认值 0 表示非回复
+          type: integer
+          default: 0
+        content:
+          description: 评论正文
+          type: string
+          example: 三汁焖锅我也喜欢吃！
+        thumbs_up_counts:
+          description: 点赞数
+          type: string
+          example: 66
+        published:
+          description: 发布时间
+          type: string
+          example: "2019-12-25 12:35:00"
+        # TODO 不确定数据
+        comments:
+          description: 评论数
+          type: integer
+    # 校园向导模块参数
+    GuideMessage:
+      description: 地点信息
+      type: object
+      properties:
+        location:
+          description: 地点名称
+          type: string
+          example: 邮政快递
+        phone:
+          type: integer
+          description: 联系电话
+          example: 1233214567
+        details:
+          type: array
+          description: 详细地址
+          items:
+            type: string
+            example: 东门篮球场下教师公寓门口
+
+    # 课表模块参数
+    Course:
+      description: 查看课表
+      type: object
+      properties:
+        code:
+          description: 状态码
+          type: integer
+        status:
+          description: 状态
+          type: string
+          example: 成功
+        data:
+          description: 课表数据
+          type: object
+          properties:
+            1:
+              description: 第一周
+              type: object
+              properties:
+                1:
+                  description: 周一
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      course:
+                        description: 课程
+                        type: string
+                        example: 数据结构
+                      location:
+                        description: 地点
+                        type: string
+                        example: 计算机中心406
+                      teacher:
+                        description: 讲师
+                        type: string
+                        example: 谢勇
+                      week:
+                        description: 所属周次
+                        type: string
+                        example: 2,3,4,5,6,7,8,9
+                      section_length:
+                        description: 课程节数
+                        type: integer
+                        example: 2
+                      section_start:
+                        description: 开始时间
+                        type: integer
+                        example: 1
+                      section_end:
+                        description: 结束时间
+                        type: integer
+                        example: 2
+                2:
+                  description: 周二
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      course:
+                        description: 课程
+                        type: string
+                        example: 宏观经济学
+                      location:
+                        description: 地点
+                        type: string
+                        example: 兴湘306
+                      teacher:
+                        description: 讲师
+                        type: string
+                        example: 龙朝阳
+                      week:
+                        description: 所属周次
+                        type: string
+                        example: 3,4,5,6,7,8,9,10,11
+                      section_length:
+                        description: 课程节数
+                        type: integer
+                        example: 2
+                      section_start:
+                        description: 开始时间
+                        type: integer
+                        example: 3
+                      section_end:
+                        description: 结束时间
+                        type: integer
+                        example: 4
+    # 倒计时模块参数
+    Timer:
+      description: 查看倒计时
+      type: object
+      properties:
+        code:
+          description: 状态码
+          type: integer
+          example: 0
+        status:
+          description: 状态
+          type: string
+          example: 成功
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              target:
+                description: 倒计时名称
+                type: string
+                example: 线性代数
+              deal:
+                description: 备注
+                type: string
+                default: null
+              closingtime:
+                description: 倒计时时间
+                type: string
+                example: 2020.03.09
+              location:
+                description: 倒计时地点
+                type: string
+                example: 逸夫楼-111
+
+    # 咕噜模块参数
+    GuluMessage:
+      description: 咕噜消息
+      type: object
+      properties:
+        content:
+          description: 咕噜消息正文
+          type: string
+    GuluMessageStatus:
+      description: 咕噜消息状态
+      type: object
+      properties:
+        id:
+          type: integer
+        author:
+          type: object
+          properties:
+            name:
+              description: 作者昵称
+              type: string
+            avatar:
+              description: 作者头像链接
+              type: string
+        reply:
+          description: 回复的评论 id，默认值 0 表示非回复
+          type: integer
+          default: 0
+        content:
+          description: 咕噜消息正文
+          type: string
+        published:
+          description: 发布时间
+          type: string
+        # TODO 不确定数据
+        comments:
+          description: 评论数
+          type: integer
+    GuluGroup:
+      description: 圈子信息
+      type: object
+      properties:
+        title:
+          description: 圈子标题
+          type: string
+        description:
+          description: 圈子描述
+          type: string
+    GuluGroupStatus:
+      description: 咕噜 圈子
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          description: 圈子标题
+          type: string
+        description:
+          description: 圈子描述
+          type: string
+        updated:
+          description: 最后更新时间（发布/更新）
+          type: string
+        # TODO 添加圈子信息字段
+    GuluTopic:
+      description: 咕噜话题信息
+      type: object
+      properties:
+        title:
+          description: 话题标题
+    GuluTopicStatus:
+      description: 咕噜 话题状态
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          description: 话题标题
+          type: string
+        used:
+          description: 最后使用时间
+          type: string
+    GuluComment:
+      description: 咕噜消息评论
+      type: object
+      properties:
+        content:
+          description: 评论内容
+          type: string
+    GuluCommentStatus:
+      description: 咕噜消息评论状态
+      type: object
+      properties:
+        id:
+          type: integer
+        author:
+          type: object
+          properties:
+            name:
+              description: 作者昵称
+              type: string
+            avatar:
+              description: 作者头像链接
+              type: string
+        content:
+          description: 评论内容
+          type: string
+        published:
+          description: 发布时间
+          type: string
+  securitySchemes:
+    jwtToken:
+      description: 访问凭据，登录返回
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    # 401
+    NotAuthorization:
+      description: 未登录
+    # 403
+    InvalidProperties:
+      description: 参数不满足
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            error: "参数【xxx】无效"
+    IllegalContent:
+      description: 内容非法
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            error: 内容包含敏感词“xxx”
+    NoPermission:
+      description: 当前用户无权限
+    # 404
+    NotFound:
+      description: 指定数据不存在
+  # examples:
+
+externalDocs:
+  url: https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md
+  description: OpenApi 3.0.2 文档

@@ -23,7 +23,10 @@ services:
       - ./dockercnf/php7.3-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf
     depends_on:
       - db
-      - redis_db
+      - gong_eatest_redis_db
+      - gong_gulu_redis_db
+      - gong_upick_redis_db
+      - gong_wechat_redis_db
   db:
     image: "mysql:5.7.28"
     container_name: "gong_mysql"
@@ -40,8 +43,37 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: yourpassword
       MYSQL_DATABASE: gong
-  redis_db:
+  gong_eatest_redis_db:
     image: "redis:5.0.7"
-    container_name: "gong_redis"
+    container_name: "eatest_redis"
     volumes:
-      - ./dockercnf/redis/gong_redis_db/:/data
+      - ./dockercnf/redis/eatest_redis_db/:/data
+  gong_gulu_redis_db:
+    image: "redis:5.0.7"
+    container_name: "gulu_redis"
+    volumes:
+      - ./dockercnf/redis/gulu_redis_db/:/data
+  gong_upick_redis_db:
+    image: "redis:5.0.7"
+    container_name: "upick_redis"
+    volumes:
+      - ./dockercnf/redis/upick_redis_db/:/data
+  gong_wechat_redis_db:
+     image: "redis:5.0.7"
+     container_name: "wechat_redis"
+     volumes:
+      - ./dockercnf/redis/wechat_redis_db/:/data
+  swagger-ui:
+    image: "swaggerapi/swagger-ui"
+    container_name: "swagger-ui"
+    privileged: true
+    ports:
+      - "82:8080"
+    volumes:
+      - ./dockercnf/swagger/html:/usr/share/nginx/html
+  swagger-editor:
+    image: "swaggerapi/swagger-editor"
+    container_name: "swagger-editor"
+    privileged: true
+    ports:
+      - "81:8080"

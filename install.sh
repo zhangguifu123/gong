@@ -1,5 +1,10 @@
 #!/bin/bash
 
+#安装py环境并运行教务系统api
+pip install virtualenv
+source Gong/bin/activate
+pip install gunicorn
+
 # 第一次安装才执行该脚本
 if [ ! -f ".env" ]; then
   sudo rm -rf ./dockercnf/mysql5.7/db_data/*
