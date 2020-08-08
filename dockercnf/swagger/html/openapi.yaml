@@ -11,7 +11,7 @@ servers:
         default: gonggong.sky31.com
         enum:
           - gonggong.sky31.com
-          - 测试服务器域名
+          - zgf.jsky31.cn:10302
       basePath:
         description: API服务器地址Ø
         default: api
@@ -103,7 +103,7 @@ paths:
         403:
           $ref: "#/components/responses/NotAuthorization"
   # 咕噜
-  /gulu:
+  /gulu/list/{page}:
     get:
       summary: 咕噜列表
       operationId: 咕噜列表
@@ -138,6 +138,7 @@ paths:
                       $ref: "#/components/schemas/GuluMessageStatus"
         403:
           $ref: "#/components/responses/InvalidProperties"
+  /gulu:
     post:
       summary: 咕噜一下
       operationId: 咕噜一下
@@ -773,7 +774,7 @@ paths:
           $ref: "#/components/responses/NotFound"
     delete:
       summary: 删除课程
-      operationId: 删除评测
+      operationId: DeleteCourse
       tags:
         - course
       parameters:
@@ -923,17 +924,17 @@ paths:
 
       deprecated: false
   # eatest评测
-  /eatest:
+  /eatest/list/{page}:
     get:
       summary: 评测列表
-      operationId: 评测列表
+      operationId: EatestList
       tags:
         - eatest
       parameters:
         - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/order"
-        - $ref: "#/components/parameters/search"
-        - $ref: "#/components/parameters/me"
+        # - $ref: "#/components/parameters/order"
+        # - $ref: "#/components/parameters/search"
+        # - $ref: "#/components/parameters/me"
       responses:
         200:
           description: 获取成功
@@ -981,9 +982,10 @@ paths:
                     collection_counts: 2333
         403:
           $ref: "#/components/responses/InvalidProperties"
+  /eatest:
     post:
       summary: 发布评测
-      operationId: 发布评测
+      operationId: EatestPublish
       tags:
         - eatest
       requestBody:
@@ -1001,12 +1003,21 @@ paths:
           $ref: "#/components/responses/NoPermission"
         404:
           $ref: "#/components/responses/NotFound"
+  /eatest/{id}:
     put:
       summary: 修改评测
-      operationId: 修改评测
+      operationId: EatestUpdate
       tags:
         - eatest
-      
+      parameters:
+        - name: id
+          description: 美文id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/UpdateEatestBody"
       responses:
         200:
           description: 成功
@@ -1022,9 +1033,16 @@ paths:
           $ref: "#/components/responses/NotFound"
     delete:
       summary: 删除评测
-      operationId: eatest_delete
+      operationId: DeleteEatest
       tags:
         - eatest
+      parameters:
+        - name: id
+          description: 美文id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: 成功
@@ -1043,6 +1061,13 @@ paths:
       summary: 我的评测
       tags:
         - eatest
+      parameters:
+        - name: id
+          description: 用户id
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: 获取成功
@@ -1095,7 +1120,13 @@ paths:
       summary: 我的评论
       tags:
         - eatest
-      
+      parameters:
+        - name: id
+          description: 用户id
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: 获取成功
@@ -1693,19 +1724,25 @@ components:
           schema:
             type: object
             properties:
-              stu_id:
+              id:
                 type: integer
-                description: 学号
-                example: 201805710601
-              publisher_name:
+                description: 学生id
+                example: 1
+              nickname:
                 type: string
-                description: 发布者姓名
-                example: 张桂福
-              evaluation_tag:
+                description: 昵称
+                example: 小甜甜
+              title:
                 type: string
-                description: 评测标题
-                example: 三汁焖锅
-              evaluation_content:
+                description: 标题
+                example: 喜之郎我的最爱
+              label:
+                type: array
+                description: 标签
+                example: ["酸酸","软软","甜甜"]
+                items:
+                  type: string
+              content:
                 type: string
                 description: 评测内容
                 example: 贼tm好吃！！
@@ -1713,7 +1750,62 @@ components:
                 type: string
                 description: 美食地点
                 example: 联建
-
+              shopname:
+                type: string
+                description: 店名（选填）
+                example: 喜之郎小店
+              imgs:
+                type: array
+                description: 图片地址（上传图片时返回）
+                example: ["酸酸","软软","甜甜"]
+                items:
+                  type: string
+          encoding:
+            # Don't percent-encode reserved characters in the values of "bar" and "baz" fields
+            bar:
+              allowReserved: true
+            baz:
+              allowReserved: true
+    UpdateEatestBody:
+      description: 评测消息
+      required: true
+      content:
+        x-www-form-urlencoded:
+          schema:
+            type: object
+            properties:
+              nickname:
+                type: string
+                description: 昵称
+                example: 小甜甜
+              title:
+                type: string
+                description: 标题
+                example: 喜之郎我的最爱
+              label:
+                type: array
+                description: 标签
+                example: ["酸酸","软软","甜甜"]
+                items:
+                  type: string
+              content:
+                type: string
+                description: 评测内容
+                example: 贼tm好吃！！
+              location:
+                type: string
+                description: 美食地点
+                example: 联建
+              shopname:
+                type: string
+                description: 店名（选填）
+                example: 喜之郎小店
+              imgs:
+                type: array
+                description: 图片地址（上传图片时返回）
+                example: ["http://test.gong.com/stroage/images/768eaa0d061ec924f2e8b03bab598240.jpg","http://test.gong.com/stroage/images/546bsa0dsadec9dsr238b03jsi523413.jpg"]
+                items:
+                  type: string
           encoding:
             # Don't percent-encode reserved characters in the values of "bar" and "baz" fields
             bar:
@@ -1753,8 +1845,8 @@ components:
     page:
       name: page
       description: 页码
-      required: false
-      in: query
+      required: true
+      in: path
       schema:
         type: integer
         example: 1
