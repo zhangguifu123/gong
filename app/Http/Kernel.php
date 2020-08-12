@@ -20,6 +20,8 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        //more
+        \App\Http\Middleware\EnableCrossRequestMiddleware::class
     ];
 
     /**
@@ -65,6 +67,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'login.check' => \App\Http\Middleware\Manager\LoginCheck::class,
         'owner.check' => \App\Http\Middleware\Eatest\OwnerCheck::class,
-        'evaluation.exist.check' => \App\Http\Middleware\Eatest\ExistCheck::class
+        'evaluation.exist.check' => \App\Http\Middleware\Eatest\ExistCheck::class,
+        'redis.type.check' => \App\Http\Middleware\Manager\RedisTypeCheck::class
     ];
 }
