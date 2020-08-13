@@ -23,6 +23,7 @@ services:
       - ./dockercnf/php7.3-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf
     depends_on:
       - db
+      - gong_avatar_redis_db
       - gong_eatest_redis_db
       - gong_gulu_redis_db
       - gong_upick_redis_db
@@ -38,11 +39,16 @@ services:
 #      - ./dockercnf/mysql5.7/conf/mysql.conf.d:/etc/mysql/mysql.conf.d
 #      - ./dockercnf/mysql5.7/conf/conf.d:/etc/mysql/conf.d
       - ./dockercnf/mysql5.7/db_data:/var/lib/mysql
-#      - ./dockercnf/run/mysql:/var/run/mysqld
+      - ./dockercnf/run/mysql:/var/run/mysqld
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: yourpassword
       MYSQL_DATABASE: gong
+  gong_avatar_redis_db:
+     image: "redis:5.0.7"
+     container_name: "avatar_redis"
+     volumes:
+       - ./dockercnf/redis/avatar_redis_db/:/data
   gong_eatest_redis_db:
     image: "redis:5.0.7"
     container_name: "eatest_redis"

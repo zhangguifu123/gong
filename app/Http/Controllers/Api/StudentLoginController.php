@@ -39,7 +39,8 @@ class StudentLoginController extends Controller
             $output = checkUser($data['stu_id'], $data['password']);
             if ($output['code'] == 0) {
                 $user = new User([
-                    'nickname' => $output['data']['name'], //默认信息
+                    'nickname' => "快来想个昵称吧",
+                    'name' => $output['data']['name'], //默认信息
                     'stu_id' => $data['stu_id'],
                     'password' => md5($data['password']),
                     'publish' => '[]', //mysql 中 json 默认值只能设置为NULL 为了避免不必要的麻烦，在创建的时候赋予初始值
