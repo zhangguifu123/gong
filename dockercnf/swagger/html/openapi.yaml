@@ -1110,7 +1110,7 @@ paths:
           $ref: '#/components/responses/NoPermission'
         '404':
           $ref: '#/components/responses/NotFound'
-  /eatest/me:
+  /eatest/me/{id}:
     get:
       summary: 我的评测
       tags:
@@ -1118,7 +1118,7 @@ paths:
       parameters:
         - name: id
           description: 用户id
-          in: query
+          in: path
           required: true
           schema:
             type: string
@@ -1169,44 +1169,18 @@ paths:
                     views: 2333
         '403':
           $ref: '#/components/responses/InvalidProperties'
-  /eatest/me/comments:
-    get:
-      summary: 我的评论
+  /eatest/{id}/comments:
+    post:
+      summary: 发布评论
       tags:
         - eatest
       parameters:
         - name: id
           description: 用户id
-          in: query
+          in: path
           required: true
           schema:
-            type: string
-      responses:
-        '200':
-          description: 获取成功
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  page:
-                    description: 页码
-                    type: integer
-                  limit:
-                    description: 每页限制
-                    type: integer
-                  total:
-                    description: 总页数
-                    type: integer
-                  data:
-                    description: 我的评测列表
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/EatestCommentStatus'
-    post:
-      summary: 发布评论
-      tags:
-        - eatest
+            type: integer
       requestBody:
         $ref: '#/components/requestBodies/CommentBody'
       responses:
@@ -1227,6 +1201,13 @@ paths:
       operationId: del_eatest_comment
       tags:
         - eatest
+      parameters:
+        - name: id
+          description: 用户id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         '200':
           description: 成功
@@ -1240,11 +1221,26 @@ paths:
           $ref: '#/components/responses/NoPermission'
         '404':
           $ref: '#/components/responses/NotFound'
-  /eatest/me/comments/reply:
+  /eatest/{toId}/reply/{fromId}:
     post:
-      summary: 发布评论
+      summary: 评论回复
       tags:
         - eatest
+      parameters:
+        - name: toId
+          description: 被评论者Id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 2
+        - name: fromId
+          description: 评论者Id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 2
       requestBody:
         $ref: '#/components/requestBodies/CommentBody'
       responses:
@@ -1887,17 +1883,45 @@ components:
           schema:
             type: object
             properties:
-              user_id:
+              fromId:
                 type: integer
-                description: 发布者编号
+                description: 评论者id
+                example: 1
+              fromName:
+                type: integer
+                description: 评论者昵称
                 example: 1
               content:
                 type: string
-                description: 评测内容
+                description: 评论内容
                 example: 贼tm好吃！！
-              reply:
+              fromAvatar:
                 type: integer
-                description: 回复评论编号(选填)
+                description: 评论者头像url
+                example: 3
+    ReplyBody:
+      description: 回复评论
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              comment_id:
+                type: integer
+                description: 评论id
+                example: 1
+              fromName:
+                type: integer
+                description: 评论者昵称
+                example: 1
+              content:
+                type: string
+                description: 评论内容
+                example: 贼tm好吃！！
+              fromAvatar:
+                type: integer
+                description: 评论者头像url
                 example: 3
   parameters:
     stu_id:
