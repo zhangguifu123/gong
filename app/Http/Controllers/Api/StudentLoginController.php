@@ -40,9 +40,11 @@ class StudentLoginController extends Controller
             if ($output['code'] == 0) {
                 $user = new User([
                     'nickname' => "快来想个昵称吧",
+                    'avatar'=> json_encode("https://test.gong.com/storage/image/290d42e9ac9703ee27e99f49ff40909c.jpg"),
                     'name' => $output['data']['name'], //默认信息
                     'stu_id' => $data['stu_id'],
                     'password' => md5($data['password']),
+                    'like' => '[]',
                     'publish' => '[]', //mysql 中 json 默认值只能设置为NULL 为了避免不必要的麻烦，在创建的时候赋予初始值
                     'collection' => '[]',
                     'remember' => md5($data['password'] . time() . rand(1000, 2000))
@@ -64,7 +66,6 @@ class StudentLoginController extends Controller
                 return msg(0, $user->info());
             } else { //匹配失败 用户更改密码或者 用户名、密码错误
                 $output = checkUser($data['stu_id'], $data['password']);
-//                print_r($output);
                 if ($output['code'] == 0) {
                     $user->password = md5($data['password']);
                     $user->remember = md5($data['password'] . time() . rand(1000, 2000));
@@ -89,7 +90,7 @@ class StudentLoginController extends Controller
         $publish_id_list = array_keys(json_decode($user->publish, true));
 
         $publish_list = DB::table("evaluations")->whereIn("evaluations.id", $publish_id_list)
-            ->get(["id", "nickname as publisher_name", "tag", "views",
+            ->get(["id", "nickname as publisher_name", "tag","like","avatar", "views",
                 "collections", "img", "title", "location", "shop_name", "created_at as time"])->toArray();
         $list_count =  DB::table("evaluations")->whereIn("evaluations.id", $publish_id_list)
             ->count();

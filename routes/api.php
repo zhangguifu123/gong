@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::namespace('Api')->group(function (){
     Route::post('login','StudentLoginController@login');
     //图片上传
-    Route::post('/image/{type}','ImageController@upload')->middleware("redis.type.check");
+    Route::post('/image','ImageController@upload');
 
     Route::get('/eatest/list/{page}', "Eatest\EvaluationController@get_list")->where(["page" => "[0-9]+"]);
     Route::group(['middleware' => 'login.check'], function () {
@@ -37,7 +37,7 @@ Route::namespace('Api')->group(function (){
             Route::post('/eatest/image', "Eatest\ImageController@upload");
             //Eatest点赞收藏
             Route::group(["middleware" => 'evaluation.exist.check'], function () {
-                Route::post('/eatest/like/{id}', "Eatest\LikeController@mark")->where(["id" => "[0-9]+"]);
+                Route::post('/eatest/like/{id}', "Eatest\LikeController@like")->where(["id" => "[0-9]+"]);
                 Route::post('/eatest/keep/{id}', "Eatest\CollectionController@keep")->where(["id" => "[0-9]+"]);
             });
 

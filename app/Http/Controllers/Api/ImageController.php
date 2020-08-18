@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use \Exception;
+use \Redis;
 
 class ImageController extends Controller
 {
     //图片上传
     public function upload(Request $request) {
-        //获取type，拼接redis host
-        $host = $request->route('type').'_redis';
+
         //检查文件
         if (!$request->hasFile('image')) {
             return msg(1, "缺失参数" . __LINE__);
@@ -31,7 +32,7 @@ class ImageController extends Controller
         // 如果redis连接失败 中止保存
         try {
             $redis = new Redis();
-            $redis->connect($host, 6379);
+            $redis->connect("gong_redis", 6379);
         } catch (Exception $e) {
             return msg(500, "连接redis失败" . __LINE__);
         }
@@ -50,7 +51,7 @@ class ImageController extends Controller
             return msg(500, "图片保存失败" . __LINE__);
         }
         $pic_url = config("app.url") . "/storage/image/". $all_name;
-        $redis->hSet($host, $pic_url, time()); // 存储图片上传时间 外部辅助脚本过期后删除
+        $redis->hSet("gong_redis", $pic_url, time()); // 存储图片上传时间 外部辅助脚本过期后删除
         return msg(0, $pic_url);
     }
 

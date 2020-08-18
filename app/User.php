@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'nickname', 'stu_id', 'password', 'collection', 'publish', "remember"
+        'like','name','nickname', 'stu_id', 'password', 'collection', 'publish', "remember","avatar"
     ];
 
     /**
@@ -43,8 +43,10 @@ class User extends Authenticatable
             'nickname' => $this->nickname,
             'stu_id' => $this->stu_id,
             'collection' => $this->collection,
+            'like' => $this->like,
             'publish' => $this->publish,
-            'remember' => $this->remember
+            'remember' => $this->remember,
+            'avatar' => $this->avatar
         ];
     }
 
@@ -67,7 +69,41 @@ class User extends Authenticatable
         $this->publish = json_encode($publish_list);
         $this->save();
     }
+    /**
+     * @param $evaluation_id
+     * @return bool true代表动作成功，否则表名已收藏
+     */
+    public function add_like($evaluation_id)
+    {
+        $like_list = json_decode($this->like, true);
+        if (!key_exists($evaluation_id, $like_list)) {
+            $like_list[$evaluation_id] = 1;
+        } else {
+            return false;
+        }
+        $this->like = json_encode($like_list);
+        $this->save();
 
+        return true;
+    }
+
+    /**
+     * @param $evaluation_id
+     * @return bool true代表动作成功，否则表名已取消收藏或者未收藏
+     */
+    public function del_like($evaluation_id)
+    {
+        $like_list = json_decode($this->like, true);
+        if (key_exists($evaluation_id, $like_list)) {
+            unset($like_list[$evaluation_id]);
+        } else {
+            return false;
+        }
+        $this->like = json_encode($like_list);
+        $this->save();
+
+        return true;
+    }
     /**
      * @param $evaluation_id
      * @return bool true代表动作成功，否则表名已收藏

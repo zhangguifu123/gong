@@ -54,11 +54,14 @@ paths:
             schema:
               type: object
               properties:
-                username:
+                stu_id:
                   description: 用户名
                   type: string
                 password:
                   description: 密码
+                  type: string
+                remeber(选填):
+                  description: 输入remeber可直接登陆，前端可存
                   type: string
       responses:
         '200':
@@ -68,10 +71,17 @@ paths:
               schema:
                 type: object
                 properties:
-                  token:
-                    description: jwt token
+                  # token:
+                  #   description: jwt token
+                  #   type: string
+                  code:
+                    description: 状态码
+                    type: integer
+                  status:
+                    description: 状态
                     type: string
-                  user:
+                    example: 成功
+                  data:
                     $ref: '#/components/schemas/UserInfo'
           links:
             me:
@@ -84,22 +94,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /users/me:
-    get:
-      summary: 获取用户信息
-      operationId: 获取用户信息
-      description: 可用于判断用户是否登录，或者拉取用户信息
-      tags:
-        - user
-      responses:
-        '200':
-          description: 获取登录信息成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserInfo'
-        '403':
-          $ref: '#/components/responses/NotAuthorization'
+  # /users/me:
+  #   get:
+  #     summary: 获取用户信息
+  #     operationId: 获取用户信息
+  #     description: 可用于判断用户是否登录，或者拉取用户信息
+  #     tags:
+  #       - user
+  #     responses:
+  #       '200':
+  #         description: 获取登录信息成功
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/UserInfo'
+  #       '403':
+  #         $ref: '#/components/responses/NotAuthorization'
   '/gulu/list/{page}':
     get:
       summary: 咕噜列表
@@ -1256,6 +1266,82 @@ paths:
           $ref: '#/components/responses/NoPermission'
         '404':
           $ref: '#/components/responses/NotFound'
+  /eatest/keep/{id}:
+    post:
+      summary: 我的收藏
+      tags:
+        - eatest
+      parameters:
+        - name: id
+          description: Eatest id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 2
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  description: 状态 keep收藏 unkeep取消收藏 
+                  example: keep
+                
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /eatest/like/{id}:
+    post:
+      summary: 我的喜欢
+      tags:
+        - eatest
+      parameters:
+        - name: id
+          description: Eatest id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 2
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  description: 状态 like喜欢 unlike取消喜欢
+                  example: like
+                
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
   '/score/all/{stu_id}':
     get:
       summary: 成绩详单
@@ -1999,19 +2085,76 @@ components:
     UserInfo:
       type: object
       properties:
-        name:
-          description: 用户昵称
+        id: 
+          description: 学生id
+          type: integer
+          example: 0
+        nickname:
+          description: 昵称
           type: string
+          example: "快来想个昵称吧"
+        stu_id:
+          description: 学号
+          type: integer
+          example: 201805710601
+        collection:
+          description: 收藏列表
+          type: array
+          items:
+            description: Eatest收藏id
+            properties:
+              1:
+                type: integer
+                example: 2
+              2:
+                type: integer
+                example: 4
+            
+        like:
+          description: 喜欢列表
+          type: array
+          items:
+            description: Eatest收藏id
+            properties:
+              1:
+                type: integer
+                example: 3
+              2:
+                type: integer
+                example: 1
+        publish:
+          description: 我的发布
+          type: array
+          items:
+            description: Eatest id
+            properties:
+              1:
+                type: integer
+                example: 3
+              2:
+                type: integer
+                example: 1
+        remember:
+          description: 登陆状态
+          type: string
+          example: 3c9d6788d0598e1295e81f427994b158
         avatar:
-          description: 用户头像链接
-          type: string
-        info:
-          description: 用户详细信息
-          type: object
-          properties:
-            uid:
-              description: 学号
-              type: integer
+          description: 头像链接
+          type: integer
+          example: https://test.gong.com/storage/image/avatar.jpg
+        # name:
+        #   description: 用户昵称
+        #   type: string
+        # avatar:
+        #   description: 用户头像链接
+        #   type: string
+        # info:
+        #   description: 用户详细信息
+        #   type: object
+        #   properties:
+        #     uid:
+        #       description: 学号
+        #       type: integer
     LibrarySearch:
       description: 图书信息
       type: object

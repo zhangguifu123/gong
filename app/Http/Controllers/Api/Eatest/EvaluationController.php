@@ -27,7 +27,7 @@ class EvaluationController extends Controller
         //连接Redis
         try {
             $redis = new Redis();
-            $redis->connect('eatest_redis', 6379);
+            $redis->connect('gong_redis', 6379);
         } catch (Exception $e) {
             return msg(500, "连接redis失败" . __LINE__);
         }
@@ -105,8 +105,12 @@ class EvaluationController extends Controller
         //获取session
         $value = session('collect_count');
         //若与前面的推荐美文重复，将其剔除 whereNotIn()
-        $evaluation_list = Evaluation::query()->limit(10)->offset($offset)->orderByDesc("created_at")
-            ->whereNotIn('id',$value)->get()->toArray();
+        $evaluation_list = Evaluation::query()->limit(10)
+            ->offset($offset)->orderByDesc("created_at")
+            ->whereNotIn('id',$value)->get([
+                "id", "nickname as publisher_name", "label", "views","like","unlike",
+                "collections", "top", "img", "title", "location", "shop_name", "created_at as time"
+            ])->toArray();
 
         //判断若拉取首页，将推荐美文和正常拉取合并
         if ($request->route("page") == 1) {
@@ -149,7 +153,7 @@ class EvaluationController extends Controller
         $list = Evaluation::query()->limit(20)->orderByDesc("score")
             ->where("top", "=", "0")
             ->get([
-                "id", "nickname as publisher_name", "label", "views",
+                "id", "nickname as publisher_name", "label", "views","like","unlike",
                 "collections", "top", "img", "title", "location", "shop_name", "created_at as time"
             ])
             ->toArray();

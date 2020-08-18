@@ -27,8 +27,8 @@ class CreateEvaluationsTable extends Migration
             $table->double("score")->index()->default(0)->comment("排序分值");
             $table->integer("views")->default(0)->comment("浏览量");
             $table->integer("collections")->default(0)->comment("被收藏次数");
-            $table->integer("like")->default(0)->comment("赞数");
-            $table->integer("unlike")->default(0)->comment("踩数");
+            $table->json("like")->default(0)->comment("赞数");
+//            $table->integer("unlike")->default(0)->comment("踩数");
             $table->json("img")->comment("数组");
         });
     }

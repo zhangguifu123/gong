@@ -19,7 +19,7 @@ class CreateEatestLikesTable extends Migration
             $table->unsignedBigInteger("evaluation")->comment("被赞/踩帖子id");
             $table->boolean("like")->comment("0踩 1赞");
             $table->unique(["user", "evaluation"]);
-            $table->timestamps();
+            $table->Integer("type")->comment("0 Eatest 1Upick");
         });
     }
 
