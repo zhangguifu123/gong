@@ -4,7 +4,7 @@ namespace App\Http\Middleware\Manager;
 
 use Closure;
 
-class RedisTypeCheck
+class OwnerCheck
 {
     /**
      * Handle an incoming request.
@@ -15,14 +15,12 @@ class RedisTypeCheck
      */
     public function handle($request, Closure $next)
     {
-        $type = $request->route('type');
-        //声明理想数据格式
-        $allow_type = ['eatest', 'gulu', 'upick'];
-
-        if (!in_array($type, $allow_type)) {
-            return response(msg(3, "type错误" . __LINE__));
-        }else{
+        if(session()->has('uid') && session('login') === true && session('uid') === $request->route("uid")) {
             return $next($request);
+        } else {
+            // 未登录返回 未登录
+            // 正常情况不会出现未登录
+            return  response(msg(10, __LINE__), 200);
         }
     }
 }

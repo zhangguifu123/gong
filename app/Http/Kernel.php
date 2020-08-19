@@ -69,8 +69,8 @@ class Kernel extends HttpKernel
         'login.check' => \App\Http\Middleware\Manager\LoginCheck::class,
         'user.exist.check' => \App\Http\Middleware\Manager\ExistCheck::class,
         'reply.exist.check' => \App\Http\Middleware\Manager\ReplyCheck::class,
-        'owner.check' => \App\Http\Middleware\Eatest\OwnerCheck::class,
+        'owner.eatest.check' => \App\Http\Middleware\Eatest\OwnerCheck::class,
         'evaluation.exist.check' => \App\Http\Middleware\Eatest\ExistCheck::class,
-        'redis.type.check' => \App\Http\Middleware\Manager\RedisTypeCheck::class
+        'owner.check' => \App\Http\Middleware\Manager\OwnerCheck::class
     ];
 }

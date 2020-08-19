@@ -29,7 +29,7 @@ Route::namespace('Api')->group(function (){
             Route::post('/eatest','Eatest\EvaluationController@publish');
             Route::get('/eatest/me/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware("evaluation.exist.check");
                 // 测评所有者和管理员均可操作
-            Route::group(["middleware" => ['owner.check', "evaluation.exist.check"]], function () {
+            Route::group(["middleware" => ['owner.eatest.check', "evaluation.exist.check"]], function () {
                 Route::put('/eatest/{id}','Eatest\EvaluationController@update')->where(["id" => "[0-9]+"]);
                 Route::delete('/eatest/{id}', "Eatest\EvaluationController@delete")->where(["id" => "[0-9]+"]);
             });
@@ -45,13 +45,16 @@ Route::namespace('Api')->group(function (){
             Route::post('eatest/{id}/comments','Eatest\CommentController@publish')->where(["id"=>"[0-9]+"])->middleware(['evaluation.exist.check','user.exist.check']);
             //Eatest评论回复
             Route::post('eatest/{toId}/reply/{fromId}','Eatest\ReplyController@publish')->where(["toId"=>"[0-9]+","fromId"=>"[0-9]+"])->middleware('reply.exist.check');
+
+            Route::group(["middleware" => ['owner.check']], function () {
             //获取收藏列表
             Route::get('/user/{uid}/keep', "Eatest\CollectionController@get_user_collection_list")->where(["uid" => "[0-9]+"]);
             //获取我的Eatest列表
             Route::get('/user/{uid}/publish', "UserLoginController@get_user_publish_list")->where(["uid" => "[0-9]+"]);
+            });
+
             //测试
             Route::get('/eatest/image', "Eatest\ImageController@get");
-            Route::get('/foodchannel/list/{page}', "FoodChannelController@get_list")->where(["page" => "[0-9]+"]);
 
 
     });
