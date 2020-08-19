@@ -37,7 +37,7 @@ services:
 #      - ./dockercnf/mysql5.7/conf/conf.d:/etc/mysql/conf.d
       - ./dockercnf/mysql5.7/db_data:/var/lib/mysql
       - ./dockercnf/run/mysql:/var/run/mysqld
-    restart: always
+   # restart: always
     environment:
       MYSQL_ROOT_PASSWORD: yourpassword
       MYSQL_DATABASE: gong
