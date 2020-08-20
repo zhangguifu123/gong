@@ -21,6 +21,7 @@ services:
       - ./dockercnf/run:/sock
       - ./:/var/www/html/
       - ./dockercnf/php7.3-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf
+      - ./dockercnf/php7.3-fpm/php.ini:/usr/local/etc/php/php.ini
     depends_on:
       - db
       - gong_redis_db
@@ -33,11 +34,9 @@ services:
       - --collation-server=utf8mb4_unicode_ci
     privileged: true
     volumes:
-#      - ./dockercnf/mysql5.7/conf/mysql.conf.d:/etc/mysql/mysql.conf.d
-#      - ./dockercnf/mysql5.7/conf/conf.d:/etc/mysql/conf.d
       - ./dockercnf/mysql5.7/db_data:/var/lib/mysql
       - ./dockercnf/run/mysql:/var/run/mysqld
-   # restart: always
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: yourpassword
       MYSQL_DATABASE: gong

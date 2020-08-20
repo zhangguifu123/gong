@@ -37,7 +37,7 @@ declare(strict_types=1);
  *
  * @global string $cfg['PmaAbsoluteUri']
  */
-$cfg['PmaAbsoluteUri'] = 'http://zgf.jsky31.cn:10302/mathjucool/index.php';
+$cfg['PmaAbsoluteUri'] = '';
 
 /**
  * Configure authentication logging destination
@@ -131,7 +131,7 @@ $i = 1;
  *
  * @global string $cfg['Servers'][$i]['host']
  */
-$cfg['Servers'][$i]['host'] = 'db';
+$cfg['Servers'][$i]['host'] = 'gong_mysql';
 
 /**
  * MySQL port - leave blank for default port
