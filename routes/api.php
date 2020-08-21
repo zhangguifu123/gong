@@ -25,7 +25,7 @@ Route::namespace('Api')->group(function (){
     Route::post('/image','ImageController@upload');
     Route::get('/eatest/list/{page}', "Eatest\EvaluationController@get_list")->where(["page" => "[0-9]+"]);
     /** 用户区 */
-    Route::group(['middleware' => 'login.check'], function () {
+//    Route::group(['middleware' => 'login.check'], function () {
         /**Eatest */
         //Eatest增删改查
         Route::post('/eatest','Eatest\EvaluationController@publish');
@@ -69,5 +69,5 @@ Route::namespace('Api')->group(function (){
         Route::get('/eatest/image', "Eatest\ImageController@get");
 
 
-    });
+//    });
 });
