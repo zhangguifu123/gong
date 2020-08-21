@@ -21,7 +21,8 @@ class CreateUsersTable extends Migration
             $table->string('password', 40)->comment("密码md5");
             $table->json('collection');
             $table->json('like');
-            $table->json('publish');
+            $table->json('eatest');
+            $table->json('gulu');
             $table->json('avatar')->comment("头像");
             $table->string("remember")->unique();
             $table->timestamps();

@@ -16,6 +16,7 @@ class CreateEatestCommentsTable extends Migration
         Schema::create('eatest_comments', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('eatest_id')->index()->comment('文章id');
+            $table->bigInteger('toId')->index()->comment('文章作者id');
             $table->bigInteger('fromId')->index()->comment('评论者id');
             $table->boolean("status")->comment("0未查看 1已查看");
             $table->string('fromName')->comment('评论者昵称');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Eatest;
 
 use App\Http\Controllers\Controller;
+use App\Model\Eatest\Evaluation;
 use App\User;
 use App\Model\Eatest\EatestComments;
 use Illuminate\Http\Request;
@@ -66,7 +67,9 @@ class CommentController extends Controller
         if (Validator::make($data, $mod)->fails()) {
             return msg(3, '数据格式错误' . __LINE__);
         };
-
+        //查找Eatest发布者id
+        $toId = Evaluation::query()->find($request->route('id'))->publisher;
+        $data = $data + ["toId"=>$toId];
         return $data;
     }
 }

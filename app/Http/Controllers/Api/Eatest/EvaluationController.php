@@ -20,7 +20,7 @@ class EvaluationController extends Controller
             return $data;
         }
         //加上额外必要数据
-        $data = $data + ["top" => 0, "collections" => 0, "like" => 0, "unlike" => 0, "views" => 0, "publisher" => session("uid")];
+        $data = $data + ["top" => 0, "collections" => 0, "like" => 0, "views" => 0, "publisher" => session("uid")];
         $evaluation = new Evaluation($data);
         //获取图片链接
         $imgs = json_decode($data['img']);
@@ -37,7 +37,7 @@ class EvaluationController extends Controller
         }
         //发布，同时将评测加入我的发布
         if ($evaluation->save()) {
-            User::query()->find(session("uid"))->add_publish($evaluation->id);
+            User::query()->find(session("uid"))->add_eatest($evaluation->id);
 
             return msg(0, __LINE__);
         }
@@ -50,7 +50,7 @@ class EvaluationController extends Controller
     {
         $evaluation = Evaluation::query()->find($request->route('id'));
         // 将该评测从我的发布中删除
-        User::query()->find($evaluation->publisher)->del_publish($evaluation->id);
+        User::query()->find($evaluation->publisher)->del_eatest($evaluation->id);
         $evaluation->delete();
 
         return msg(0, __LINE__);
@@ -108,7 +108,7 @@ class EvaluationController extends Controller
         $evaluation_list = Evaluation::query()->limit(10)
             ->offset($offset)->orderByDesc("created_at")
             ->whereNotIn('id',$value)->get([
-                "id", "nickname as publisher_name", "label", "views","like","unlike",
+                "id", "nickname as publisher_name", "label", "views","like",
                 "collections", "top", "img", "title", "location", "shop_name", "created_at as time"
             ])->toArray();
 
@@ -153,7 +153,7 @@ class EvaluationController extends Controller
         $list = Evaluation::query()->limit(20)->orderByDesc("score")
             ->where("top", "=", "0")
             ->get([
-                "id", "nickname as publisher_name", "label", "views","like","unlike",
+                "id", "nickname as publisher_name", "label", "views","like",
                 "collections", "top", "img", "title", "location", "shop_name", "created_at as time"
             ])
             ->toArray();

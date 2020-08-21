@@ -68,6 +68,9 @@ class Kernel extends HttpKernel
         //More
         'login.check' => \App\Http\Middleware\Manager\LoginCheck::class,
         'user.exist.check' => \App\Http\Middleware\Manager\ExistCheck::class,
+        'comment.from.check' => \App\Http\Middleware\Comments\FromCheck::class,
+        'comment.exist.check' => \App\Http\Middleware\Comments\ExistCheck::class,
+        'reply.id.check' => \App\Http\Middleware\Comments\ReplyIdCheck::class,
         'reply.exist.check' => \App\Http\Middleware\Manager\ReplyCheck::class,
         'owner.eatest.check' => \App\Http\Middleware\Eatest\OwnerCheck::class,
         'evaluation.exist.check' => \App\Http\Middleware\Eatest\ExistCheck::class,

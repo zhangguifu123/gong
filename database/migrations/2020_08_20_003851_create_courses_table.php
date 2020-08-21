@@ -18,6 +18,12 @@ class CreateCoursesTable extends Migration
             $table->string('course')->comment('课程');
             $table->string('location')->comment('地点');
             $table->string('teacher')->comment('老师');
+            $table->string('week')->comment('周次(详)');
+            $table->string('week_string')->comment('周次');
+            $table->string('section_length')->comment('课时长度');
+            $table->string('section_start')->comment('开始小节');
+            $table->string('end_start')->comment('结束小节');
+            $table->string('day')->comment('周几');
             $table->timestamps();
         });
     }

@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'like','name','nickname', 'stu_id', 'password', 'collection', 'publish', "remember","avatar"
+        'gulu','like','name','nickname', 'stu_id', 'password', 'collection', 'eatest', "remember","avatar"
     ];
 
     /**
@@ -44,29 +44,29 @@ class User extends Authenticatable
             'stu_id' => $this->stu_id,
             'collection' => $this->collection,
             'like' => $this->like,
-            'publish' => $this->publish,
+            'eatest' => $this->eatest,
             'remember' => $this->remember,
             'avatar' => $this->avatar
         ];
     }
 
-    public function add_publish($evaluation_id)
+    public function add_eatest($evaluation_id)
     {
-        $publish_list = json_decode($this->publish, true);
-        if (!key_exists($evaluation_id, $publish_list)) {
-            $publish_list[$evaluation_id] = 1;
+        $eatest_list = json_decode($this->eatest, true);
+        if (!key_exists($evaluation_id, $eatest_list)) {
+            $eatest_list[$evaluation_id] = 1;
         }
-        $this->publish = json_encode($publish_list);
+        $this->eatest = json_encode($eatest_list);
         $this->save();
     }
 
-    public function del_publish($evaluation_id)
+    public function del_eatest($evaluation_id)
     {
-        $publish_list = json_decode($this->publish, true);
-        if (key_exists($evaluation_id, $publish_list)) {
-            unset($publish_list[$evaluation_id]);
+        $eatest_list = json_decode($this->eatest, true);
+        if (key_exists($evaluation_id, $eatest_list)) {
+            unset($eatest_list[$evaluation_id]);
         }
-        $this->publish = json_encode($publish_list);
+        $this->eatest = json_encode($eatest_list);
         $this->save();
     }
     /**

@@ -1186,7 +1186,7 @@ paths:
         - eatest
       parameters:
         - name: id
-          description: 用户id
+          description: Eatest_id
           in: path
           required: true
           schema:
@@ -1627,6 +1627,138 @@ paths:
           $ref: '#/components/responses/NoPermission'
         '404':
           $ref: '#/components/responses/NotFound'
+  '/notice/eatest/comments/{id}':
+    get:
+      summary: 获取Eatest未读取Comments
+      tags:
+       - notice
+      parameters:
+        - name: id
+          description: 目标id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                    example: 0
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  data:
+                    description: 数据
+                    type: object
+                    properties:
+                      total:
+                        description: 条数
+                        type: integer
+                        example: 1
+                      list:
+                        description: 消息列表
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/EatestCommentsNotice'
+    put:
+      summary: 标志已读Eatest Comment
+      tags:
+       - notice
+      parameters:
+        - name: id
+          description: 目标id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  '/notice/eatest/reply/{id}':
+    get:
+      summary: 获取Eatest未读取Reply
+      tags:
+       - notice
+      parameters:
+        - name: id
+          description: 目标id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                    example: 0
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  data:
+                    description: 数据
+                    type: object
+                    properties:
+                      total:
+                        description: 条数
+                        type: integer
+                        example: 1
+                      list:
+                        description: 消息列表
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/EatestReplyNotice'
+    put:
+      summary: 标志已读Eatest Reply
+      tags:
+       - notice
+      parameters:
+        - name: id
+          description: 目标id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  
+  
   '/consume/{stu_id}':
     get:
       summary: 查看消费
@@ -2203,6 +2335,70 @@ components:
           type: string
           description: 消费日期
           example: '2019-11-30 10:45:00'
+    EatestCommentsNotice:
+      description: 消费信息
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 编号
+          example: 1
+        eatest_id:
+          type: integer
+          description: Eatest编号
+          example: 1
+        toId:
+          type: integer
+          description: 被回复者Id
+          example: 1
+        fromId:
+          type: integer
+          description: 回复者Id
+          example: 1
+        fromAvatar:
+          type: string
+          description: 回复者头像
+          example: "http://zgf.jsky31.cn/storage/image/1bc5b36f5bd71e32c89fb7b48063b06c.jpg"
+        content:
+          type: string
+          description: 内容
+          example: 这个感觉真不错啊
+        time:
+          type: string
+          description: 回复时间
+          example: '2020-08-21 15:31:32'
+    EatestReplyNotice:
+      description: 消费信息
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 编号
+          example: 1
+        comment_id:
+          type: integer
+          description: Eatest编号
+          example: 1
+        toId:
+          type: integer
+          description: 被回复者Id
+          example: 1
+        fromId:
+          type: integer
+          description: 回复者Id
+          example: 1
+        fromAvatar:
+          type: string
+          description: 回复者头像
+          example: "http://zgf.jsky31.cn/storage/image/1bc5b36f5bd71e32c89fb7b48063b06c.jpg"
+        content:
+          type: string
+          description: 内容
+          example: 这个感觉真不错啊
+        time:
+          type: string
+          description: 回复时间
+          example: '2020-08-21 15:31:32'
     Bankcard:
       description: 消费余额
       type: object

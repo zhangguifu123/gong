@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class EatestComments extends Model
 {
     //可写字段
-    protected $fillable = ['eatest_id', 'fromId','fromName','fromAvatar','content','status'];
+    protected $fillable = ['eatest_id','toId','fromId','fromName','fromAvatar','content','status'];
 }

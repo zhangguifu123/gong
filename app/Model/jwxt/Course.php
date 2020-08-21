@@ -7,4 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class Course extends Model
 {
     //
+    protected $fillable = ['course', 'location','teacher','week','week_string','section_length','section_start','end_start','day'];
 }
