@@ -161,7 +161,7 @@ class EvaluationController extends Controller
         $new_list = [];
         $new_list_count = [];
         $begin = rand(0, 20);
-        //随机抽取三个
+        //随机抽取三个go
         for ($i = 0; $i < 3; $i += 1) {
             $new_list[] = $list[($begin + $i * 6) % count($list)];
             $new_list_count[] = $list[($begin + $i * 6) % count($list)]["id"];

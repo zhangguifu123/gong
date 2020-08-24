@@ -65,15 +65,25 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        //More
-        'login.check' => \App\Http\Middleware\Manager\LoginCheck::class,
-        'user.exist.check' => \App\Http\Middleware\Manager\ExistCheck::class,
+    //More
+        //User
+        'login.check' => \App\Http\Middleware\User\LoginCheck::class,
+        'user.exist.check' => \App\Http\Middleware\User\ExistCheck::class,
+        'owner.check' => \App\Http\Middleware\User\OwnerCheck::class,
+        //Manager
+        'manager.login.check' => \App\Http\Middleware\Manager\LoginCheck::class,
+        'manager.super.check' => \App\Http\Middleware\Manager\SuperPowerCheck::class,
+        //Upick
+        'food.exist.check' => \App\Http\Middleware\Food\ExistCheck::class,
+        //Eatest_Comment
         'comment.from.check' => \App\Http\Middleware\Comments\FromCheck::class,
         'comment.exist.check' => \App\Http\Middleware\Comments\ExistCheck::class,
+        //Eatest_Reply
         'reply.id.check' => \App\Http\Middleware\Comments\ReplyIdCheck::class,
         'reply.exist.check' => \App\Http\Middleware\Manager\ReplyCheck::class,
+        //Eatest
         'owner.eatest.check' => \App\Http\Middleware\Eatest\OwnerCheck::class,
-        'evaluation.exist.check' => \App\Http\Middleware\Eatest\ExistCheck::class,
-        'owner.check' => \App\Http\Middleware\Manager\OwnerCheck::class
+        'evaluation.exist.check' => \App\Http\Middleware\Eatest\ExistCheck::class
+
     ];
 }

@@ -45,6 +45,7 @@ class User extends Authenticatable
             'collection' => $this->collection,
             'like' => $this->like,
             'eatest' => $this->eatest,
+            'gulu' => $this->gulu,
             'remember' => $this->remember,
             'avatar' => $this->avatar
         ];

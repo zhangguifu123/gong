@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Middleware\Manager;
+namespace App\Http\Middleware\User;
 
 use Closure;
 
-class LoginCheck
+class OwnerCheck
 {
     /**
      * Handle an incoming request.
@@ -15,13 +15,12 @@ class LoginCheck
      */
     public function handle($request, Closure $next)
     {
-
-        if(session()->has('ManagerLogin') && session('ManagerLogin') === true) {
+        if(session()->has('uid') && session('login') === true && session('uid') === $request->route("uid")) {
             return $next($request);
         } else {
             // 未登录返回 未登录
             // 正常情况不会出现未登录
-            return  response(msg(6, __LINE__), 200);
+            return  response(msg(10, __LINE__), 200);
         }
     }
 }

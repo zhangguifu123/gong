@@ -28,6 +28,8 @@ tags:
     description: 倒计时
   - name: eatest
     description: Eatest 评测
+  - name: upick
+    description: Upick 推送
   - name: library
     description: 图书馆
   - name: notice
@@ -640,6 +642,44 @@ paths:
           $ref: '#/components/responses/NoPermission'
         '404':
           $ref: '#/components/responses/NotFound'
+  /course/association/{uid}:
+    get:
+      summary: 获取关联码
+      tags:
+        - course
+      parameters:
+        - name: uid
+          description: 学号
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Association'
+  /course/uid/{association}:
+    get:
+      summary: 获取学号
+      tags:
+        - course
+      parameters:
+        - name: association
+          description: 关联码
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Association'
   /course:
     get:
       summary: 查看课表
@@ -669,14 +709,7 @@ paths:
                         location: 计算机中心406
                         teacher: 谢勇
                         week:
-                          - 2
-                          - 3
-                          - 4
-                          - 5
-                          - 6
-                          - 7
-                          - 8
-                          - 9
+                          - 2,3.4,5,6.7,8,9
                         section_length: 2
                         section_start: 1
                         section_end: 2
@@ -684,14 +717,7 @@ paths:
                         location: 计算机中心406
                         teacher: 谢勇
                         week:
-                          - 2
-                          - 3
-                          - 4
-                          - 5
-                          - 6
-                          - 7
-                          - 8
-                          - 9
+                          - 2,3.4,5,6.7,8,9
                         section_length: 2
                         section_start: 1
                         section_end: 2
@@ -700,14 +726,7 @@ paths:
                         location: 计算机中心306
                         teacher: 谢智
                         week:
-                          - 2
-                          - 3
-                          - 4
-                          - 5
-                          - 6
-                          - 7
-                          - 8
-                          - 9
+                          - 2,3.4,5,6.7,8,9
                         section_length: 2
                         section_start: 1
                         section_end: 2
@@ -715,14 +734,7 @@ paths:
                         location: 计算机中心206
                         teacher: 谢伟
                         week:
-                          - 9
-                          - 10
-                          - 11
-                          - 12
-                          - 13
-                          - 14
-                          - 15
-                          - 16
+                          - 2,3.4,5,6.7,8,9
                         section_length: 4
                         section_start: 5
                         section_end: 8
@@ -732,14 +744,7 @@ paths:
                         location: 计算机中心406
                         teacher: 谢勇
                         week:
-                          - 2
-                          - 3
-                          - 4
-                          - 5
-                          - 6
-                          - 7
-                          - 8
-                          - 9
+                          - 2,3.4,5,6.7,8,9
                         section_length: 2
                         section_start: 1
                         section_end: 2
@@ -747,14 +752,7 @@ paths:
                         location: 计算机中心406
                         teacher: 谢勇
                         week:
-                          - 2
-                          - 3
-                          - 4
-                          - 5
-                          - 6
-                          - 7
-                          - 8
-                          - 9
+                          - 2,3.4,5,6.7,8,9
                         section_length: 2
                         section_start: 1
                         section_end: 2
@@ -1026,26 +1024,171 @@ paths:
                 limit: 1
                 total: 2
                 data:
-                  - id: 1
-                    stu_id: 20185710601
-                    publisher_name: 张桂福
-                    evaluation_time: 2020.03.09
-                    evaluation_tag: 三汁焖锅
-                    evaluation_content: 真的真的好吃！！
+                  - id: 1,
+                    publisher_name: 我是你的小可爱吗
+                    label: 
+                     - 好吃
+                       贼好吃
+                    views: 0
+                    like: 12
+                    collections: 43
+                    top: 0
+                    img: 
+                      - 太长了
+                        太长了
+                    title: 小可爱开店啦！
                     location: 联建
-                    thumbs_up_counts: 666
-                    collection_counts: 6666
+                    shop_name: 小可爱的店铺
+                    time: 2020-08-24 18:48:16
+                    
                   - id: 2
-                    stu_id: 20185710602
-                    publisher_name: 张月
-                    evaluation_time: 2020.03.09
-                    evaluation_tag: 书亦烧仙草
-                    evaluation_content: 真的真的好喝！！
+                    publisher_name: 我是你的大可爱吗
+                    label: 
+                     - 难吃
+                       贼难吃
+                    views: 66
+                    like: 12
+                    collections: 54
+                    top: 1
+                    img: 
+                      - 太长了
+                        太长了
+                    title: 小可爱开店啦！
                     location: 联建
-                    thumbs_up_counts: 233
-                    collection_counts: 2333
+                    shop_name: 小可爱的店铺
+                    time: 2020-08-24 19:48:16
         '403':
           $ref: '#/components/responses/InvalidProperties'
+  /upick/list/{page}:
+    get:
+      summary: Upick列表
+      operationId: UpickList
+      tags:
+        - upick
+      parameters:
+        - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    description: 页码
+                    type: integer
+                  limit:
+                    description: 每页限制
+                    type: integer
+                  total:
+                    description: 总页数
+                    type: integer
+                  data:
+                    description: Upick列表
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UpickMessage'
+              example:
+                page: 1
+                limit: 2
+                total: 2
+                data:
+                  - id: 1,
+                    publisher: 张桂福
+                    nickname: 联建一点点
+                    discount: 八八折
+                    location: 联建
+                    img: 
+                      - 太长了
+                        太长了
+                    time: "2020-08-24 18:48:58"
+                  - id: 2
+                    publisher: 张桂福
+                    nickname: 联建一点点
+                    discount: 八八折
+                    location: 联建
+                    img: 
+                      - 太长了
+                        太长了
+                    time: "2020-08-24 18:48:58"
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
+  /upick:
+    post:
+      summary: 发布upick
+      operationId: UpickPublish
+      tags:
+        - upick
+      requestBody:
+        $ref: '#/components/requestBodies/UpickBody'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  '/upick/{id}':
+    put:
+      summary: 修改Upick
+      operationId: UpickUpdate
+      tags:
+        - upick
+      parameters:
+        - name: id
+          description: Upick id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateUpickBody'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      summary: 删除upick
+      operationId: DeleteUpick
+      tags:
+        - upick
+      parameters:
+        - name: id
+          description: Upick id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  
   /eatest:
     post:
       summary: 发布评测
@@ -1097,7 +1240,7 @@ paths:
           $ref: '#/components/responses/NotFound'
     delete:
       summary: 删除评测
-      operationId: DeleteEatest
+      operationId: DeletEatest
       tags:
         - eatest
       parameters:
@@ -1159,24 +1302,39 @@ paths:
                 limit: 1
                 total: 2
                 data:
-                  - eatest_id: 1
-                    stu_id: 20185710601
-                    name: 张桂福
-                    published: 2020.03.09
-                    target: 三汁焖锅
-                    content: 真的真的好吃！！
+                  - id: 1,
+                    publisher_name: 我是你的小可爱吗
+                    label: 
+                     - 好吃
+                       贼好吃
+                    views: 0
+                    like: 12
+                    collections: 43
+                    top: 0
+                    img: 
+                      - 太长了
+                        太长了
+                    title: 小可爱开店啦！
                     location: 联建
-                    thumbs_up_counts: 666
-                    views: 6666
-                  - eatest_id: 2
-                    stu_id: 20185710601
-                    name: 张桂福
-                    published: 2020.03.09
-                    target: 书亦烧仙草
-                    content: 真的真的好喝！！
+                    shop_name: 小可爱的店铺
+                    time: 2020-08-24 18:48:16
+                    
+                  - id: 2
+                    publisher_name: 我是你的大可爱吗
+                    label: 
+                     - 难吃
+                       贼难吃
+                    views: 66
+                    like: 12
+                    collections: 54
+                    top: 1
+                    img: 
+                      - 太长了
+                        太长了
+                    title: 小可爱开店啦！
                     location: 联建
-                    thumbs_up_counts: 233
-                    views: 2333
+                    shop_name: 小可爱的店铺
+                    time: 2020-08-24 19:48:16
         '403':
           $ref: '#/components/responses/InvalidProperties'
   /eatest/{id}/comments:
@@ -1986,6 +2144,62 @@ components:
                 type: object
                 description: 小于10M的jpg,jpeg,png,gif图片
                 example: 文件.jpg
+    UpickBody:
+      description: Upick
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              nickname:
+                type: string
+                description: 昵称
+                example: 小甜甜美食店
+              location:
+                type: string
+                description: 地点
+                example: 联建
+              discount:
+                type: string
+                description: 打折信息
+                example: 八八折
+              img:
+                type: array
+                description: 图片链接
+                example:
+                  - http://test.gong.com/stroage/images/768eaa0d061ec924f2e8b03bab598240.jpg
+                  - http://test.gong.com/stroage/images/546bsa0dsadec9dsr238b03jsi523413.jpg
+                items:
+                  type: string
+    UpdateUpickBody:  
+      description: UpdateUpick
+      required: true
+      content:
+        x-www-form-urlencoded:
+          schema:
+            type: object
+            properties:
+              nickname:
+                type: string
+                description: 昵称
+                example: 小甜甜美食店
+              location:
+                type: string
+                description: 地点
+                example: 联建
+              discount:
+                type: string
+                description: 打折信息
+                example: 八八折
+              img:
+                type: array
+                description: 图片链接
+                example:
+                  - http://test.gong.com/stroage/images/768eaa0d061ec924f2e8b03bab598240.jpg
+                  - http://test.gong.com/stroage/images/546bsa0dsadec9dsr238b03jsi523413.jpg
+                items:
+                  type: string
     EatestBody:
       description: 评测消息
       required: true
@@ -2499,6 +2713,43 @@ components:
           description: 绩点专业排名
           type: integer
           example: 34
+    UpickMessage:
+      description: Upick列表
+      type: array
+      items:
+        description: 单条信息
+        type: object
+        properties:
+          id:
+            description: 编号
+            type: string
+            example: 1
+          publisher:
+            description: 发布者
+            type: string
+            example: 张桂福
+          nickname:
+            description: 美食名称
+            type: string
+            example: 泡芙
+          location:
+            description: 地点
+            type: string
+            example: 联建
+          img:
+            description: 图片链接
+            type: array
+            example: 太长了
+            items:
+              type: string
+          discount:
+            description: 打折信息
+            type: string
+            example: 八八折
+          time:
+            description: 发布时间
+            type: string
+            example: "2020-08-24 18:48:58"
     EatestMessage:
       description: 美食评测列表
       type: array
@@ -2510,70 +2761,58 @@ components:
             description: 编号
             type: string
             example: 1
-          stu_id:
-            description: 发布者学号
+          publisher_name:
+            description: 昵称
             type: string
-            example: 201805710601
-          evaluation_time:
-            description: 发���时间
+            example: 我是你的小可爱吗
+          label:
+            description: 标签
+            type: array
+            example: 
+              - 好吃
+              - 贼好吃
+              - 贼tm好吃
+            items:
+              type: string
+          view:
+            description: 访问量
             type: string
-            example: 2020.03.09
-          evaluation_tag:
-            description: 评测标题
+            example: 66
+          like:
+            description: 喜欢量
             type: string
-            example: 三汁焖锅
-          evaluation_content:
-            description: 评测内容
+            example: 1
+          collections:
+            description: 收藏量
             type: string
-            example: 真的真的好吃！！
-          location:
+            example: 0
+          top:
+            description: 0 未置顶 1 置顶
+            type: string
+            example: 1
+          img:
+            description: 图片链接
+            type: array
+            example: 太长了
+            items:
+              type: string
+          title:
+            description: 标签
+            type: string
+            example: 今天的小可爱吃的真香
+          location: 
             description: 地点
             type: string
             example: 联建
-          thumbs_up_counts:
-            description: 点赞量
-            type: integer
-            example: 666
-          collection_counts:
-            description: 点击量
-            type: integer
-            example: 6666
-    EatestCommentStatus:
-      description: Eatest消息状态
-      type: object
-      properties:
-        id:
-          type: integer
-        author:
-          type: object
-          properties:
-            name:
-              description: 作者昵称
-              type: string
-              example: 张桂福
-            avatar:
-              description: 作者头像链接
-              type: string
-              example: Ego
-        reply:
-          description: 回复的评论 id，默认值 0 表示非回复
-          type: integer
-          default: 0
-        content:
-          description: 评论正文
-          type: string
-          example: 三汁焖锅我也喜欢吃！
-        thumbs_up_counts:
-          description: 点赞数
-          type: string
-          example: 66
-        published:
-          description: 发布时间
-          type: string
-          example: '2019-12-25 12:35:00'
-        comments:
-          description: 评论数
-          type: integer
+          shop_name:
+            description: 店名
+            type: string
+            example: 小可爱的店铺
+          time:
+            description: 发布时间
+            type: string
+            example: 020-08-24 18:48:16
+    
     GuideMessage:
       description: 地点信息
       type: object
@@ -2592,6 +2831,29 @@ components:
           items:
             type: string
             example: 东门篮球场下教师公寓门口
+    Association:
+      description: 查看课表
+      type: object
+      properties:
+        code:
+          description: 状态码
+          type: integer
+        status:
+          description: 状态
+          type: string
+          example: 成功
+        data:
+          description: 课表数据
+          type: object
+          properties:
+            uid:
+              description: 学号
+              type: string
+              example: 201805710601
+            association_code:
+              description: 关联码
+              type: string
+              example: BV54434W
     Course:
       description: 查看课表
       type: object

@@ -21,11 +21,40 @@ Route::namespace('Api')->group(function (){
 
     /** 公共区 */
     Route::post('login','StudentLoginController@login');
+    Route::post('/manager/login', "ManagerController@login");
+    Route::get('/upick/list/{page}', "Eatest\FoodController@get_list")->where(["page" => "[0-9]+"]);
     //图片上传
     Route::post('/image','ImageController@upload');
     Route::get('/eatest/list/{page}', "Eatest\EvaluationController@get_list")->where(["page" => "[0-9]+"]);
     /** 用户区 */
 //    Route::group(['middleware' => 'login.check'], function () {
+        /**Upick */
+        //用户登录验证
+        Route::get('/food', "Eatest\FoodController@get");
+
+
+        //管理员登录验证区
+        Route::group(['middleware' => 'manager.login.check'], function () {
+            Route::post('/manager/update', "ManagerController@update");
+            Route::get('/manager/list', "ManagerController@list");
+
+            // 超级管理员验证
+            Route::group(['middleware' => 'manager.super.check'], function () {
+                Route::post('/manager/add', "ManagerController@add");
+                Route::delete('/manager/{id}', "ManagerController@delete")->where(["id" => "[0-9]+"]);
+            });
+
+            // 美食库区域
+            Route::post('/upick', "Eatest\FoodController@publish");
+
+        });
+        /**
+         * 测试Upick暂时移出来
+         */
+            Route::group(['middleware' => 'food.exist.check'], function () {
+                Route::put('/upick/{id}', "Eatest\FoodController@update")->where(["id" => "[0-9]+"]);
+                Route::delete('/upick/{id}', "Eatest\FoodController@delete")->where(["id" => "[0-9]+"]);
+            });
         /**Eatest */
         //Eatest增删改查
         Route::post('/eatest','Eatest\EvaluationController@publish');
@@ -64,6 +93,14 @@ Route::namespace('Api')->group(function (){
 
             Route::put('/notice/eatest/comments/{id}',"jwxt\NoticeController@eatest_comment_update")->where(["id" => "[0-9]+"])->middleware('comment.exist.check');
             Route::put('/notice/eatest/reply/{id}',"jwxt\NoticeController@eatest_reply_update")->where(["id" => "[0-9]+"])->middleware('reply.id.check');
+
+        /**AssociationCode */
+        Route::get('/course/association/{uid}','jwxt\AssociationCodeController@get_association')->where(["uid"=>"[0-9]{12}"]);
+        Route::get('/course/uid/{association}','jwxt\AssociationCodeController@get_uid')->where(["association" => "\w{8}"]);
+
+
+
+
 
         //测试
         Route::get('/eatest/image', "Eatest\ImageController@get");

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Middleware\Manager;
+namespace App\Http\Middleware\User;
 
 use Closure;
 
@@ -15,8 +15,7 @@ class LoginCheck
      */
     public function handle($request, Closure $next)
     {
-
-        if(session()->has('ManagerLogin') && session('ManagerLogin') === true) {
+        if(session()->has('login') && session('login') === true) {
             return $next($request);
         } else {
             // 未登录返回 未登录
