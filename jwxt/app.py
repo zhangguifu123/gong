@@ -40,7 +40,6 @@ def get_info():
         else:
             info = pipiline.output_data()
 
-
     response = make_response(json.dumps(info, ensure_ascii=False))
     response.mimetype = 'text/json'
     return response
@@ -72,7 +71,6 @@ def get_grade():
             pipiline.insert_data(grade)
         else:
             grade = pipiline.output_data()
-
 
     response = make_response(json.dumps(grade, ensure_ascii=False))
     response.mimetype = 'text/json'
@@ -110,7 +108,6 @@ def get_exam():
     return response
 
 
-
 @app.route('/nowschedule', methods=['POST'])
 def get_nowschedule():
     # method = 'getKbcxAzc'
@@ -138,7 +135,6 @@ def get_nowschedule():
             pipiline.insert_data(now_schedule, xq)
         elif flag == 1:
             now_schedule = pipiline.output_data()
-
 
     response = make_response(json.dumps(now_schedule, ensure_ascii=False))
     response.mimetype = 'text/json'
@@ -193,15 +189,17 @@ def get_one_schedule():
 
 
 def get_uid(association_code):
-	url = "http://zgf.jsky31.cn:10302/api/course/uid/{}".format(association_code)
-	res = requests.get(url)
-	uid = res.json()['data'][0]['uid']
-	return uid
+    url = "http://zgf.jsky31.cn:10302/api/course/uid/{}".format(
+        association_code)
+    res = requests.get(url)
+    uid = res.json()['data'][0]['uid']
+    return uid
+
 
 @app.route('/associated_schedule', methods=['POST'])
 def get_associated_schedule():
     association_code = request.form.get('association_code')
-    uid = get_uid(association_code) # uid == xh
+    uid = get_uid(association_code)  # uid == xh
     pipeline = SchedulePipeline(uid)
     now_schedule = pipeline.output_data()
 
@@ -210,51 +208,50 @@ def get_associated_schedule():
     return response
 
 
-
 @app.route('/ecard/balance', methods=['POST'])
 def get_balance():
-	xh = request.form.get('xh')
-	pwd = request.form.get('pwd')
-	if not all([xh, pwd]):
-		results = dict(errcode='-4002', status='400', errmsg='Missing password',
-			data=[])
-	else:
-		ecard = EcardSpider(xh, pwd)
-		results = dict(errcode='0', status='200', errmsg='success',
-			data=ecard.data)
+    xh = request.form.get('xh')
+    pwd = request.form.get('pwd')
+    if not all([xh, pwd]):
+        results = dict(errcode='-4002', status='400', errmsg='Missing password',
+                       data=[])
+    else:
+        ecard = EcardSpider(xh, pwd)
+        results = dict(errcode='0', status='200', errmsg='success',
+                       data=ecard.data)
 
-	response = make_response(json.dumps(results, ensure_ascii=False))
-	response.mimetype = 'text/json'
+    response = make_response(json.dumps(results, ensure_ascii=False))
+    response.mimetype = 'text/json'
 
-	return response
+    return response
 
 
 @app.route('/ecard/billing', methods=['POST'])
 def get_bill():
-	xh = request.form.get('xh')
-	pwd = request.form.get('pwd')
-	StartDate = request.form.get('StartDate')
-	EndDate = request.form.get('EndDate')
+    xh = request.form.get('xh')
+    pwd = request.form.get('pwd')
+    StartDate = request.form.get('StartDate')
+    EndDate = request.form.get('EndDate')
 
-	if not all([xh, pwd]):
-		results = dict(errcode='-4002', status='400', errmsg='Missing password',
-			data=[])
-	elif not all([StartDate, EndDate]):
-		if not StartDate:
-			results = dict(errcode='-4413', status='400', errmsg='Missing start date',
-				data=[])
-		if not EndDate:
-			results = dict(errcode='-4414', status='400', errmsg='Missing end date',
-				data=[])
-	else:
-		ecard = EcardSpider(xh, pwd)
-		results = dict(errcode='0', status='200', errmsg='success',
-			data=ecard.query_bill(StartDate, EndDate))
+    if not all([xh, pwd]):
+        results = dict(errcode='-4002', status='400', errmsg='Missing password',
+                       data=[])
+    elif not all([StartDate, EndDate]):
+        if not StartDate:
+            results = dict(errcode='-4413', status='400', errmsg='Missing start date',
+                           data=[])
+        if not EndDate:
+            results = dict(errcode='-4414', status='400', errmsg='Missing end date',
+                           data=[])
+    else:
+        ecard = EcardSpider(xh, pwd)
+        results = dict(errcode='0', status='200', errmsg='success',
+                       data=ecard.query_bill(StartDate, EndDate))
 
-	response = make_response(json.dumps(results, ensure_ascii=False))
-	response.mimetype = 'text/json'
+    response = make_response(json.dumps(results, ensure_ascii=False))
+    response.mimetype = 'text/json'
 
-	return response
+    return response
 
 
 @app.route('/ecard/today_billing', methods=['POST'])
@@ -264,24 +261,16 @@ def get_today_bill():
 
     if not all([xh, pwd]):
         results = dict(errcode='-4002', status='400', errmsg='Missing password',
-                        data=[])
+                       data=[])
     else:
         ecard = EcardSpider(xh, pwd)
         results = dict(errcode='0', status='200', errmsg='success',
-			data=ecard.get_today_bill())
+                       data=ecard.get_today_bill())
 
     response = make_response(json.dumps(results, ensure_ascii=False))
     response.mimetype = 'text/json'
 
     return response
-
-
-
-
-
-
-
-
 
 
 if __name__ == "__main__":
