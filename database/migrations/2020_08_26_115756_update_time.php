@@ -13,7 +13,7 @@ class UpdateTime extends Migration
      */
     public function up()
     {
-        Schema::create('update_time', function (Blueprint $table){
+        Schema::create('UPDATE_TIME', function (Blueprint $table){
             $table->id();
 
             $table->dateTime('student_id')->comment('学号');
@@ -33,6 +33,6 @@ class UpdateTime extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('update_time');
+        Schema::dropIfExists('UPDATE_TIME');
     }
 }

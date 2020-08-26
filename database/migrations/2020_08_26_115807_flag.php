@@ -13,7 +13,7 @@ class Flag extends Migration
      */
     public function up()
     {
-        Schema::create('flag', function (Blueprint $table){
+        Schema::create('FLAG', function (Blueprint $table){
             $table->id();
 
             $table->string('student_id')->comment('学号');
@@ -33,6 +33,6 @@ class Flag extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('flag');
+        Schema::dropIfExists('FLAG');
     }
 }
