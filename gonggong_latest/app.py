@@ -16,32 +16,42 @@ def index():
 
 @app.route('/info', methods=['POST'])
 def get_info():
-    xh = request.form.get('xh')
+    sid = request.form.get('sid')
     pwd = request.form.get('pwd')
     refresh = request.form.get('refresh')
     if refresh == None:
         refresh = False
 
-    if not all((xh, pwd)):
+    if not all((sid, pwd)):
         abort(404)
 
-    pipiline = InfoPipeline(xh)
+    pipiline = InfoPipeline(sid)
     if refresh:
         pipiline.delete_data()
-        spider = PersonalSpider(xh, pwd)
+        spider = PersonalSpider(sid, pwd)
         info = spider.get_info()
         pipiline.insert_data(info)
     else:
         flag = pipiline.get_flag()
         if flag == 0:
-            spider = PersonalSpider(xh, pwd)
+            spider = PersonalSpider(sid, pwd)
             info = spider.get_info()
             pipiline.insert_data(info)
         else:
             info = pipiline.output_data()
 
 
-    response = make_response(json.dumps(info, ensure_ascii=False))
+    result = {
+        'errcode': '0',
+        'status': '200',
+        'errmsg': 'success',
+        'data': [
+            info
+        ]
+    }
+
+
+    response = make_response(json.dumps(result, ensure_ascii=False))
     response.mimetype = 'text/json'
     return response
 
@@ -49,163 +59,214 @@ def get_info():
 @app.route('/grade', methods=['POST'])
 def get_grade():
     # method = 'getCjcx'
-    xh = request.form.get('xh')
+    sid = request.form.get('sid')
     pwd = request.form.get('pwd')
     refresh = request.form.get('refresh')
     if refresh == None:
         refresh = False
 
-    if not all((xh, pwd)):
+    if not all((sid, pwd)):
         abort(404)
 
-    pipiline = GradePipeline(xh)
+    pipiline = GradePipeline(sid)
     if refresh:
         pipiline.delete_data()
-        spider = PersonalSpider(xh, pwd)
+        spider = PersonalSpider(sid, pwd)
         grade = spider.get_grade()
         pipiline.insert_data(grade)
     else:
         flag = pipiline.get_flag()
         if flag == 0:
-            spider = PersonalSpider(xh, pwd)
+            spider = PersonalSpider(sid, pwd)
             grade = spider.get_grade()
             pipiline.insert_data(grade)
         else:
             grade = pipiline.output_data()
 
+    result = {
+        'errcode': '0',
+        'status': '200',
+        'errmsg': 'success',
+        'data': grade
+    }
 
-    response = make_response(json.dumps(grade, ensure_ascii=False))
-    response.mimetype = 'text/json'
-    return response
-
-
-@app.route('/exam', methods=['POST'])
-def get_exam():
-    xh = request.form.get('xh')
-    pwd = request.form.get('pwd')
-    refresh = request.form.get('refresh')
-    if refresh == None:
-        refresh = False
-
-    if not all((xh, pwd)):
-        abort(404)
-
-    pipiline = ExamPipeline(xh)
-    if refresh:
-        pipiline.delete_data()
-        spider = PersonalSpider(xh, pwd)
-        exam = spider.get_exam()
-        pipiline.insert_data(exam)
-    else:
-        flag = pipiline.get_flag()
-        if flag == 0:
-            spider = PersonalSpider(xh, pwd)
-            exam = spider.get_exam()
-            pipiline.insert_data(exam)
-        else:
-            exam = pipiline.output_data()
-
-    response = make_response(json.dumps(exam, ensure_ascii=False))
-    response.mimetype = 'text/json'
-    return response
-
-
-
-@app.route('/nowschedule', methods=['POST'])
-def get_nowschedule():
-    # method = 'getKbcxAzc'
-    xq = '2020-2021-1'
-    xh = request.form.get('xh')
-    pwd = request.form.get('pwd')
-    refresh = request.form.get('refresh')
-    if refresh == None:
-        refresh = False
-
-    if not all((xh, pwd)):
-        abort(404)
-
-    pipiline = SchedulePipeline(xh)
-    if refresh:
-        pipiline.delete_data()
-        spider = PersonalSpider(xh, pwd)
-        now_schedule = spider.get_now_schedule()
-        pipiline.insert_data(now_schedule, xq)
-    else:
-        flag = pipiline.get_flag()
-        if flag == 0:
-            spider = PersonalSpider(xh, pwd)
-            now_schedule = spider.get_now_schedule()
-            pipiline.insert_data(now_schedule, xq)
-        elif flag == 1:
-            now_schedule = pipiline.output_data()
-
-
-    response = make_response(json.dumps(now_schedule, ensure_ascii=False))
-    response.mimetype = 'text/json'
-    return response
-
-
-@app.route('/allschedule', methods=['POST'])
-def get_allschedule():
-    xh = request.form.get('xh')
-    pwd = request.form.get('pwd')
-    refresh = request.form.get('refresh')
-    if refresh == None:
-        refresh = False
-
-    if not all((xh, pwd)):
-        abort(404)
-
-    pipiline = AllSchedulePipeline(xh)
-    if refresh:
-        pipiline.delete_data()
-        spider = PersonalSpider(xh, pwd)
-        allschedule = spider.get_all_schedule()
-        pipiline.insert_data(allschedule)
-    else:
-        flag = pipiline.get_flag()
-        if flag == 0:
-            spider = PersonalSpider(xh, pwd)
-            allschedule = spider.get_all_schedule()
-            pipiline.insert_data(allschedule)
-        elif flag == 1:
-            allschedule = pipiline.output_data()
-
-    response = make_response(json.dumps(allschedule, ensure_ascii=False))
-    response.mimetype = 'text/json'
-    return response
-
-
-@app.route('/schedule', methods=['POST'])
-def get_one_schedule():
-    xh = request.form.get('xh')
-    pwd = request.form.get('pwd')
-    xq = request.form.get('xq')
-    if not all((xh, pwd)):
-        abort(404)
-
-    spider = PersonalSpider(xh, pwd)
-    result = spider.get_schedule(xq)
 
     response = make_response(json.dumps(result, ensure_ascii=False))
     response.mimetype = 'text/json'
     return response
 
 
-def get_uid(association_code):
+@app.route('/exam', methods=['POST'])
+def get_exam():
+    sid = request.form.get('sid')
+    pwd = request.form.get('pwd')
+    refresh = request.form.get('refresh')
+    if refresh == None:
+        refresh = False
+
+    if not all((sid, pwd)):
+        abort(404)
+
+    pipiline = ExamPipeline(sid)
+    if refresh:
+        pipiline.delete_data()
+        spider = PersonalSpider(sid, pwd)
+        exam = spider.get_exam()
+        pipiline.insert_data(exam)
+    else:
+        flag = pipiline.get_flag()
+        if flag == 0:
+            spider = PersonalSpider(sid, pwd)
+            exam = spider.get_exam()
+            pipiline.insert_data(exam)
+        else:
+            exam = pipiline.output_data()
+
+    result = {
+        'errcode': '0',
+        'status': '200',
+        'errmsg': 'success',
+        'data': exam
+    }
+
+
+    response = make_response(json.dumps(result, ensure_ascii=False))
+    response.mimetype = 'text/json'
+    return response
+
+
+
+@app.route('/now_schedule', methods=['POST'])
+def get_now_schedule():
+    # method = 'getKbcxAzc'
+    xq = '2020-2021-1'
+    sid = request.form.get('sid')
+    pwd = request.form.get('pwd')
+    refresh = request.form.get('refresh')
+    if refresh == None:
+        refresh = False
+
+    if not all((sid, pwd)):
+        abort(404)
+
+    pipiline = SchedulePipeline(sid)
+    if refresh:
+        pipiline.delete_data()
+        spider = PersonalSpider(sid, pwd)
+        now_schedule = spider.get_now_schedule()
+        pipiline.insert_data(now_schedule, xq)
+    else:
+        flag = pipiline.get_flag()
+        if flag == 0:
+            spider = PersonalSpider(sid, pwd)
+            now_schedule = spider.get_now_schedule()
+            pipiline.insert_data(now_schedule, xq)
+        elif flag == 1:
+            now_schedule = pipiline.output_data()
+
+    result = {
+        'errcode': '0',
+        'status': '200',
+        'errmsg': 'success',
+        'data': now_schedule
+    }
+
+
+    response = make_response(json.dumps(result, ensure_ascii=False))
+    response.mimetype = 'text/json'
+    return response
+
+
+@app.route('/all_schedule', methods=['POST'])
+def get_all_schedule():
+    sid = request.form.get('sid')
+    pwd = request.form.get('pwd')
+    refresh = request.form.get('refresh')
+    if refresh == None:
+        refresh = False
+
+    if not all((sid, pwd)):
+        abort(404)
+
+    pipiline = AllSchedulePipeline(sid)
+    if refresh:
+        pipiline.delete_data()
+        spider = PersonalSpider(sid, pwd)
+        all_schedule = spider.get_all_schedule()
+        pipiline.insert_data(all_schedule)
+    else:
+        flag = pipiline.get_flag()
+        if flag == 0:
+            spider = PersonalSpider(sid, pwd)
+            all_schedule = spider.get_all_schedule()
+            pipiline.insert_data(all_schedule)
+        elif flag == 1:
+            all_schedule = pipiline.output_data()
+
+    result = {
+        'errcode': '0',
+        'status': '200',
+        'errmsg': 'success',
+        'data': all_schedule
+    }
+
+
+    response = make_response(json.dumps(result, ensure_ascii=False))
+    response.mimetype = 'text/json'
+    return response
+
+
+@app.route('/schedule', methods=['POST'])
+def get_one_schedule():
+    sid = request.form.get('sid')
+    pwd = request.form.get('pwd')
+    term = request.form.get('term')
+    if not all((sid, pwd)):
+        abort(404)
+
+    spider = PersonalSpider(sid, pwd)
+    schedule = spider.get_schedule(term)
+
+    result = {
+        'errcode': '0',
+        'status': '200',
+        'errmsg': 'success',
+        'data': schedule
+    }
+
+
+    response = make_response(json.dumps(result, ensure_ascii=False))
+    response.mimetype = 'text/json'
+    return response
+
+
+def get_sid(association_code):
 	url = "http://zgf.jsky31.cn:10302/api/course/uid/{}".format(association_code)
 	res = requests.get(url)
-	uid = res.json()['data'][0]['uid']
-	return uid
+	sid = res.json()['data'][0]['uid']
+	return sid
 
 @app.route('/associated_schedule', methods=['POST'])
 def get_associated_schedule():
     association_code = request.form.get('association_code')
-    uid = get_uid(association_code) # uid == xh
-    pipeline = SchedulePipeline(uid)
-    now_schedule = pipeline.output_data()
+    sid = get_sid(association_code)
+    schedulepipeline = SchedulePipeline(sid)
+    infopipeline = InfoPipeline(sid)
+    name = infopipeline.output_data()['name']
+    now_schedule = schedulepipeline.output_data()
 
-    response = make_response(json.dumps(now_schedule, ensure_ascii=False))
+    result = {
+        'errcode': '0',
+        'status': '200',
+        'errmsg': 'success',
+        'data': {
+            'name': name,
+            'schedule': now_schedule
+        }
+    }
+
+
+    response = make_response(json.dumps(result, ensure_ascii=False))
     response.mimetype = 'text/json'
     return response
 
@@ -213,13 +274,13 @@ def get_associated_schedule():
 
 @app.route('/ecard/balance', methods=['POST'])
 def get_balance():
-	xh = request.form.get('xh')
+	sid = request.form.get('sid')
 	pwd = request.form.get('pwd')
-	if not all([xh, pwd]):
+	if not all([sid, pwd]):
 		results = dict(errcode='-4002', status='400', errmsg='Missing password',
 			data=[])
 	else:
-		ecard = EcardSpider(xh, pwd)
+		ecard = EcardSpider(sid, pwd)
 		results = dict(errcode='0', status='200', errmsg='success',
 			data=ecard.data)
 
@@ -231,12 +292,12 @@ def get_balance():
 
 @app.route('/ecard/billing', methods=['POST'])
 def get_bill():
-	xh = request.form.get('xh')
+	sid = request.form.get('sid')
 	pwd = request.form.get('pwd')
 	StartDate = request.form.get('StartDate')
 	EndDate = request.form.get('EndDate')
 
-	if not all([xh, pwd]):
+	if not all([sid, pwd]):
 		results = dict(errcode='-4002', status='400', errmsg='Missing password',
 			data=[])
 	elif not all([StartDate, EndDate]):
@@ -247,7 +308,7 @@ def get_bill():
 			results = dict(errcode='-4414', status='400', errmsg='Missing end date',
 				data=[])
 	else:
-		ecard = EcardSpider(xh, pwd)
+		ecard = EcardSpider(sid, pwd)
 		results = dict(errcode='0', status='200', errmsg='success',
 			data=ecard.query_bill(StartDate, EndDate))
 
@@ -259,14 +320,14 @@ def get_bill():
 
 @app.route('/ecard/today_billing', methods=['POST'])
 def get_today_bill():
-    xh = request.form.get('xh')
+    sid = request.form.get('sid')
     pwd = request.form.get('pwd')
 
-    if not all([xh, pwd]):
+    if not all([sid, pwd]):
         results = dict(errcode='-4002', status='400', errmsg='Missing password',
                         data=[])
     else:
-        ecard = EcardSpider(xh, pwd)
+        ecard = EcardSpider(sid, pwd)
         results = dict(errcode='0', status='200', errmsg='success',
 			data=ecard.get_today_bill())
 

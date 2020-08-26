@@ -5,13 +5,13 @@ from spider import PersonalSpider
 
 class GongGongPipeline():
     """
-    继承该类
+    继承GongGongPipeline类
     只需重写sql语句，以及get_data_list和output_data方法
     """
-    def __init__(self, xh):
+    def __init__(self, sid):
         self.connection = CONNECTION
         self.cursor = self.connection.cursor()
-        self.xh = xh
+        self.sid = sid
         self.today = date.today()
         self.update_time = None
 
@@ -108,51 +108,51 @@ class GongGongPipeline():
 
 
 class GradePipeline(GongGongPipeline):
-    def __init__(self, xh):
-        super(GradePipeline, self).__init__(xh)
+    def __init__(self, sid):
+        super(GradePipeline, self).__init__(sid)
         self.update_time = 7
 
-        self.create_table_sql = """CREATE TABLE GRADES (
-                                    ID INT(255) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-                                    NAME VARCHAR(255) NOT NULL,
-                                    STUDENT_ID VARCHAR(255) NOT NULL,
-                                    COURSE VARCHAR(255) NOT NULL,
-                                    GRADE VARCHAR(255) NOT NULL,
-                                    CATEGORY VARCHAR(255),
-                                    NATURE_OF_COURSE VARCHAR(255),
-                                    SEMESTER VARCHAR(255) NOT NULL,
-                                    NATURE_OF_TEST VARCHAR(255),
-                                    CREDITS FLOAT NOT NULL
+        self.create_table_sql = """CREATE TABLE grades (
+                                    id INT(255) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                                    name VARCHAR(255) NOT NULL,
+                                    sid VARCHAR(255) NOT NULL,
+                                    course VARCHAR(255) NOT NULL,
+                                    comp_grade VARCHAR(255) NOT NULL,
+                                    type VARCHAR(255),
+                                    class_type VARCHAR(255),
+                                    term VARCHAR(255) NOT NULL,
+                                    nature_of_test VARCHAR(255),
+                                    credit FLOAT NOT NULL
                                     )"""
 
-        self.insert_flag_sql = f"INSERT INTO FLAG (STUDENT_ID, INFO, GRADE, SCHEDULE, ALLSCHEDULE) VALUES({self.xh}, 0, 0, 0, 0)"
-        self.check_flag_sql = f"SELECT GRADE FROM FLAG WHERE STUDENT_ID={self.xh}"
-        self.update_flag_sql = f"UPDATE FLAG SET GRADE=1 WHERE STUDENT_ID={self.xh}"
+        self.insert_flag_sql = f"INSERT INTO flag (sid, info, grades, schedule, all_schedule) VALUES({self.sid}, 0, 0, 0, 0)"
+        self.check_flag_sql = f"SELECT grades FROM flag WHERE sid={self.sid}"
+        self.update_flag_sql = f"UPDATE flag SET grades=1 WHERE sid={self.sid}"
 
-        self.insert_data_sql = """INSERT INTO GRADES (NAME, STUDENT_ID, COURSE, GRADE, CATEGORY, NATURE_OF_COURSE, SEMESTER, NATURE_OF_TEST, CREDITS)
+        self.insert_data_sql = """INSERT INTO grades (name, sid, course, comp_grade, type, class_type, term, nature_of_test, credit)
                                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-        self.select_data_sql = f"SELECT * FROM GRADES WHERE STUDENT_ID={self.xh}"
-        self.delete_data_sql = f"DELETE FROM GRADES WHERE STUDENT_ID={self.xh}"
+        self.select_data_sql = f"SELECT * FROM grades WHERE sid={self.sid}"
+        self.delete_data_sql = f"DELETE FROM grades WHERE sid={self.sid}"
 
-        self.insert_update_time_sql = f"""INSERT INTO UPDATE_TIME (STUDENT_ID, INFO, GRADE, SCHEDULE, ALLSCHEDULE)
-                                                          VALUES ({self.xh}, NULL, NULL, NULL, NULL)"""
-        self.get_update_time_sql = f"SELECT GRADE FROM UPDATE_TIME WHERE STUDENT_ID={self.xh}"
-        self.update_update_time_sql = f"UPDATE UPDATE_TIME SET GRADE='{self.today.strftime('%Y-%m-%d')}' WHERE STUDENT_ID={self.xh}"
+        self.insert_update_time_sql = f"""INSERT INTO update_time (sid, info, grade, schedule, all_schedule)
+                                                          VALUES ({self.sid}, NULL, NULL, NULL, NULL)"""
+        self.get_update_time_sql = f"SELECT grades FROM update_time WHERE sid={self.sid}"
+        self.update_update_time_sql = f"UPDATE update_time SET grades='{self.today.strftime('%Y-%m-%d')}' WHERE sid={self.sid}"
 
 
     def get_data_list(self, grade):
         data_list = []
         for items in grade.values():
             for item in items:
-                data = (item['name'], item['student_id'], item['course'], item['grade'], item['category'],
-                        item['nature_of_course'],item['semester'], item['nature_of_test'], item['credits'])
+                data = (item['name'], item['sid'], item['course'], item['comp_grade'], item['type'],
+                        item['class_type'],item['term'], item['nature_of_test'], item['credit'])
                 data_list.append(data)
         return data_list
 
 
     def output_data(self):
         results = self.select_data()
-        keys = ['name', 'student_id', 'course', 'grade', 'category', 'nature_of_course', 'semester', 'nature_of_test', 'credits']
+        keys = ['name', 'sid', 'course', 'comp_grade', 'type', 'class_type', 'term', 'nature_of_test', 'credit']
         semesters = [] # 记录一共多少学期
         grades_list = [] # 单学期的成绩数据
         all_semesters_grades_list = [] #所以学期成绩数据
@@ -176,58 +176,61 @@ class GradePipeline(GongGongPipeline):
 
 
 class SchedulePipeline(GongGongPipeline):
-    def __init__(self, xh):
-        super(SchedulePipeline, self).__init__(xh)
+    def __init__(self, sid):
+        super(SchedulePipeline, self).__init__(sid)
         self.update_time = 7
 
-        self.create_table_sql = """CREATE TABLE SCHEDULE (
-                                    ID INT(255) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-                                    STUDENT_ID VARCHAR(255) NOT NULL,
-                                    SEMESTER VARCHAR(255) NOT NULL,
-                                    WEEK VARCHAR(255) NOT NULL,
-                                    COURSE VARCHAR(255) NOT NULL,
-                                    TEACHER VARCHAR(255) NOT NULL,
-                                    LOCATION VARCHAR(255),
-                                    TIME VARCHAR(255) NOT NULL,
-                                    START_TIME VARCHAR(255),
-                                    END_TIME VARCHAR(255),
-                                    WEEKS VARCHAR(255) NOT NULL 
+        self.create_table_sql = """CREATE TABLE schedule (
+                                    id INT(255) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                                    sid VARCHAR(255) NOT NULL,
+                                    term VARCHAR(255) NOT NULL,
+                                    week VARCHAR(255) NOT NULL,
+                                    course VARCHAR(255) NOT NULL,
+                                    teacher VARCHAR(255) NOT NULL,
+                                    location VARCHAR(255),
+                                    day VARCHAR(255) NOT NULL,
+                                    section_start VARCHAR(255) NOT NULL,
+                                    section_end VARCHAR(255) NOT NULL,
+                                    section_length VARCHAR(255) NOT NULL,
+                                    start_time VARCHAR(255),
+                                    end_time VARCHAR(255),
+                                    weeks VARCHAR(255) NOT NULL 
                                     )"""
 
-        self.insert_flag_sql = f"INSERT INTO FLAG (STUDENT_ID, INFO, GRADE, SCHEDULE, ALLSCHEDULE, EXAM) VALUES({self.xh}, 0, 0, 0, 0, 0)"
-        self.check_flag_sql = f"SELECT SCHEDULE FROM FLAG WHERE STUDENT_ID={self.xh}"
-        self.update_flag_sql = f"UPDATE FLAG SET SCHEDULE=1 WHERE STUDENT_ID={self.xh}"
+        self.insert_flag_sql = f"INSERT INTO flag (sid, info, grades, schedule, all_schedule, exam) VALUES({self.sid}, 0, 0, 0, 0, 0)"
+        self.check_flag_sql = f"SELECT schedule FROM flag WHERE sid={self.sid}"
+        self.update_flag_sql = f"UPDATE flag SET schedule=1 WHERE sid={self.sid}"
 
 
-        self.insert_data_sql = """INSERT INTO SCHEDULE (STUDENT_ID, SEMESTER, WEEK, COURSE, TEACHER, LOCATION, TIME, START_TIME, END_TIME, WEEKS)
-                                  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-        self.select_data_sql = f"SELECT * FROM SCHEDULE WHERE STUDENT_ID={self.xh}"
-        self.delete_data_sql = f"DELETE FROM SCHEDULE WHERE STUDENT_ID={self.xh}"
+        self.insert_data_sql = """INSERT INTO schedule (sid, term, week, course, teacher, location, day, section_start, section_end, section_length, start_time, end_time, weeks)
+                                  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        self.select_data_sql = f"SELECT * FROM schedule WHERE sid={self.sid}"
+        self.delete_data_sql = f"DELETE FROM schedule WHERE sid={self.sid}"
 
-        self.insert_update_time_sql = f"""INSERT INTO UPDATE_TIME (STUDENT_ID, INFO, GRADE, SCHEDULE, ALLSCHEDULE, EXAM)
-                                                                  VALUES ({self.xh}, NULL, NULL, NULL, NULL, NULL)"""
-        self.get_update_time_sql = f"SELECT SCHEDULE FROM UPDATE_TIME WHERE STUDENT_ID={self.xh}"
-        self.update_update_time_sql = f"UPDATE UPDATE_TIME SET SCHEDULE='{self.today.strftime('%Y-%m-%d')}' WHERE STUDENT_ID={self.xh}"
+        self.insert_update_time_sql = f"""INSERT INTO update_time (sid, info, grades, schedule, all_schedule, exam)
+                                                                  VALUES ({self.sid}, NULL, NULL, NULL, NULL, NULL)"""
+        self.get_update_time_sql = f"SELECT schedule FROM update_time WHERE sid={self.sid}"
+        self.update_update_time_sql = f"UPDATE update_time SET schedule='{self.today.strftime('%Y-%m-%d')}' WHERE sid={self.sid}"
 
     def get_data_list(self, schedule, semester):
         data_list = []
         for week, items in schedule.items():
             for item in items:
                 if item:
-                    data = [self.xh, semester, week, item['course'], item['teacher'], item['location'],
-                            item['time'], item['start_time'], item['end_time'], item['week']]
+                    data = [self.sid, semester, week, item['course'], item['teacher'], item['location'],
+                            item['day'], item['section_start'], item['section_end'], item['section_length'], item['start_time'], item['end_time'], item['week']]
                     data_list.append(data)
         return data_list
 
 
     def output_data(self):
         results = self.select_data()
-        keys = ['course', 'teacher', 'location', 'time', 'start_time', 'end_time', 'week']
+        keys = ['course', 'teacher', 'location', 'day', 'section_start', 'section_end', 'section_length', 'start_time', 'end_time', 'week']
         semester_schedule = []
         weeks = []
         week_schedule = []
         for index, result in enumerate(results):
-            values = [result[i] for i in range(4, 11)]
+            values = [result[i] for i in range(4, 14)]
             if result[3] not in weeks:
                 if index != 0:
                     semester_schedule.append(week_schedule)
@@ -283,40 +286,40 @@ class SchedulePipeline(GongGongPipeline):
 
 
 class InfoPipeline(GongGongPipeline):
-    def __init__(self, xh):
-        super(InfoPipeline, self).__init__(xh)
+    def __init__(self, sid):
+        super(InfoPipeline, self).__init__(sid)
         self.update_time = 30
 
-        self.create_table_sql = """ CREATE TABLE INFO (
-                                    ID INT(255) PRIMARY KEY AUTO_INCREMENT,
-                                    STUDENT_ID VARCHAR(255) NOT NULL,
-                                    NAME VARCHAR(255) NOT NULL,
-                                    GENDER VARCHAR(255) NOT NULL,
-                                    DEPARTMENT VARCHAR(255) NOT NULL,
-                                    MAJOR VARCHAR(255) NOT NULL,
-                                    CLASS VARCHAR(255) NOT NULL,
-                                    PHONE VARCHAR(255) ,
-                                    QQ VARCHAR(255) ,
-                                    EMAIL VARCHAR(255) 
+        self.create_table_sql = """ CREATE TABLE info (
+                                    id INT(255) PRIMARY KEY AUTO_INCREMENT,
+                                    sid VARCHAR(255) NOT NULL,
+                                    name VARCHAR(255) NOT NULL,
+                                    sex VARCHAR(255) NOT NULL,
+                                    college VARCHAR(255) NOT NULL,
+                                    major VARCHAR(255) NOT NULL,
+                                    class VARCHAR(255) NOT NULL,
+                                    phone VARCHAR(255) ,
+                                    qq VARCHAR(255) ,
+                                    email VARCHAR(255) 
                                     )"""
 
-        self.insert_flag_sql = f"INSERT INTO FLAG (STUDENT_ID, INFO, GRADE, SCHEDULE, ALLSCHEDULE, EXAM) VALUES({self.xh}, 0, 0, 0, 0, 0)"
-        self.check_flag_sql = f"SELECT INFO FROM FLAG WHERE STUDENT_ID={self.xh}"
-        self.update_flag_sql = f"UPDATE FLAG SET INFO=1 WHERE STUDENT_ID={self.xh}"
+        self.insert_flag_sql = f"INSERT INTO flag (sid, info, grades, schedule, all_schedule, exam) VALUES({self.sid}, 0, 0, 0, 0, 0)"
+        self.check_flag_sql = f"SELECT info FROM flag WHERE sid={self.sid}"
+        self.update_flag_sql = f"UPDATE flag SET info=1 WHERE sid={self.sid}"
 
-        self.insert_data_sql = """INSERT INTO INFO (STUDENT_ID, NAME, GENDER, DEPARTMENT, MAJOR, CLASS, PHONE, QQ, EMAIL)
+        self.insert_data_sql = """INSERT INTO info (sid, name, sex, college, major, class, phone, qq, email)
                                           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-        self.select_data_sql = f"SELECT * FROM INFO WHERE STUDENT_ID={self.xh}"
-        self.delete_data_sql = f"DELETE FROM INFO WHERE STUDENT_ID={self.xh}"
+        self.select_data_sql = f"SELECT * FROM info WHERE sid={self.sid}"
+        self.delete_data_sql = f"DELETE FROM info WHERE sid={self.sid}"
 
-        self.insert_update_time_sql = f"""INSERT INTO UPDATE_TIME (STUDENT_ID, INFO, GRADE, SCHEDULE, ALLSCHEDULE, EXAM)
-                                                          VALUES ({self.xh}, NULL, NULL, NULL, NULL, NULL)"""
-        self.get_update_time_sql = f"SELECT INFO FROM UPDATE_TIME WHERE STUDENT_ID={self.xh}"
-        self.update_update_time_sql = f"UPDATE UPDATE_TIME SET INFO='{self.today.strftime('%Y-%m-%d')}' WHERE STUDENT_ID={self.xh}"
+        self.insert_update_time_sql = f"""INSERT INTO update_time (sid, info, grades, schedule, all_schedule, exam)
+                                                          VALUES ({self.sid}, NULL, NULL, NULL, NULL, NULL)"""
+        self.get_update_time_sql = f"SELECT info FROM update_time WHERE sid={self.sid}"
+        self.update_update_time_sql = f"UPDATE update_time SET info='{self.today.strftime('%Y-%m-%d')}' WHERE sid={self.sid}"
 
     def get_data_list(self, info):
         data = [v for v in info.values()]
-        data.insert(0, self.xh)
+        data.insert(0, self.sid)
         data_list = [data]
         return data_list
 
@@ -324,43 +327,47 @@ class InfoPipeline(GongGongPipeline):
     def output_data(self):
         results = self.select_data()
         result = results[0]
-        keys = ['name', 'gender', 'department', 'major', 'class', 'phone', 'qq', 'email']
+        keys = ['name', 'sex', 'college', 'major', 'class', 'phone', 'qq', 'email']
         values = [result[i] for i in range(2, 10)]
         info = dict(zip(keys, values))
         return info
 
 
 class AllSchedulePipeline(GongGongPipeline):
-    def __init__(self, xh):
-        super(AllSchedulePipeline, self).__init__(xh)
+    def __init__(self, sid):
+        super(AllSchedulePipeline, self).__init__(sid)
         self.update_time = 30
 
-        self.create_table_sql = """CREATE TABLE ALLSCHEDULE (
-                                    ID INT(255) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-                                    STUDENT_ID VARCHAR(255) NOT NULL,
-                                    SEMESTER VARCHAR(255) NOT NULL,
-                                    WEEK VARCHAR(255) NOT NULL,
-                                    COURSE VARCHAR(255) NOT NULL,
-                                    TEACHER VARCHAR(255) NOT NULL,
-                                    LOCATION VARCHAR(255),
-                                    TIME VARCHAR(255) NOT NULL,
-                                    START_TIME VARCHAR(255),
-                                    END_TIME VARCHAR(255),
-                                    WEEKS VARCHAR(255) NOT NULL )"""
+        self.create_table_sql = """CREATE TABLE all_schedule (
+                                    id INT(255) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                                    sid VARCHAR(255) NOT NULL,
+                                    term VARCHAR(255) NOT NULL,
+                                    week VARCHAR(255) NOT NULL,
+                                    course VARCHAR(255) NOT NULL,
+                                    teacher VARCHAR(255) NOT NULL,
+                                    location VARCHAR(255),
+                                    day VARCHAR(255) NOT NULL,
+                                    section_start VARCHAR(255) NOT NULL,
+                                    section_end VARCHAR(255) NOT NULL,
+                                    section_length VARCHAR(255) NOT NULL,
+                                    start_time VARCHAR(255),
+                                    end_time VARCHAR(255),
+                                    weeks VARCHAR(255) NOT NULL 
+                                    )"""
 
-        self.insert_flag_sql = f"INSERT INTO FLAG (STUDENT_ID, INFO, GRADE, SCHEDULE, ALLSCHEDULE, EXAM) VALUES({self.xh}, 0, 0, 0, 0, 0)"
-        self.check_flag_sql = f"SELECT ALLSCHEDULE FROM FLAG WHERE STUDENT_ID={self.xh}"
-        self.update_flag_sql = f"UPDATE FLAG SET ALLSCHEDULE=1 WHERE STUDENT_ID={self.xh}"
+        self.insert_flag_sql = f"INSERT INTO flag (sid, info, grades, schedule, all_schedule, exam) VALUES({self.sid}, 0, 0, 0, 0, 0)"
+        self.check_flag_sql = f"SELECT all_schedule FROM flag WHERE sid={self.sid}"
+        self.update_flag_sql = f"UPDATE flag SET all_schedule=1 WHERE sid={self.sid}"
 
-        self.insert_data_sql = """INSERT INTO ALLSCHEDULE (STUDENT_ID, SEMESTER, WEEK, COURSE, TEACHER, LOCATION, TIME, START_TIME, END_TIME, WEEKS)
-                                          VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-        self.select_data_sql = f"SELECT * FROM ALLSCHEDULE WHERE STUDENT_ID={self.xh}"
-        self.delete_data_sql = f"DELETE FROM ALLSCHEDULE WHERE STUDENT_ID={self.xh}"
+        self.insert_data_sql = """INSERT INTO all_schedule (sid, term, week, course, teacher, location, day, section_start, section_end, section_length, start_time, end_time, weeks)
+                                          VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        self.select_data_sql = f"SELECT * FROM all_schedule WHERE sid={self.sid}"
+        self.delete_data_sql = f"DELETE FROM all_schedule WHERE sid={self.sid}"
 
-        self.insert_update_time_sql = f"""INSERT INTO UPDATE_TIME (STUDENT_ID, INFO, GRADE, SCHEDULE, ALLSCHEDULE, EXAM)
-                                                                                  VALUES ({self.xh}, NULL, NULL, NULL, NULL, NULL)"""
-        self.get_update_time_sql = f"SELECT ALLSCHEDULE FROM UPDATE_TIME WHERE STUDENT_ID={self.xh}"
-        self.update_update_time_sql = f"UPDATE UPDATE_TIME SET ALLSCHEDULE='{self.today.strftime('%Y-%m-%d')}' WHERE STUDENT_ID={self.xh}"
+        self.insert_update_time_sql = f"""INSERT INTO update_time (sid, info, grades, schedule, all_schedule, exam)
+                                                                          VALUES ({self.sid}, NULL, NULL, NULL, NULL, NULL)"""
+        self.get_update_time_sql = f"SELECT all_schedule FROM update_time WHERE sid={self.sid}"
+        self.update_update_time_sql = f"UPDATE update_time SET all_schedule='{self.today.strftime('%Y-%m-%d')}' WHERE sid={self.sid}"
 
 
     def get_data_list(self, schedule):
@@ -369,19 +376,19 @@ class AllSchedulePipeline(GongGongPipeline):
             for week, items in v.items():
                 for item in items:
                     if item:
-                        data = (self.xh, semester, week, item['course'], item['teacher'], item['location'],
-                                item['time'], item['start_time'], item['end_time'], item['week'])
+                        data = (self.sid, semester, week, item['course'], item['teacher'], item['location'],
+                                item['day'], item['section_start'], item['section_end'], item['section_length'], item['start_time'], item['end_time'], item['week'])
                         data_list.append(data)
         return data_list
 
 
     def output_data(self):
         results = self.select_data()
-        keys = ['course', 'teacher', 'location', 'time', 'start_time', 'end_time', 'week']
+        keys = ['course', 'teacher', 'location', 'day', 'section_start', 'section_end', 'section_length', 'start_time', 'end_time', 'week']
         semesters = []
         all_semester_schedule = []
         for index, result in enumerate(results):
-            values = [result[i] for i in range(4, 11)]
+            values = [result[i] for i in range(4, 14)]
 
             if result[2] not in semesters:
                 semesters.append(result[2])
@@ -411,62 +418,62 @@ class AllSchedulePipeline(GongGongPipeline):
 
 
 class ExamPipeline(GongGongPipeline):
-    def __init__(self, xh):
-        super(ExamPipeline, self).__init__(xh)
+    def __init__(self, sid):
+        super(ExamPipeline, self).__init__(sid)
         self.update_time = 30
 
-        self.create_table_sql = """CREATE TABLE EXAM (
-                                    ID INT(255) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-                                    STUDENT_ID VARCHAR(255) NOT NULL,
-                                    COURSE VARCHAR(255) NOT NULL,
-                                    DATE VARCHAR(255) NOT NULL,
-                                    WEEK VARCHAR(255) NOT NULL,
-                                    DAY VARCHAR(255) NOT NULL,
-                                    START_TIME VARCHAR(255) NOT NULL,
-                                    END_TIME VARCHAR(255) NOT NULL,
-                                    LOCATION VARCHAR(255) NOT NULL
+        self.create_table_sql = """CREATE TABLE exam (
+                                    id INT(255) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                                    sid VARCHAR(255) NOT NULL,
+                                    course VARCHAR(255) NOT NULL,
+                                    date VARCHAR(255) NOT NULL,
+                                    week VARCHAR(255) NOT NULL,
+                                    day VARCHAR(255) NOT NULL,
+                                    start_time VARCHAR(255) NOT NULL,
+                                    end_time VARCHAR(255) NOT NULL,
+                                    location VARCHAR(255) NOT NULL
                                     )"""
 
-        self.insert_flag_sql = f"INSERT INTO FLAG (STUDENT_ID, INFO, GRADE, SCHEDULE, ALLSCHEDULE, EXAM) VALUES({self.xh}, 0, 0, 0, 0, 0)"
-        self.check_flag_sql = f"SELECT EXAM FROM FLAG WHERE STUDENT_ID={self.xh}"
-        self.update_flag_sql = f"UPDATE FLAG SET EXAM=1 WHERE STUDENT_ID={self.xh}"
+        self.insert_flag_sql = f"INSERT INTO flag (sid, info, grades, schedule, all_schedule, exam) VALUES({self.sid}, 0, 0, 0, 0, 0)"
+        self.check_flag_sql = f"SELECT exam FROM flag WHERE sid={self.sid}"
+        self.update_flag_sql = f"UPDATE flag SET exam=1 WHERE sid={self.sid}"
 
-        self.insert_data_sql = """INSERT INTO EXAM (STUDENT_ID, COURSE, DATE, WEEK, DAY, START_TIME, END_TIME, LOCATION)
+        self.insert_data_sql = """INSERT INTO exam (sid, course, date, week, day, start_time, end_time, location)
                                           VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
-        self.select_data_sql = f"SELECT * FROM EXAM WHERE STUDENT_ID={self.xh}"
-        self.delete_data_sql = f"DELETE FROM EXAM WHERE STUDENT_ID={self.xh}"
+        self.select_data_sql = f"SELECT * FROM exam WHERE sid={self.sid}"
+        self.delete_data_sql = f"DELETE FROM exam WHERE sid={self.sid}"
 
-        self.insert_update_time_sql = f"""INSERT INTO UPDATE_TIME (STUDENT_ID, INFO, GRADE, SCHEDULE, ALLSCHEDULE, EXAM)
-                                                                                  VALUES ({self.xh}, NULL, NULL, NULL, NULL, NULL)"""
-        self.get_update_time_sql = f"SELECT EXAM FROM UPDATE_TIME WHERE STUDENT_ID={self.xh}"
-        self.update_update_time_sql = f"UPDATE UPDATE_TIME SET EXAM='{self.today.strftime('%Y-%m-%d')}' WHERE STUDENT_ID={self.xh}"
+        self.insert_update_time_sql = f"""INSERT INTO update_time (sid, info, grades, schedule, all_schedule, exam)
+                                                                                  VALUES ({self.sid}, NULL, NULL, NULL, NULL, NULL)"""
+        self.get_update_time_sql = f"SELECT exam FROM update_time WHERE sid={self.sid}"
+        self.update_update_time_sql = f"UPDATE update_time SET exam='{self.today.strftime('%Y-%m-%d')}' WHERE sid={self.sid}"
 
 
     def get_data_list(self, exam):
         data_list = []
         for item in exam:
             data = [x for x in item.values()]
-            data.insert(0, self.xh)
+            data.insert(0, self.sid)
             data_list.append(data)
         return data_list
 
 
     def output_data(self):
         results = self.select_data()
-        keys = ['student_id', 'course', 'date', 'week', 'day', 'start_time', 'end_time', 'location']
+        keys = ['sid', 'course', 'date', 'week', 'day', 'start_time', 'end_time', 'location']
         exam = []
         for result in results:
             values = [result[i] for i in range(1, 9)]
-            values.insert(0, self.xh)
+            values.insert(0, self.sid)
             exam.append(dict(zip(keys, values)))
         return exam
 
 
 if __name__ == '__main__':
     pass
-    # xh = '201805710203'
+    # sid = '201805710203'
     # pwd = 'SKTFaker11'
-    # spider = PersonalSpider(xh, pwd)
+    # spider = PersonalSpider(sid, pwd)
     # grade = spider.get_grade()
     # xq = '2018-2019-1'
     # schedule = spider.get_one_schedule(xq)
@@ -477,7 +484,7 @@ if __name__ == '__main__':
 
 
     # GradesPipeline测试
-    # pipeline1 = GradePipeline(xh)
+    # pipeline1 = GradePipeline(sid)
     # print(pipeline1.today)
     # pipeline1.output_data()
     # pipeline1.create_table()
@@ -488,7 +495,7 @@ if __name__ == '__main__':
     # pipeline1.insert_data(grade)
 
     # SchedulePipeline测试
-    # pipeline2 = SchedulePipeline(xh)
+    # pipeline2 = SchedulePipeline(sid)
     # print(pipeline2.get_flag())
     # print(pipeline2.get_data_list(schedule, xq))
     # schedule = pipeline2.output_data()
@@ -499,9 +506,9 @@ if __name__ == '__main__':
 
 
     #InfoPipeline测试
-    # pipline3 = InfoPipeline(xh)
+    # pipline3 = InfoPipeline(sid)
     # info = pipline3.output_data()
-    # print(info)
+    # print(info['name'])
     # pipline3.create_table()
     # pipline3.insert_data(info)
     # print(date.today())
@@ -509,7 +516,7 @@ if __name__ == '__main__':
 
 
     #AllSchedulePipeline测试
-    # pipeline4 = AllSchedulePipeline(xh)
+    # pipeline4 = AllSchedulePipeline(sid)
     # pipeline4.create_table()
     # print(pipeline4.get_flag())
     # pipeline4.insert_data(allschedule)
@@ -517,7 +524,7 @@ if __name__ == '__main__':
 
 
     # ExamPipeline测试
-    # pipeline5 = ExamPipeline(xh)
+    # pipeline5 = ExamPipeline(sid)
     # print(pipeline5.get_data_list(exam))
     # pipeline5.create_table()
     # pipeline5.insert_data(exam)

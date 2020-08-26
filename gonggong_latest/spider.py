@@ -18,12 +18,12 @@ class PersonalSpider():
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36'
     }
     all_schedule = {}
-    def __init__(self, xh, pwd):
+    def __init__(self, sid, pwd):
         # self.method = method
-        self.xh = xh
+        self.sid = sid
         self.params = {
             'method': '',
-            'xh': xh,
+            'xh': sid,
             'pwd': pwd,
         }
         self.queue = self.get_query_range()
@@ -49,8 +49,8 @@ class PersonalSpider():
 
         info = {}
         info['name'] = text['xm']  # 学生姓名
-        info['gender'] = text['xb']  # 性别
-        info['department'] = text['yxmc']  # 院系名称
+        info['sex'] = text['xb']  # 性别
+        info['college'] = text['yxmc']  # 院系名称
         info['major'] = text['zymc']  # 专业名称
         info['class'] = text['bj']  # 班级名称
         info['phone'] = text['dh']  # 联系电话
@@ -72,24 +72,24 @@ class PersonalSpider():
         for _grade in _grades:
             grade = {}
             grade['name']       = _grade['xm']  # 姓名
-            grade['student_id'] = self.xh       # 学号
+            grade['sid'] = self.sid       # 学号
             grade['course']     = _grade['kcmc']  # 课程名
-            grade['grade']      = _grade['zcj']  # 成绩
-            grade['category']   = _grade['kclbmc']  # 课程类别，如必修
-            grade['nature_of_course'] = _grade['kcxzmc']  # 课程性质，如公共基础课
-            grade['semester']   = _grade['xqmc']  # 学期，如2018-2019-1
+            grade['comp_grade']      = _grade['zcj']  # 成绩
+            grade['type']   = _grade['kclbmc']  # 课程类别，如必修
+            grade['class_type'] = _grade['kcxzmc']  # 课程性质，如公共基础课
+            grade['term']   = _grade['xqmc']  # 学期，如2018-2019-1
             grade['nature_of_test']   = _grade['ksxzmc']  # 考试性质，如正常考试、重修
-            grade['credits']    = _grade['xf']  # 学分
-            if grade['semester'] not in grades.keys():
-                grades[grade['semester']] = [grade]
+            grade['credit']    = _grade['xf']  # 学分
+            if grade['term'] not in grades.keys():
+                grades[grade['term']] = [grade]
             else:
-                grades[grade['semester']].append(grade)
+                grades[grade['term']].append(grade)
 
         return grades
 
 
     def get_query_range(self):
-        start = int(self.xh[0:4])
+        start = int(self.sid[0:4])
         end = datetime.now().year
         month = datetime.now().month
 
@@ -141,15 +141,19 @@ class PersonalSpider():
                 for schedule in schedules:
                     item = {}
                     try:
-                        item['course']      = schedule['kcmc']  # 课程名称
-                        item['teacher']     = schedule['jsxm']  # 老师名称
-                        item['location']    = schedule['jsmc']  # 课程地点
-                        item['time']        = schedule['kcsj']  # 上课时间， 格式为x0a0b 表示为 周x第a节到第b节
-                        item['start_time']  = schedule['kssj']  # 开始时间
-                        item['end_time']    = schedule['jssj']  # 结束时间
-                        item['week']        = schedule['kkzc']  # 开课周次
-                    except:
-                        pass
+                        item['course'] = schedule['kcmc']  # 课程名称
+                        item['teacher'] = schedule['jsxm']  # 老师名称
+                        item['location'] = schedule['jsmc']  # 课程地点
+                        # item['time'] = schedule['kcsj']  # 上课时间， 格式为x0a0b 表示为 周x第a节到第b节
+                        item['day'] = schedule['kcsj'][0]
+                        item['section_start'] = str(int(schedule['kcsj'][1:3]))
+                        item['section_end'] = str(int(schedule['kcsj'][3:5]))
+                        item['section_length'] = str(int(item['section_end']) - int(item['section_start']) + 1)
+                        item['start_time'] = schedule['kssj']  # 开始时间
+                        item['end_time'] = schedule['jssj']  # 结束时间
+                        item['week'] = schedule['kkzc']  # 开课周次
+                    except Exception as e:
+                        print(e)
                     items.append(item)
                 result[i] = items
         all_schedule[q] = result
@@ -174,7 +178,11 @@ class PersonalSpider():
                     item['course'] = schedule['kcmc']  # 课程名称
                     item['teacher'] = schedule['jsxm']  # 老师名称
                     item['location'] = schedule['jsmc']  # 课程地点
-                    item['time'] = schedule['kcsj']  # 上课时间， 格式为x0a0b 表示为 周x第a节到第b节
+                    # item['time'] = schedule['kcsj']  # 上课时间， 格式为x0a0b 表示为 周x第a节到第b节
+                    item['day'] = schedule['kcsj'][0]
+                    item['section_start'] = str(int(schedule['kcsj'][1:3]))
+                    item['section_end'] = str(int(schedule['kcsj'][3:5]))
+                    item['section_length'] = str(int(item['section_end']) - int(item['section_start']) + 1)
                     item['start_time'] = schedule['kssj']  # 开始时间
                     item['end_time'] = schedule['jssj']  # 结束时间
                     item['week'] = schedule['kkzc']  # 开课周次
@@ -225,8 +233,8 @@ class EcardSpider():
 		'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36'
 	}
 
-	def __init__(self, xh, pwd):
-		self.xh = xh
+	def __init__(self, sid, pwd):
+		self.sid = sid
 		self.pwd = pwd
 		self.get_cookie()
 		self.get_ecard_info()
@@ -257,7 +265,7 @@ class EcardSpider():
 		handler = urllib.request.HTTPCookieProcessor(cookie)
 		opener = urllib.request.build_opener(handler)
 
-		url = f'http://ecard.xtu.edu.cn/loginstudent.action?name={self.xh}&passwd={self.pwd}&userType=1&loginType=2'
+		url = f'http://ecard.xtu.edu.cn/loginstudent.action?name={self.sid}&passwd={self.pwd}&userType=1&loginType=2'
 		response = opener.open(url)
 		string = ''
 		for item in cookie:
@@ -394,7 +402,8 @@ class EcardSpider():
 
 if __name__ == '__main__':
     pass
-    # xh = '201805710203'
-    # pwd = 'SKTFaker11'
-    # spider = PersonalSpider(xh, pwd)
+    sid = '201805710203'
+    pwd = 'SKTFaker11'
+    # spider = PersonalSpider(sid, pwd)
     # print(spider.get_exam_info())
+    # print(spider.get_exam())
