@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Flag extends Migration
+class CreateFLAGSTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class Flag extends Migration
      */
     public function up()
     {
-        Schema::create('FLAG', function (Blueprint $table){
+        Schema::create('FLAG', function (Blueprint $table) {
             $table->id();
 
             $table->string('student_id')->comment('学号');
@@ -22,7 +22,7 @@ class Flag extends Migration
             $table->string('schedule')->comment('考试安排');
             $table->string('allschedule')->comment('所有安排');
             $table->string('exam')->comment('考试');
-
+            $table->timestamps();
         });
     }
 

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Exam extends Migration
+class CreateExamsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class Exam extends Migration
      */
     public function up()
     {
-        Schema::create('exam', function (Blueprint $table){
+        Schema::create('exam', function (Blueprint $table) {
             $table->id();
 
             $table->string('student_id')->comment('学号');
@@ -24,6 +24,7 @@ class Exam extends Migration
             $table->string('start_time')->comment('开始时间');
             $table->string('emd_time')->comment('结束时间');
             $table->string('location')->comment('地点');
+            $table->timestamps();
         });
     }
 

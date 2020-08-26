@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Allschedule extends Migration
+class CreateAllschedulesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class Allschedule extends Migration
      */
     public function up()
     {
-        Schema::create('allschedule',function (Blueprint $table){
+        Schema::create('allschedule', function (Blueprint $table) {
             $table->id();
 
             $table->string('student_id')->comment('学号');
@@ -26,6 +26,7 @@ class Allschedule extends Migration
             $table->string('start_time')->comment('开始时间');
             $table->string('end_time')->comment('截止时间');
             $table->string('weeks')->comment('周次详情');
+            $table->timestamps();
         });
     }
 
