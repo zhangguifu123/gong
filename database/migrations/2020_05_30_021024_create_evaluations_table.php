@@ -22,8 +22,8 @@ class CreateEvaluationsTable extends Migration
             $table->string("label")->comment("标签");
             $table->string("content");
             $table->integer("top")->default(0)->comment("置顶");
-            $table->string("location")->comment("地点");
-            $table->string("shop_name")->nullable()->comment("店名");
+//            $table->string("location")->comment("地点");
+//            $table->string("shop_name")->nullable()->comment("店名");
             $table->double("score")->index()->default(0)->comment("排序分值");
             $table->integer("views")->default(0)->comment("浏览量");
             $table->integer("collections")->default(0)->comment("被收藏次数");

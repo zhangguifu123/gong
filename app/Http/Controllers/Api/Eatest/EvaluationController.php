@@ -109,7 +109,7 @@ class EvaluationController extends Controller
             ->offset($offset)->orderByDesc("created_at")
             ->whereNotIn('id',$value)->get([
                 "id", "nickname as publisher_name", "label", "views","like",
-                "collections", "top", "img", "title", "location", "shop_name", "created_at as time"
+                "collections", "top", "img", "title", "created_at as time"
             ])->toArray();
 
         //判断若拉取首页，将推荐美文和正常拉取合并
@@ -154,7 +154,7 @@ class EvaluationController extends Controller
             ->where("top", "=", "0")
             ->get([
                 "id", "nickname as publisher_name", "label", "views","like",
-                "collections", "top", "img", "title", "location", "shop_name", "created_at as time"
+                "collections", "top", "img", "title", "created_at as time"
             ])
             ->toArray();
 
@@ -177,10 +177,11 @@ class EvaluationController extends Controller
     private function data_handle(Request $request = null){
         //声明理想数据格式
             $mod = [
+                "publisher" => ['integer'],
                 "img" => ["json"],
                 "title" => ["string", "max:50"],
                 "content" => ["string", "max:400"],
-                "location" => ["string", "max:20"],
+//                "location" => ["string", "max:20"],
                 "label" => ["json"],
                 "nickname" => ["string", "max:10"]
             ];

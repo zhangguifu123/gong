@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Evaluation extends Model
 {
     protected $fillable = [
-        "publisher", "label", "views", "collections", "like","img", "title", "content", "location", "shop_name", "nickname", "top"
+        "publisher", "label", "views", "collections", "like","img", "title", "content", "nickname", "top"
     ];
 
 }
