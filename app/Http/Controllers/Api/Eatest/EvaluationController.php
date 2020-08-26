@@ -203,10 +203,6 @@ class EvaluationController extends Controller
         if (Validator::make($data, $mod)->fails()) {
             return msg(3, '数据格式错误' . __LINE__);
         };
-        //店名是否填写
-        if (empty($data["shop_name"]) || $data["shop_name"] === ""){
-            $data["shop_name"] = NULL;
-        }
         return $data;
     }
 }

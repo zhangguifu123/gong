@@ -18,6 +18,8 @@ servers:
 security:
   - jwtToken: []
 tags:
+  - name: manager
+    description: 管理员 API
   - name: user
     description: 用户 API
   - name: gulu
@@ -29,7 +31,7 @@ tags:
   - name: eatest
     description: Eatest 评测
   - name: upick
-    description: Upick 推送
+    description: Upick 美食
   - name: library
     description: 图书馆
   - name: notice
@@ -43,7 +45,57 @@ tags:
   - name: admin
     description: 管理 API
 paths:
-  /users/login:
+  /manager/logion:
+    post:
+      tags:
+        - manager
+      summary: 登录
+      description: 三翼通行证登录
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stu_id:
+                  description: 用户名
+                  type: string
+                password:
+                  description: 密码
+                  type: string
+      responses:
+        '200':
+          description: 登录成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  # token:
+                  #   description: jwt token
+                  #   type: string
+                  code:
+                    description: 状态码
+                    type: integer
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  data:
+                    $ref: '#/components/schemas/ManagerInfo'
+          links:
+            me:
+              operationId: 获取用户信息
+              parameters:
+                Authentication: '$response.body#/token'
+        '403':
+          description: 登录失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /login:
     post:
       tags:
         - user
@@ -2208,10 +2260,6 @@ components:
           schema:
             type: object
             properties:
-              id:
-                type: integer
-                description: 学生id
-                example: 1
               nickname:
                 type: string
                 description: 昵称
@@ -2233,15 +2281,7 @@ components:
                 type: string
                 description: 评测内容
                 example: 贼tm好吃！！
-              location:
-                type: string
-                description: 美食地点
-                example: 联建
-              shopname:
-                type: string
-                description: 店名（选填）
-                example: 喜之郎小店
-              imgs:
+              img:
                 type: array
                 description: 图片地址（上传图片时返回）
                 example:
@@ -2284,15 +2324,7 @@ components:
                 type: string
                 description: 评测内容
                 example: 贼tm好吃！！
-              location:
-                type: string
-                description: 美食地点
-                example: 联建
-              shopname:
-                type: string
-                description: 店名（选填）
-                example: 喜之郎小店
-              imgs:
+              img:
                 type: array
                 description: 图片地址（上传图片时返回）
                 example:
@@ -2428,6 +2460,25 @@ components:
         error:
           description: 详细错误信息
           type: string
+    ManagerInfo:
+      type: object
+      properties:
+        id: 
+          description: id
+          type: integer
+          example: 1
+        name:
+          description: 姓名
+          type: string
+          example: 张桂福
+        stu_id:
+          description: 学号
+          type: integer
+          example: 201805710601
+        level:
+          description: 权限
+          type: string
+          example: 超级管理员
     UserInfo:
       type: object
       properties:
@@ -2800,14 +2851,6 @@ components:
             description: 标签
             type: string
             example: 今天的小可爱吃的真香
-          location: 
-            description: 地点
-            type: string
-            example: 联建
-          shop_name:
-            description: 店名
-            type: string
-            example: 小可爱的店铺
           time:
             description: 发布时间
             type: string
