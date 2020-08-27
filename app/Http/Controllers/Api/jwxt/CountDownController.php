@@ -35,7 +35,7 @@ class CountDownController extends Controller
     public function query(Request $request){
         //拉取数据
         $countdown_list=CountDown::select(['id','location','target','remarks','end_time'])
-            ->where('uid',$request->route('uid'))
+            ->where('uid',$request->route('uid'))->orderByDesc("top")
             ->get()->toArray();
 
         $message = ['total' => count($countdown_list), 'list' => $countdown_list];
@@ -44,10 +44,31 @@ class CountDownController extends Controller
 
     }
 
+    // 置顶
+    public function top(Request $request)
+    {
+        //取消以前的置顶
+        $old = CountDown::query()->where("top", "=", "1")->first();
+        if ($old) {
+            $old->update(["top" => 0]);
+        }
+        //查找目标
+        $countdown = CountDown::query()->find($request->route("id"));
+        //置顶
+        if ($countdown->update(["top" => 1])) {
+            return msg(0, __LINE__);
+        }
+        return msg(4, __LINE__);
+    }
+
+    //删除
     public function delete(Request $request){
+        //查找
         $countdown=CountDown::query()->find($request->route('id'));
         try{
+            //删除User表里倒计时
             User::query()->find($countdown->uid)->del_countdown($countdown->id);
+            //删除倒计时
             $countdown->delete();
             return msg(0,"删除成功");
         }catch (Exception $e){

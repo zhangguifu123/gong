@@ -15,7 +15,8 @@ class CountDown extends Model
         "location",
         "target",
         "remarks",
-        "end_time"
+        "end_time",
+        "top"
     ];
 
 

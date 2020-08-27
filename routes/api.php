@@ -58,14 +58,14 @@ Route::namespace('Api')->group(function (){
     /** 用户区 */
     Route::group(['middleware' => 'login.check'], function () {
         /**CountDown倒计时 */
-        Route::post('/jwxt/countdown', 'jwxt\CountDownController@addCountDown');
-
+        Route::post('/countdown', 'jwxt\CountDownController@addCountDown');
         Route::group(["middleware" => ["owner.countdown.check","countdown.exist.check"]],function (){
-            Route::delete('/jwxt/countdown/{id}', 'jwxt\CountDownController@delete')->where(["id" => "[0-9]+"]);
-            Route::put('/jwxt/countdown/{id}', 'jwxt\CountDownController@update')->where(["id" => "[0-9]+"]);
+            Route::delete('/countdown/{id}', 'jwxt\CountDownController@delete')->where(["id" => "[0-9]+"]);
+            Route::put('/countdown/{id}', 'jwxt\CountDownController@update')->where(["id" => "[0-9]+"]);
+            Route::put('/countdown/top/{id}','jwxt\CountDownController@top')->where(["id" => "[0-9]+"]);
         });
 
-        Route::get('/jwxt/countdown/{uid}', 'jwxt\CountDownController@query')->where(["uid" => "[0-9]+"])->middleware("owner.check");
+        Route::get('/countdown/{uid}', 'jwxt\CountDownController@query')->where(["uid" => "[0-9]+"])->middleware("owner.check");
 
 
         /**Eatest */

@@ -26,7 +26,7 @@ tags:
     description: 咕噜 API
   - name: course
     description: 课表 API（包括空课表/教室）
-  - name: timer
+  - name: countdown
     description: 倒计时
   - name: eatest
     description: Eatest 评测
@@ -897,98 +897,15 @@ paths:
           $ref: '#/components/responses/NoPermission'
         '404':
           $ref: '#/components/responses/NotFound'
-  /timer:
-    get:
-      summary: 查看倒计时
-      tags:
-        - timer
-      parameters:
-        - name: stu_id
-          description: 学号
-          in: query
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timer'
-              example:
-                code: 0
-                status: 成功
-                data:
-                  - id: 1
-                    target: 线性代数
-                    deal: null
-                    closingtime: '2020-03-09 15:00~17:00'
-                    location: 逸夫楼-111
-                  - id: 2
-                    target: 高等数学
-                    deal: null
-                    closingtime: '2020-03-11 09:00~11:00'
-                    location: 逸夫楼-102
-                  - id: 3
-                    target: 周末海底捞
-                    deal: 周末都给我嗨起来!
-                    closingtime: '2020-03-22 15:00~17:00'
-                    location: 万达
-        '401':
-          $ref: '#/components/responses/NotAuthorization'
-        '403':
-          $ref: '#/components/responses/NoPermission'
-        '404':
-          $ref: '#/components/responses/NotFound'
-    post:
-      summary: 添加倒计时
-      tags:
-        - timer
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Success'
-        '401':
-          $ref: '#/components/responses/NotAuthorization'
-        '403':
-          $ref: '#/components/responses/NoPermission'
-        '404':
-          $ref: '#/components/responses/NotFound'
+  /countdown/top/{id}:
     put:
-      summary: 修改倒计时
+      summary: 置顶
       tags:
-        - timer
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Success'
-        '401':
-          $ref: '#/components/responses/NotAuthorization'
-        '403':
-          $ref: '#/components/responses/NoPermission'
-        '404':
-          $ref: '#/components/responses/NotFound'
-    delete:
-      summary: 删除倒计时
-      tags:
-        - timer
+        - countdown
       parameters:
-        - name: stu_id
-          description: 学号
-          in: query
-          required: true
-          schema:
-            type: string
         - name: id
-          description: 需删倒计时id
-          in: query
+          description: 倒计时id
+          in: path
           required: true
           schema:
             type: string
@@ -1006,14 +923,129 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
       deprecated: false
+  /countdown/{uid}:
+    get:
+      summary: 查看倒计时
+      tags:
+        - countdown
+      parameters:
+        - name: uid
+          description: 学生id（不是学号！）
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CountDown'
+              example:
+                code: 0
+                status: 成功
+                data:
+                  - id: 1
+                    target: 线性代数
+                    remarks: null
+                    end_time: '2020-03-09'
+                    location: 逸夫楼-111
+                  - id: 2
+                    target: 高等数学
+                    remarks: null
+                    end_time: '2020-03-11'
+                    location: 逸夫楼-102
+                  - id: 3
+                    target: 周末海底捞
+                    remarks: 周末都给我嗨起来!
+                    end_time: '2020-03-22'
+                    location: 万达
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /countdown/{id}:
+    put:
+      summary: 修改倒计时
+      tags:
+        - countdown
+      parameters:
+        - name: id
+          description: 倒计时id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateCountDownBody'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      summary: 删除倒计时
+      tags:
+        - countdown
+      parameters:
+        - name: id
+          description: 倒计时id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      deprecated: false
+  /countdown:
+    post:
+      summary: 添加倒计时
+      tags:
+        - countdown
+      requestBody:
+        $ref: '#/components/requestBodies/CountDownBody'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    
   /eatest/image:
     post:
       summary: 图片上传
       operationId: EatestImage
       tags:
         - eatest
-      requestBody:
-        $ref: '#/components/requestBodies/ImageBody'
       responses:
         '200':
           description: 成功
@@ -2148,6 +2180,54 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   requestBodies:
+    CountDownBody:
+      description: 倒计时信息
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              target:
+                type: string
+                description: 目标
+                example: 周末海底捞
+              location: 
+                type: string
+                description: 目的地
+                example: 万达
+              end_time:
+                type: string
+                description: 截止日期
+                example: "2020-10-01"
+              remarks:
+                type: string
+                description: 备注
+                example: 会员卡别忘带了
+    UpdateCountDownBody:
+      description: 倒计时信息
+      required: true
+      content:
+        x-www-form-urlencoded:
+          schema:
+            type: object
+            properties:
+              target:
+                type: string
+                description: 目标
+                example: 周末海底捞
+              location: 
+                type: string
+                description: 目的地
+                example: 万达
+              end_time:
+                type: string
+                description: 截止日期
+                example: "2020-10-01"
+              remarks:
+                type: string
+                description: 备注
+                example: 会员卡别忘带了
     LibraryBody:
       description: 借书信息
       required: true
@@ -2854,7 +2934,7 @@ components:
           time:
             description: 发布时间
             type: string
-            example: 020-08-24 18:48:16
+            example: "020-08-24 18:48:16"
     
     GuideMessage:
       description: 地点信息
@@ -2984,7 +3064,7 @@ components:
                         description: 结束时间
                         type: integer
                         example: 4
-    Timer:
+    CountDown:
       description: 查看倒计时
       type: object
       properties:
@@ -3001,18 +3081,26 @@ components:
           items:
             type: object
             properties:
+              id:
+                description: 倒计时id
+                type: integer
+                example: 1
+              uid:
+                description: 学生id
+                type: integer
+                example: 1
               target:
-                description: 倒计时名称
+                description: 目标
                 type: string
                 example: 线性代数
-              deal:
+              remarks:
                 description: 备注
                 type: string
                 default: null
-              closingtime:
+              end_time:
                 description: 倒计时时间
                 type: string
-                example: 2020.03.09
+                example: 2020-03-09
               location:
                 description: 倒计时地点
                 type: string

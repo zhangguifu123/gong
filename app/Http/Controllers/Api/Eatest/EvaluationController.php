@@ -180,7 +180,6 @@ class EvaluationController extends Controller
                 "img" => ["json"],
                 "title" => ["string", "max:50"],
                 "content" => ["string", "max:400"],
-//                "location" => ["string", "max:20"],
                 "label" => ["json"],
                 "nickname" => ["string", "max:10"]
             ];
