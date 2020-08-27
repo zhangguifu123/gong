@@ -75,15 +75,17 @@ class Kernel extends HttpKernel
         'manager.super.check' => \App\Http\Middleware\Manager\SuperPowerCheck::class,
         //Upick
         'food.exist.check' => \App\Http\Middleware\Food\ExistCheck::class,
-        //Eatest_Comment
+        //EatestComment
         'comment.from.check' => \App\Http\Middleware\Comments\FromCheck::class,
         'comment.exist.check' => \App\Http\Middleware\Comments\ExistCheck::class,
-        //Eatest_Reply
+        //EatestReply
         'reply.id.check' => \App\Http\Middleware\Comments\ReplyIdCheck::class,
         'reply.exist.check' => \App\Http\Middleware\Manager\ReplyCheck::class,
         //Eatest
         'owner.eatest.check' => \App\Http\Middleware\Eatest\OwnerCheck::class,
-        'evaluation.exist.check' => \App\Http\Middleware\Eatest\ExistCheck::class
-
+        'eatest.exist.check' => \App\Http\Middleware\Eatest\ExistCheck::class,
+        //CountDown
+        'countdown.exist.check' => \App\Http\Middleware\jwxt\CountDownExistCheck::class,
+        'owner.countdown.check' => \App\Http\Middleware\jwxt\OwnerCountDownCheck::class,
     ];
 }

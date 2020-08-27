@@ -23,57 +23,70 @@ Route::namespace('Api')->group(function (){
     Route::post('login','StudentLoginController@login');
     Route::post('/manager/login', "ManagerController@login");
     Route::get('/upick/list/{page}', "Eatest\FoodController@get_list")->where(["page" => "[0-9]+"]);
+    Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware("eatest.exist.check");
     //图片上传
     Route::post('/image','ImageController@upload');
     Route::get('/eatest/list/{page}', "Eatest\EvaluationController@get_list")->where(["page" => "[0-9]+"]);
+
+
+    /**Upick 管理员*/
+    //用户登录验证
+    Route::get('/food', "Eatest\FoodController@get");
+    //管理员登录验证区
+    Route::group(['middleware' => 'manager.login.check'], function () {
+        Route::post('/manager/update', "ManagerController@update");
+        Route::get('/manager/list', "ManagerController@list");
+
+        // 超级管理员验证
+        Route::group(['middleware' => 'manager.super.check'], function () {
+            Route::post('/manager/add', "ManagerController@add");
+            Route::delete('/manager/{id}', "ManagerController@delete")->where(["id" => "[0-9]+"]);
+        });
+
+        // 美食库区域
+        Route::post('/upick', "Eatest\FoodController@publish");
+
+    });
+    /**
+     * 测试Upick暂时移出来
+     */
+    Route::group(['middleware' => 'food.exist.check'], function () {
+        Route::put('/upick/{id}', "Eatest\FoodController@update")->where(["id" => "[0-9]+"]);
+        Route::delete('/upick/{id}', "Eatest\FoodController@delete")->where(["id" => "[0-9]+"]);
+    });
+
     /** 用户区 */
     Route::group(['middleware' => 'login.check'], function () {
-        /**Upick */
-        //用户登录验证
-        Route::get('/food', "Eatest\FoodController@get");
+        /**CountDown倒计时 */
+        Route::post('/jwxt/count_down', 'jwxt\CountDownController@addCountDown');
 
-
-        //管理员登录验证区
-        Route::group(['middleware' => 'manager.login.check'], function () {
-            Route::post('/manager/update', "ManagerController@update");
-            Route::get('/manager/list', "ManagerController@list");
-
-            // 超级管理员验证
-            Route::group(['middleware' => 'manager.super.check'], function () {
-                Route::post('/manager/add', "ManagerController@add");
-                Route::delete('/manager/{id}', "ManagerController@delete")->where(["id" => "[0-9]+"]);
-            });
-
-            // 美食库区域
-            Route::post('/upick', "Eatest\FoodController@publish");
-
+        Route::group(["middleware" => ["owner.countdown.check","countdown.exist.check"]],function (){
+            Route::delete('/jwxt/count_down/{id}', 'jwxt\CountDownController@delete')->where(["id" => "[0-9]+"]);
+            Route::put('/jwxt/count_down/{id}', 'jwxt\CountDownController@update')->where(["id" => "[0-9]+"]);
         });
-        /**
-         * 测试Upick暂时移出来
-         */
-            Route::group(['middleware' => 'food.exist.check'], function () {
-                Route::put('/upick/{id}', "Eatest\FoodController@update")->where(["id" => "[0-9]+"]);
-                Route::delete('/upick/{id}', "Eatest\FoodController@delete")->where(["id" => "[0-9]+"]);
-            });
+
+        Route::get('/jwxt/count_down/{uid}', 'jwxt\CountDownController@query')->where(["uid" => "[0-9]+"])->middleware("owner.check");
+
+
         /**Eatest */
         //Eatest增删改查
         Route::post('/eatest','Eatest\EvaluationController@publish');
-        Route::get('/eatest/me/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware("evaluation.exist.check");
+        Route::get('/eatest/me/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware("owner.check");
             // 测评所有者和管理员均可操作
-        Route::group(["middleware" => ['owner.eatest.check', "evaluation.exist.check"]], function () {
+        Route::group(["middleware" => ['owner.eatest.check', "eatest.exist.check"]], function () {
             Route::put('/eatest/{id}','Eatest\EvaluationController@update')->where(["id" => "[0-9]+"]);
             Route::delete('/eatest/{id}', "Eatest\EvaluationController@delete")->where(["id" => "[0-9]+"]);
         });
         //Eatest上传图片
         Route::post('/eatest/image', "Eatest\ImageController@upload");
         //Eatest点赞收藏
-        Route::group(["middleware" => 'evaluation.exist.check'], function () {
+        Route::group(["middleware" => 'eatest.exist.check'], function () {
             Route::post('/eatest/like/{id}', "Eatest\LikeController@like")->where(["id" => "[0-9]+"]);
             Route::post('/eatest/keep/{id}', "Eatest\CollectionController@keep")->where(["id" => "[0-9]+"]);
         });
 
         //Eatest评论
-        Route::post('eatest/{id}/comments','Eatest\CommentController@publish')->where(["id"=>"[0-9]+"])->middleware(['evaluation.exist.check','comment.from.check']);
+        Route::post('eatest/{id}/comments','Eatest\CommentController@publish')->where(["id"=>"[0-9]+"])->middleware(['eatest.exist.check','comment.from.check']);
         //Eatest评论回复
         Route::post('eatest/{toId}/reply/{fromId}','Eatest\ReplyController@publish')->where(["toId"=>"[0-9]+","fromId"=>"[0-9]+"])->middleware('reply.exist.check');
 
@@ -97,10 +110,6 @@ Route::namespace('Api')->group(function (){
         /**AssociationCode */
         Route::get('/course/association/{uid}','jwxt\AssociationCodeController@get_association')->where(["uid"=>"[0-9]{12}"]);
         Route::get('/course/uid/{association}','jwxt\AssociationCodeController@get_uid')->where(["association" => "\w{8}"]);
-
-
-
-
 
         //测试
         Route::get('/eatest/image', "Eatest\ImageController@get");

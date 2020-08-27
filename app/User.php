@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'gulu','like','name','nickname', 'stu_id', 'password', 'collection', 'eatest', "remember","avatar"
+        'countdown','gulu','like','name','nickname', 'stu_id', 'password', 'collection', 'eatest', "remember","avatar"
     ];
 
     /**
@@ -46,9 +46,30 @@ class User extends Authenticatable
             'like' => $this->like,
             'eatest' => $this->eatest,
             'gulu' => $this->gulu,
+            'countdown' => $this->countdown,
             'remember' => $this->remember,
             'avatar' => $this->avatar
         ];
+    }
+
+    public function add_countdown($countdown_id)
+    {
+        $countdown_list = json_decode($this->countdown, true);
+        if (!key_exists($countdown_id, $countdown_list)) {
+            $countdown_list[$countdown_id] = 1;
+        }
+        $this->countdown = json_encode($countdown_list);
+        $this->save();
+    }
+
+    public function del_countdown($countdown_id)
+    {
+        $countdown_list = json_decode($this->countdown, true);
+        if (key_exists($countdown_id, $countdown_list)) {
+            unset($countdown_list[$countdown_id]);
+        }
+        $this->countdown = json_encode($countdown_list);
+        $this->save();
     }
 
     public function add_eatest($evaluation_id)

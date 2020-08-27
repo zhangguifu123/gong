@@ -47,6 +47,7 @@ class StudentLoginController extends Controller
                     'like' => '[]',
                     'eatest' => '[]', //mysql 中 json 默认值只能设置为NULL 为了避免不必要的麻烦，在创建的时候赋予初始值
                     'gulu' => '[]',
+                    'countdown' => '[]',
                     'collection' => '[]',
                     'remember' => md5($data['password'] . time() . rand(1000, 2000))
                 ]);
@@ -92,7 +93,7 @@ class StudentLoginController extends Controller
 
         $publish_list = DB::table("evaluations")->whereIn("evaluations.id", $publish_id_list)
             ->get(["id", "nickname as publisher_name", "tag","like","avatar", "views",
-                "collections", "img", "title", "location", "shop_name", "created_at as time"])->toArray();
+                "collections","img", "title", "location", "shop_name", "created_at as time"])->toArray();
         $list_count =  DB::table("evaluations")->whereIn("evaluations.id", $publish_id_list)
             ->count();
         $message = ['total'=>$list_count,'list'=>$publish_list];

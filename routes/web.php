@@ -16,3 +16,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+//http://localhost/index.php/ab/201805650214/考试/南山/ww/2020-08-23 23:00
+

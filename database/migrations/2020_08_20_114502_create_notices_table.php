@@ -13,10 +13,10 @@ class CreateNoticesTable extends Migration
      */
     public function up()
     {
-        Schema::create('notices', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+//        Schema::create('notices', function (Blueprint $table) {
+//            $table->id();
+//            $table->timestamps();
+//        });
     }
 
     /**
