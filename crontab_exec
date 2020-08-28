@@ -1,0 +1,2 @@
+* * * * * /usr/local/bin/php /Users/zy/web/gong/artisan schedule:run 
+*/1 * * * * ls

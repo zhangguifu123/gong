@@ -51,7 +51,7 @@ class ImageController extends Controller
             return msg(500, "图片保存失败" . __LINE__);
         }
         $pic_url = config("app.url") . "/storage/image/". $all_name;
-        $redis->hSet("eatest_image", $pic_url, time()); // 存储图片上传时间 外部辅助脚本过期后删除
+        $redis->hSet("images", $pic_url, time()); // 存储图片上传时间 外部辅助脚本过期后删除
         return msg(0, $pic_url);
     }
 
@@ -60,13 +60,26 @@ class ImageController extends Controller
         // 如果redis连接失败 中止保存
         try {
             $redis = new Redis();
-            $redis->connect('eatest_redis', 6379);
-            print_r("success");
+            $redis->connect('gong_redis', 6379);
         } catch (Exception $e) {
-            return msg(500, "连接redis失败" . __LINE__);
+            return msg(4, "连接redis失败" . __LINE__);
         }
-        print_r($redis->hGetAll('eatest_image'));
-
+        print_r($redis->hGetAll('images'));
+        $disk = Storage::disk('img')->allFiles();
+        print_r($disk);
+        $files = Storage::allFiles();   //遍历存储文件
+        if (!$files){
+            return msg(5,"文件仓库为空".__LINE__);
+        }
+        foreach ($files as $file){
+            //遍历结果去掉前缀
+            $test = stripos($file,"jpg");
+            if ($test){
+                $Storage_replace = str_replace("public/image/","",$file);
+                $Storage_files[] = $Storage_replace;
+            }
+        }
+        print_r($Storage_files);
 
     }
 
@@ -92,13 +105,13 @@ class ImageController extends Controller
 
         try {                          //遍历redis
             $redis = new Redis();
-            $redis->connect('image_redis_db', 6379);
+            $redis->connect('gong_redis', 6379);
         } catch (Exception $e) {
             return msg(500, "连接redis失败" . __LINE__);
         }
-        $files = $redis->hkeys("eatest_image");
+        $files = $redis->hkeys("images");
         foreach ($files as $file){           //遍历结果去掉前缀
-            $redis_replace = str_replace("https://test.gong.com/storage/image/","",$file);
+            $redis_replace = str_replace("http://zgf.jsky31.cn:10302/storage/image/","",$file);
             $redis_files[] = $redis_replace;
         }
         print_r($redis_files);

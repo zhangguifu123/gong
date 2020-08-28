@@ -34,7 +34,7 @@ class CountDownController extends Controller
 
     public function query(Request $request){
         //拉取数据
-        $countdown_list=CountDown::select(['id','location','target','remarks','end_time'])
+        $countdown_list=CountDown::query()
             ->where('uid',$request->route('uid'))->orderByDesc("top")
             ->get()->toArray();
 
@@ -108,7 +108,6 @@ class CountDownController extends Controller
         }
         //提取数据
         $data = $request->only(array_keys($mod));
-
         //判断数据格式
         if (Validator::make($data, $mod)->fails()) {
             return msg(3, '数据格式错误' . __LINE__);

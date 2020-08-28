@@ -33,7 +33,7 @@ class EvaluationController extends Controller
         }
         //删除路由记录
         foreach ($imgs as $i) {
-            $redis->hDel('eatest_image', $i);
+            $redis->hDel('images', $i);
         }
         //发布，同时将评测加入我的发布
         if ($evaluation->save()) {
