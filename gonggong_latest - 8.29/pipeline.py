@@ -1,14 +1,14 @@
 import pymysql
 from config import CONNECTION
 from datetime import date, timedelta
-from spider import PersonalSpider
+from spider import PersonalSpider, JWXTSpider
 
 class GongGongPipeline():
     """
     继承GongGongPipeline类
     只需重写sql语句，以及get_data_list和output_data方法
     """
-    def __init__(self, sid):
+    def __init__(self, sid=None):
         self.connection = CONNECTION
         self.cursor = self.connection.cursor()
         self.sid = sid
@@ -125,7 +125,7 @@ class GradePipeline(GongGongPipeline):
                                     credit FLOAT NOT NULL
                                     )"""
 
-        self.insert_flag_sql = f"INSERT INTO flag (sid, info, grades, schedule, all_schedule) VALUES({self.sid}, 0, 0, 0, 0)"
+        self.insert_flag_sql = f"INSERT INTO flag (sid, info, grades, schedule, all_schedule, exam, gpa) VALUES({self.sid}, 0, 0, 0, 0, 0, 0)"
         self.check_flag_sql = f"SELECT grades FROM flag WHERE sid={self.sid}"
         self.update_flag_sql = f"UPDATE flag SET grades=1 WHERE sid={self.sid}"
 
@@ -134,8 +134,8 @@ class GradePipeline(GongGongPipeline):
         self.select_data_sql = f"SELECT * FROM grades WHERE sid={self.sid}"
         self.delete_data_sql = f"DELETE FROM grades WHERE sid={self.sid}"
 
-        self.insert_update_time_sql = f"""INSERT INTO update_time (sid, info, grade, schedule, all_schedule)
-                                                          VALUES ({self.sid}, NULL, NULL, NULL, NULL)"""
+        self.insert_update_time_sql = f"""INSERT INTO update_time (sid, info, grade, schedule, all_schedule, exam, gpa)
+                                                          VALUES ({self.sid}, NULL, NULL, NULL, NULL, NULL, NULL)"""
         self.get_update_time_sql = f"SELECT grades FROM update_time WHERE sid={self.sid}"
         self.update_update_time_sql = f"UPDATE update_time SET grades='{self.today.strftime('%Y-%m-%d')}' WHERE sid={self.sid}"
 
@@ -198,7 +198,7 @@ class SchedulePipeline(GongGongPipeline):
                                     week_string VARCHAR(255) NOT NULL
                                     )"""
 
-        self.insert_flag_sql = f"INSERT INTO flag (sid, info, grades, schedule, all_schedule, exam) VALUES({self.sid}, 0, 0, 0, 0, 0)"
+        self.insert_flag_sql = f"INSERT INTO flag (sid, info, grades, schedule, all_schedule, exam, gpa) VALUES({self.sid}, 0, 0, 0, 0, 0, 0)"
         self.check_flag_sql = f"SELECT schedule FROM flag WHERE sid={self.sid}"
         self.update_flag_sql = f"UPDATE flag SET schedule=1 WHERE sid={self.sid}"
 
@@ -208,8 +208,8 @@ class SchedulePipeline(GongGongPipeline):
         self.select_data_sql = f"SELECT * FROM schedule WHERE sid={self.sid}"
         self.delete_data_sql = f"DELETE FROM schedule WHERE sid={self.sid}"
 
-        self.insert_update_time_sql = f"""INSERT INTO update_time (sid, info, grades, schedule, all_schedule, exam)
-                                                                  VALUES ({self.sid}, NULL, NULL, NULL, NULL, NULL)"""
+        self.insert_update_time_sql = f"""INSERT INTO update_time (sid, info, grades, schedule, all_schedule, exam, gpa)
+                                                                  VALUES ({self.sid}, NULL, NULL, NULL, NULL, NULL, NULL)"""
         self.get_update_time_sql = f"SELECT schedule FROM update_time WHERE sid={self.sid}"
         self.update_update_time_sql = f"UPDATE update_time SET schedule='{self.today.strftime('%Y-%m-%d')}' WHERE sid={self.sid}"
 
@@ -334,7 +334,7 @@ class InfoPipeline(GongGongPipeline):
                                     email VARCHAR(255) 
                                     )"""
 
-        self.insert_flag_sql = f"INSERT INTO flag (sid, info, grades, schedule, all_schedule, exam) VALUES({self.sid}, 0, 0, 0, 0, 0)"
+        self.insert_flag_sql = f"INSERT INTO flag (sid, info, grades, schedule, all_schedule, exam, gpa) VALUES({self.sid}, 0, 0, 0, 0, 0, 0)"
         self.check_flag_sql = f"SELECT info FROM flag WHERE sid={self.sid}"
         self.update_flag_sql = f"UPDATE flag SET info=1 WHERE sid={self.sid}"
 
@@ -343,8 +343,8 @@ class InfoPipeline(GongGongPipeline):
         self.select_data_sql = f"SELECT * FROM info WHERE sid={self.sid}"
         self.delete_data_sql = f"DELETE FROM info WHERE sid={self.sid}"
 
-        self.insert_update_time_sql = f"""INSERT INTO update_time (sid, info, grades, schedule, all_schedule, exam)
-                                                          VALUES ({self.sid}, NULL, NULL, NULL, NULL, NULL)"""
+        self.insert_update_time_sql = f"""INSERT INTO update_time (sid, info, grades, schedule, all_schedule, exam, gpa)
+                                                          VALUES ({self.sid}, NULL, NULL, NULL, NULL, NULL, NULL)"""
         self.get_update_time_sql = f"SELECT info FROM update_time WHERE sid={self.sid}"
         self.update_update_time_sql = f"UPDATE update_time SET info='{self.today.strftime('%Y-%m-%d')}' WHERE sid={self.sid}"
 
@@ -474,7 +474,7 @@ class ExamPipeline(GongGongPipeline):
                                     location VARCHAR(255) NOT NULL
                                     )"""
 
-        self.insert_flag_sql = f"INSERT INTO flag (sid, info, grades, schedule, all_schedule, exam) VALUES({self.sid}, 0, 0, 0, 0, 0)"
+        self.insert_flag_sql = f"INSERT INTO flag (sid, info, grades, schedule, all_schedule, exam, gpa) VALUES({self.sid}, 0, 0, 0, 0, 0, 0)"
         self.check_flag_sql = f"SELECT exam FROM flag WHERE sid={self.sid}"
         self.update_flag_sql = f"UPDATE flag SET exam=1 WHERE sid={self.sid}"
 
@@ -483,8 +483,8 @@ class ExamPipeline(GongGongPipeline):
         self.select_data_sql = f"SELECT * FROM exam WHERE sid={self.sid}"
         self.delete_data_sql = f"DELETE FROM exam WHERE sid={self.sid}"
 
-        self.insert_update_time_sql = f"""INSERT INTO update_time (sid, info, grades, schedule, all_schedule, exam)
-                                                                                  VALUES ({self.sid}, NULL, NULL, NULL, NULL, NULL)"""
+        self.insert_update_time_sql = f"""INSERT INTO update_time (sid, info, grades, schedule, all_schedule, exam, gpa)
+                                                                                  VALUES ({self.sid}, NULL, NULL, NULL, NULL, NULL, NULL)"""
         self.get_update_time_sql = f"SELECT exam FROM update_time WHERE sid={self.sid}"
         self.update_update_time_sql = f"UPDATE update_time SET exam='{self.today.strftime('%Y-%m-%d')}' WHERE sid={self.sid}"
 
@@ -508,10 +508,62 @@ class ExamPipeline(GongGongPipeline):
         return exam
 
 
+class GPAPipeline(GongGongPipeline):
+    def __init__(self, sid):
+        super(GPAPipeline, self).__init__(sid)
+        self.update_time = 7
+
+        self.create_table_sql = """CREATE TABLE gpa (
+                                    id INT(255) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                                    sid VARCHAR(255) NOT NULL,
+                                    term VARCHAR(255) NOT NULL,
+                                    gpa VARCHAR(255) NOT NULL,
+                                    average_grade VARCHAR(255) NOT NULL,
+                                    gpa_class_rank VARCHAR(255) NOT NULL,
+                                    gpa_major_rank VARCHAR(255) NOT NULL
+                                    )"""
+
+        self.insert_flag_sql = f"INSERT INTO flag (sid, info, grades, schedule, all_schedule, exam, gpa) VALUES({self.sid}, 0, 0, 0, 0, 0, 0)"
+        self.check_flag_sql = f"SELECT gpa FROM flag WHERE sid={self.sid}"
+        self.update_flag_sql = f"UPDATE flag SET gpa=1 WHERE sid={self.sid}"
+
+        self.insert_data_sql = """INSERT INTO gpa (sid, term, gpa, average_grade, gpa_class_rank, gpa_major_rank)
+                                          VALUES (%s, %s, %s, %s, %s, %s)"""
+        self.select_data_sql = f"SELECT * FROM gpa WHERE sid={self.sid}"
+        self.delete_data_sql = f"DELETE FROM gpa WHERE sid={self.sid}"
+
+        self.insert_update_time_sql = f"""INSERT INTO update_time (sid, info, grades, schedule, all_schedule, exam, gpa)
+                                                                                  VALUES ({self.sid}, NULL, NULL, NULL, NULL, NULL, NULL)"""
+        self.get_update_time_sql = f"SELECT gpa FROM update_time WHERE sid={self.sid}"
+        self.update_update_time_sql = f"UPDATE update_time SET gpa='{self.today.strftime('%Y-%m-%d')}' WHERE sid={self.sid}"
+
+
+    def get_data_list(self, all_gpa):
+        data_list = []
+        for item in all_gpa.values():
+            data = [x for x in item.values()]
+            data.insert(0, self.sid)
+            data_list.append(data)
+        return data_list
+
+
+    def output_data(self, term):
+        results = self.select_data()
+        result = list(filter(lambda x: x[2] == term, results))[0]
+        keys = ['term', 'gpa', 'average_grade', 'gpa_class_rank', 'gpa_major_rank']
+        values = [result[i] for i in range(2, 7)]
+        gpa = dict(zip(keys, values))
+        return gpa
+
+
+
+
+
+
 if __name__ == '__main__':
     pass
-    sid = '201805710203'
-    pwd = 'SKTFaker11'
+    # sid = '201805710203'
+    # pwd = 'SKTFaker11'
     # spider = PersonalSpider(sid, pwd)
     # grade = spider.get_grade()
     # xq = '2018-2019-1'
@@ -520,6 +572,9 @@ if __name__ == '__main__':
     # print(schedule)
     # info = spider.get_info()
     # exam = spider.get_exam()
+    # spider = JWXTSpider(sid, pwd)
+    # gpa = spider.get_all_gpa()
+    # gpa = spider.get_gpa('2018-2019-2')
 
 
     # GradesPipeline测试
@@ -534,12 +589,12 @@ if __name__ == '__main__':
     # pipeline1.insert_data(grade)
 
     # SchedulePipeline测试
-    pipeline2 = SchedulePipeline(sid)
+    # pipeline2 = SchedulePipeline(sid)
     # print(pipeline2.get_flag())
     # print(pipeline2.get_data_list(schedule, xq))
-    schedule = pipeline2.output_data()
+    # schedule = pipeline2.output_data()
     # schedule = pipeline2.select_data()
-    print(schedule)
+    # print(schedule)
     # pipeline2.insert_data(schedule, xq)
     # pipeline2.create_table()
 
@@ -568,3 +623,11 @@ if __name__ == '__main__':
     # print(pipeline5.get_data_list(exam))
     # pipeline5.create_table()
     # pipeline5.insert_data(exam)
+
+
+    # GPAPipeline测试
+    # pipeline6 = GPAPipeline(sid)
+    # pipeline6.create_table()
+    # print(pipeline6.get_data_list(gpa))
+    # pipeline6.insert_data(gpa)
+    # print(pipeline6.output_data('2018-2019-2'))
