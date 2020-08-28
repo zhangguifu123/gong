@@ -136,6 +136,8 @@ def get_exam():
 
 
 
+
+
 @app.route('/now_schedule', methods=['POST'])
 def get_now_schedule():
     # method = 'getKbcxAzc'

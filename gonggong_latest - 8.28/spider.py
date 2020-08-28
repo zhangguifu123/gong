@@ -7,6 +7,25 @@ from queue import LifoQueue, Queue
 import http.cookiejar
 import urllib.request
 
+# 通过 week 获取 week_string
+def get_week_string(string):
+	if '-' not in string:
+		result = string
+	elif ',' not in string:
+		num1 = int(string.split('-')[0])
+		num2 = int(string.split('-')[1])
+		week = [str(i) for i in range(num1, num2+1)]
+		result = ','.join(week)
+	else:
+		num1 = int(string.split(',')[0].split('-')[0])
+		num2 = int(string.split(',')[0].split('-')[1])
+		num3 = int(string.split(',')[1].split('-')[0])
+		num4 = int(string.split(',')[1].split('-')[1])
+		week = [str(i) for i in range(num1, num2+1)] + [str(i) for i in range(num3, num4+1)]
+		result = ','.join(week)
+
+	return result
+
 
 class PersonalSpider():
     url = 'http://jwxt.xtu.edu.cn/app.do'
@@ -152,6 +171,7 @@ class PersonalSpider():
                         item['start_time'] = schedule['kssj']  # 开始时间
                         item['end_time'] = schedule['jssj']  # 结束时间
                         item['week'] = schedule['kkzc']  # 开课周次
+                        item['week_string'] = get_week_string(item['week'])
                     except Exception as e:
                         print(e)
                     items.append(item)
@@ -186,6 +206,7 @@ class PersonalSpider():
                     item['start_time'] = schedule['kssj']  # 开始时间
                     item['end_time'] = schedule['jssj']  # 结束时间
                     item['week'] = schedule['kkzc']  # 开课周次
+                    item['week_string'] = get_week_string(item['week'])
                 except:
                     pass
                 if item:
@@ -404,6 +425,7 @@ if __name__ == '__main__':
     pass
     sid = '201805710203'
     pwd = 'SKTFaker11'
-    # spider = PersonalSpider(sid, pwd)
+    spider = PersonalSpider(sid, pwd)
     # print(spider.get_exam_info())
     # print(spider.get_exam())
+    spider.get_schedule('2018-2019-1')

@@ -194,7 +194,8 @@ class SchedulePipeline(GongGongPipeline):
                                     section_length VARCHAR(255) NOT NULL,
                                     start_time VARCHAR(255),
                                     end_time VARCHAR(255),
-                                    weeks VARCHAR(255) NOT NULL 
+                                    weeks VARCHAR(255) NOT NULL,
+                                    week_string VARCHAR(255) NOT NULL
                                     )"""
 
         self.insert_flag_sql = f"INSERT INTO flag (sid, info, grades, schedule, all_schedule, exam) VALUES({self.sid}, 0, 0, 0, 0, 0)"
@@ -202,8 +203,8 @@ class SchedulePipeline(GongGongPipeline):
         self.update_flag_sql = f"UPDATE flag SET schedule=1 WHERE sid={self.sid}"
 
 
-        self.insert_data_sql = """INSERT INTO schedule (sid, term, week, course, teacher, location, day, section_start, section_end, section_length, start_time, end_time, weeks)
-                                  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        self.insert_data_sql = """INSERT INTO schedule (sid, term, week, course, teacher, location, day, section_start, section_end, section_length, start_time, end_time, weeks, week_string)
+                                  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
         self.select_data_sql = f"SELECT * FROM schedule WHERE sid={self.sid}"
         self.delete_data_sql = f"DELETE FROM schedule WHERE sid={self.sid}"
 
@@ -218,19 +219,19 @@ class SchedulePipeline(GongGongPipeline):
             for item in items:
                 if item:
                     data = [self.sid, semester, week, item['course'], item['teacher'], item['location'],
-                            item['day'], item['section_start'], item['section_end'], item['section_length'], item['start_time'], item['end_time'], item['week']]
+                            item['day'], item['section_start'], item['section_end'], item['section_length'], item['start_time'], item['end_time'], item['week'], item['week_string']]
                     data_list.append(data)
         return data_list
 
 
     def output_data(self):
         results = self.select_data()
-        keys = ['course', 'teacher', 'location', 'day', 'section_start', 'section_end', 'section_length', 'start_time', 'end_time', 'week']
+        keys = ['course', 'teacher', 'location', 'day', 'section_start', 'section_end', 'section_length', 'start_time', 'end_time', 'week', 'week_string']
         semester_schedule = []
         weeks = []
         week_schedule = []
         for index, result in enumerate(results):
-            values = [result[i] for i in range(4, 14)]
+            values = [result[i] for i in range(4, 15)]
             if result[3] not in weeks:
                 if index != 0:
                     semester_schedule.append(week_schedule)
@@ -352,15 +353,16 @@ class AllSchedulePipeline(GongGongPipeline):
                                     section_length VARCHAR(255) NOT NULL,
                                     start_time VARCHAR(255),
                                     end_time VARCHAR(255),
-                                    weeks VARCHAR(255) NOT NULL 
+                                    weeks VARCHAR(255) NOT NULL,
+                                    week_string VARCHAR(255) NOT NULL
                                     )"""
 
         self.insert_flag_sql = f"INSERT INTO flag (sid, info, grades, schedule, all_schedule, exam) VALUES({self.sid}, 0, 0, 0, 0, 0)"
         self.check_flag_sql = f"SELECT all_schedule FROM flag WHERE sid={self.sid}"
         self.update_flag_sql = f"UPDATE flag SET all_schedule=1 WHERE sid={self.sid}"
 
-        self.insert_data_sql = """INSERT INTO all_schedule (sid, term, week, course, teacher, location, day, section_start, section_end, section_length, start_time, end_time, weeks)
-                                          VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        self.insert_data_sql = """INSERT INTO all_schedule (sid, term, week, course, teacher, location, day, section_start, section_end, section_length, start_time, end_time, weeks， week_string)
+                                          VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
         self.select_data_sql = f"SELECT * FROM all_schedule WHERE sid={self.sid}"
         self.delete_data_sql = f"DELETE FROM all_schedule WHERE sid={self.sid}"
 
@@ -377,18 +379,18 @@ class AllSchedulePipeline(GongGongPipeline):
                 for item in items:
                     if item:
                         data = (self.sid, semester, week, item['course'], item['teacher'], item['location'],
-                                item['day'], item['section_start'], item['section_end'], item['section_length'], item['start_time'], item['end_time'], item['week'])
+                                item['day'], item['section_start'], item['section_end'], item['section_length'], item['start_time'], item['end_time'], item['week'], item['week_string'])
                         data_list.append(data)
         return data_list
 
 
     def output_data(self):
         results = self.select_data()
-        keys = ['course', 'teacher', 'location', 'day', 'section_start', 'section_end', 'section_length', 'start_time', 'end_time', 'week']
+        keys = ['course', 'teacher', 'location', 'day', 'section_start', 'section_end', 'section_length', 'start_time', 'end_time', 'week', 'week_string']
         semesters = []
         all_semester_schedule = []
         for index, result in enumerate(results):
-            values = [result[i] for i in range(4, 14)]
+            values = [result[i] for i in range(4, 15)]
 
             if result[2] not in semesters:
                 semesters.append(result[2])
@@ -464,7 +466,6 @@ class ExamPipeline(GongGongPipeline):
         exam = []
         for result in results:
             values = [result[i] for i in range(1, 9)]
-            values.insert(0, self.sid)
             exam.append(dict(zip(keys, values)))
         return exam
 
