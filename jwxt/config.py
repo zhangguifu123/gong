@@ -5,10 +5,10 @@ DEBUG = True
 threaded = True
 
 CONNECTION = pymysql.connect(
-    host='127.0.0.1',
-    port=8001,
+    host='120.78.162.10',
+    port=3306,
     user='root',
-    password='yourpassword',
-    database='gong',
+    password='SKTFaker11',
+    database='gonggong',
     charset='utf8'
 )
