@@ -156,25 +156,34 @@ class PersonalSpider():
                 self.params['zc'] = i
                 res = requests.get(self.url, params=self.params, headers=self.HEADERS)
                 schedules = res.json()
-                items = []
+                items = {
+                    '1': [],
+                    '2': [],
+                    '3': [],
+                    '4': [],
+                    '5': [],
+                    '6': [],
+                    '7': [],
+                }
                 for schedule in schedules:
                     item = {}
-                    try:
-                        item['course'] = schedule['kcmc']  # 课程名称
-                        item['teacher'] = schedule['jsxm']  # 老师名称
-                        item['location'] = schedule['jsmc']  # 课程地点
-                        # item['time'] = schedule['kcsj']  # 上课时间， 格式为x0a0b 表示为 周x第a节到第b节
-                        item['day'] = schedule['kcsj'][0]
-                        item['section_start'] = str(int(schedule['kcsj'][1:3]))
-                        item['section_end'] = str(int(schedule['kcsj'][3:5]))
-                        item['section_length'] = str(int(item['section_end']) - int(item['section_start']) + 1)
-                        item['start_time'] = schedule['kssj']  # 开始时间
-                        item['end_time'] = schedule['jssj']  # 结束时间
-                        item['week'] = schedule['kkzc']  # 开课周次
-                        item['week_string'] = get_week_string(item['week'])
-                    except Exception as e:
-                        print(e)
-                    items.append(item)
+                    if schedule:
+                        try:
+                            item['course'] = schedule['kcmc']  # 课程名称
+                            item['teacher'] = schedule['jsxm']  # 老师名称
+                            item['location'] = schedule['jsmc']  # 课程地点
+                            # item['time'] = schedule['kcsj']  # 上课时间， 格式为x0a0b 表示为 周x第a节到第b节
+                            item['day'] = schedule['kcsj'][0]
+                            item['section_start'] = str(int(schedule['kcsj'][1:3]))
+                            item['section_end'] = str(int(schedule['kcsj'][3:5]))
+                            item['section_length'] = str(int(item['section_end']) - int(item['section_start']) + 1)
+                            item['start_time'] = schedule['kssj']  # 开始时间
+                            item['end_time'] = schedule['jssj']  # 结束时间
+                            item['week'] = schedule['kkzc']  # 开课周次
+                            item['week_string'] = get_week_string(item['week'])
+                        except Exception as e:
+                            print(e)
+                        items[item['day']].append(item)
                 result[i] = items
         all_schedule[q] = result
 
@@ -191,7 +200,15 @@ class PersonalSpider():
             self.params['zc'] = i
             res = requests.get(self.url, params=self.params, headers=self.HEADERS)
             schedules = res.json()
-            items = []
+            items = {
+                '1': [],
+                '2': [],
+                '3': [],
+                '4': [],
+                '5': [],
+                '6': [],
+                '7': [],
+            }
             for schedule in schedules:
                 item = {}
                 try:
@@ -210,7 +227,7 @@ class PersonalSpider():
                 except:
                     pass
                 if item:
-                    items.append(item)
+                    items[item['day']].append(item)
             result[i] = items
         return result
 
@@ -428,4 +445,4 @@ if __name__ == '__main__':
     spider = PersonalSpider(sid, pwd)
     # print(spider.get_exam_info())
     # print(spider.get_exam())
-    spider.get_schedule('2018-2019-1')
+    print(spider.get_schedule('2020-2021-1'))
