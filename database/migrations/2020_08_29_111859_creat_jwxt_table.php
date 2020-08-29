@@ -16,8 +16,8 @@ class CreatJwxtTable extends Migration
         //所有课表
         Schema::create('all_schedule', function (Blueprint $table) {
             $table->id();
-            $table->integer('sid')->comment('学号');
-            $table->string('term')->comment('学期');
+            $table->integer('sid')->comment('学号')->nullable();
+            $table->string('term')->comment('学期')->nullable();
             $table->string('week')->comment('具体周次')->nullable();
             $table->string('course')->comment('课程名称')->nullable();
             $table->string('teacher')->comment('老师名称')->nullable();
@@ -35,13 +35,13 @@ class CreatJwxtTable extends Migration
         Schema::create('exam', function (Blueprint $table) {
             $table->id();
             $table->integer('sid')->comment('学号');
-            $table->string('course')->comment('课程名称');
-            $table->string('date')->comment('考试时间');
-            $table->string('week')->comment('考试周');
-            $table->string('day')->comment('学期');
-            $table->string('start_time')->comment('开始时间');
-            $table->string('end_time')->comment('结束时间');
-            $table->string('location')->comment('考试地点');
+            $table->string('course')->comment('课程名称')->nullable();
+            $table->string('date')->comment('考试时间')->nullable();
+            $table->string('week')->comment('考试周')->nullable();
+            $table->string('day')->comment('学期')->nullable();
+            $table->string('start_time')->comment('开始时间')->nullable();
+            $table->string('end_time')->comment('结束时间')->nullable();
+            $table->string('location')->comment('考试地点')->nullable();
         });
 
         //考试安排
@@ -74,7 +74,7 @@ class CreatJwxtTable extends Migration
         Schema::create('schedule',function(Blueprint $table){
             $table->id();
             $table->integer('sid')->comment('学号');
-            $table->string('term')->comment('学期');
+            $table->string('term')->comment('学期')->nullable();
             $table->string('week')->comment('具体周次')->nullable();
             $table->string('course')->comment('课程名称')->nullable();
             $table->string('teacher')->comment('老师名称')->nullable();
@@ -91,12 +91,12 @@ class CreatJwxtTable extends Migration
         //总绩点及排名
         Schema::create('gpa',function(Blueprint $table){
             $table->id();
-            $table->string('sid')->comment('学号');
-            $table->string('term')->comment('学期');
-            $table->string('gpa')->comment('总绩点');
-            $table->string('avarage_grade')->comment('总成绩');
-            $table->string('gpa_class_rank')->comment('班级绩点排名');
-            $table->string('gpa_major_rank')->comment('专业绩点排名');
+            $table->string('sid')->comment('学号')->nullable();
+            $table->string('term')->comment('学期')->nullable();
+            $table->string('gpa')->comment('总绩点')->nullable();
+            $table->string('avarage_grade')->comment('总成绩')->nullable();
+            $table->string('gpa_class_rank')->comment('班级绩点排名')->nullable();
+            $table->string('gpa_major_rank')->comment('专业绩点排名')->nullable();
         });
         //过期时间存储
         Schema::create('update_time',function(Blueprint $table){
