@@ -28,7 +28,7 @@ Route::namespace('Api')->group(function (){
     Route::post('/image','ImageController@upload');
     Route::get('/eatest/list/{page}', "Eatest\EvaluationController@get_list")->where(["page" => "[0-9]+"]);
     Route::post('/eatest/image/delete','ImageController@delete');
-
+    Route::get('/course/uid/{association}','jwxt\AssociationCodeController@get_uid')->where(["association" => "\w{8}"]);
     /**Upick 管理员*/
     //用户登录验证
     Route::get('/food', "Eatest\FoodController@get");
@@ -109,7 +109,7 @@ Route::namespace('Api')->group(function (){
 
         /**AssociationCode */
         Route::get('/course/association/{uid}','jwxt\AssociationCodeController@get_association')->where(["uid"=>"[0-9]{12}"]);
-        Route::get('/course/uid/{association}','jwxt\AssociationCodeController@get_uid')->where(["association" => "\w{8}"]);
+
 
         //测试
         Route::get('/image', "ImageController@get");
