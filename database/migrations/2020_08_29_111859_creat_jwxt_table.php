@@ -21,13 +21,13 @@ class CreatJwxtTable extends Migration
             $table->string('week')->comment('具体周次');
             $table->string('course')->comment('课程名称');
             $table->string('teacher')->comment('老师名称');
-            $table->string('location')->comment('课程地点');
+            $table->string('location')->comment('课程地点')->nullable();
             $table->string('day')->comment('星期');
             $table->string('section_start')->comment('开始节次');
             $table->string('section_end')->comment('结束节次');
             $table->string('section_length')->comment('节次长度');
-            $table->string('start_time')->comment('开始时间');
-            $table->string('end_time')->comment('结束时间');
+            $table->string('start_time')->comment('开始时间')->nullable();
+            $table->string('end_time')->comment('结束时间')->nullable();
             $table->string('weeks')->comment('开课周次');
             $table->string('week_string')->comment('开课周次(详)');
         });
@@ -51,9 +51,9 @@ class CreatJwxtTable extends Migration
             $table->string('name')->comment('姓名');
             $table->string('course')->comment('课程名称');
             $table->string('comp_grade')->comment('成绩');
-            $table->string('type')->comment('选修类型');
-            $table->string('class_type')->comment('课程类型');
-            $table->string('nature_of_test')->comment('考试方式');
+            $table->string('type')->comment('选修类型')->nullable();
+            $table->string('class_type')->comment('课程类型')->nullable();
+            $table->string('nature_of_test')->comment('考试方式')->nullable();
             $table->float('credit')->comment('学分');
         });
 
@@ -66,9 +66,9 @@ class CreatJwxtTable extends Migration
             $table->string('college')->comment('学院');
             $table->string('major')->comment('专业');
             $table->string('class')->comment('班级');
-            $table->string('phone')->comment('电话');
-            $table->string('qq');
-            $table->string('email');
+            $table->string('phone')->comment('电话')->nullable();
+            $table->string('qq')->nullable();
+            $table->string('email')->nullable();
         });
         //当前课表
         Schema::create('schedule',function(Blueprint $table){
@@ -78,13 +78,13 @@ class CreatJwxtTable extends Migration
             $table->string('week')->comment('具体周次');
             $table->string('course')->comment('课程名称');
             $table->string('teacher')->comment('老师名称');
-            $table->string('location')->comment('课程地点');
+            $table->string('location')->comment('课程地点')->nullable();
             $table->string('day')->comment('星期');
             $table->string('section_start')->comment('开始节次');
             $table->string('section_end')->comment('结束节次');
             $table->string('section_length')->comment('节次长度');
-            $table->string('start_time')->comment('开始时间');
-            $table->string('end_time')->comment('结束时间');
+            $table->string('start_time')->comment('开始时间')->nullable();
+            $table->string('end_time')->comment('结束时间')->nullable();
             $table->string('weeks')->comment('开课周次');
             $table->string('week_string')->comment('开课周次(详)');
         });
