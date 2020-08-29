@@ -18,18 +18,18 @@ class CreatJwxtTable extends Migration
             $table->id();
             $table->integer('sid')->comment('学号');
             $table->string('term')->comment('学期');
-            $table->string('week')->comment('具体周次');
-            $table->string('course')->comment('课程名称');
-            $table->string('teacher')->comment('老师名称');
+            $table->string('week')->comment('具体周次')->nullable();
+            $table->string('course')->comment('课程名称')->nullable();
+            $table->string('teacher')->comment('老师名称')->nullable();
             $table->string('location')->comment('课程地点')->nullable();
-            $table->string('day')->comment('星期');
-            $table->string('section_start')->comment('开始节次');
-            $table->string('section_end')->comment('结束节次');
-            $table->string('section_length')->comment('节次长度');
+            $table->string('day')->comment('星期')->nullable();
+            $table->string('section_start')->comment('开始节次')->nullable();
+            $table->string('section_end')->comment('结束节次')->nullable();
+            $table->string('section_length')->comment('节次长度')->nullable();
             $table->string('start_time')->comment('开始时间')->nullable();
             $table->string('end_time')->comment('结束时间')->nullable();
-            $table->string('weeks')->comment('开课周次');
-            $table->string('week_string')->comment('开课周次(详)');
+            $table->string('weeks')->comment('开课周次')->nullable();
+            $table->string('week_string')->comment('开课周次(详)')->nullable();
         });
         //考试安排
         Schema::create('exam', function (Blueprint $table) {
@@ -75,18 +75,18 @@ class CreatJwxtTable extends Migration
             $table->id();
             $table->integer('sid')->comment('学号');
             $table->string('term')->comment('学期');
-            $table->string('week')->comment('具体周次');
-            $table->string('course')->comment('课程名称');
-            $table->string('teacher')->comment('老师名称');
+            $table->string('week')->comment('具体周次')->nullable();
+            $table->string('course')->comment('课程名称')->nullable();
+            $table->string('teacher')->comment('老师名称')->nullable();
             $table->string('location')->comment('课程地点')->nullable();
-            $table->string('day')->comment('星期');
-            $table->string('section_start')->comment('开始节次');
-            $table->string('section_end')->comment('结束节次');
-            $table->string('section_length')->comment('节次长度');
+            $table->string('day')->comment('星期')->nullable();
+            $table->string('section_start')->comment('开始节次')->nullable();
+            $table->string('section_end')->comment('结束节次')->nullable();
+            $table->string('section_length')->comment('节次长度')->nullable();
             $table->string('start_time')->comment('开始时间')->nullable();
             $table->string('end_time')->comment('结束时间')->nullable();
-            $table->string('weeks')->comment('开课周次');
-            $table->string('week_string')->comment('开课周次(详)');
+            $table->string('weeks')->comment('开课周次')->nullable();
+            $table->string('week_string')->comment('开课周次(详)')->nullable();
         });
         //总绩点及排名
         Schema::create('gpa',function(Blueprint $table){
