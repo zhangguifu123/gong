@@ -102,23 +102,23 @@ class CreatJwxtTable extends Migration
         Schema::create('update_time',function(Blueprint $table){
             $table->id();
             $table->unsignedBigInteger('sid')->comment('学号');
-            $table->date('info')->comment('个人信息');
-            $table->date('grades')->comment('成绩');
-            $table->date('schedule')->comment('课表');
-            $table->date('all_schedule')->comment('所有课表');
-            $table->date('exam')->comment('考试安排');
-            $table->date('gpa')->comment('绩点及排名');
+            $table->date('info')->comment('个人信息')->nullable();
+            $table->date('grades')->comment('成绩')->nullable();
+            $table->date('schedule')->comment('课表')->nullable();
+            $table->date('all_schedule')->comment('所有课表')->nullable();
+            $table->date('exam')->comment('考试安排')->nullable();
+            $table->date('gpa')->comment('绩点及排名')->nullable();
         });
         //1代表数据在库里，0代表没有，需要使用爬虫
         Schema::create('flag',function(Blueprint $table){
             $table->id();
             $table->unsignedBigInteger('sid')->comment('学号');
-            $table->string('info')->comment('个人信息');
-            $table->string('grades')->comment('成绩');
-            $table->string('schedule')->comment('课表');
-            $table->string('all_schedule')->comment('所有克白哦');
-            $table->string('exam')->comment('考试安排');
-            $table->string('gpa')->comment('绩点及排名');
+            $table->string('info')->comment('个人信息')->nullable();
+            $table->string('grades')->comment('成绩')->nullable();
+            $table->string('schedule')->comment('课表')->nullable();
+            $table->string('all_schedule')->comment('所有课表')->nullable();
+            $table->string('exam')->comment('考试安排')->nullable();
+            $table->string('gpa')->comment('绩点及排名')->nullable();
         });
     }
 
