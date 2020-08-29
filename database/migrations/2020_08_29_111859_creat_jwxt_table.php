@@ -16,7 +16,7 @@ class CreatJwxtTable extends Migration
         //所有课表
         Schema::create('all_schedule', function (Blueprint $table) {
             $table->id();
-            $table->integer('sid')->comment('学号')->nullable();
+            $table->string('sid')->comment('学号')->nullable();
             $table->string('term')->comment('学期')->nullable();
             $table->string('week')->comment('具体周次')->nullable();
             $table->string('course')->comment('课程名称')->nullable();
@@ -34,7 +34,7 @@ class CreatJwxtTable extends Migration
         //考试安排
         Schema::create('exam', function (Blueprint $table) {
             $table->id();
-            $table->integer('sid')->comment('学号');
+            $table->string('sid')->comment('学号');
             $table->string('course')->comment('课程名称')->nullable();
             $table->string('date')->comment('考试时间')->nullable();
             $table->string('week')->comment('考试周')->nullable();
@@ -73,7 +73,7 @@ class CreatJwxtTable extends Migration
         //当前课表
         Schema::create('schedule',function(Blueprint $table){
             $table->id();
-            $table->integer('sid')->comment('学号');
+            $table->string('sid')->comment('学号');
             $table->string('term')->comment('学期')->nullable();
             $table->string('week')->comment('具体周次')->nullable();
             $table->string('course')->comment('课程名称')->nullable();
