@@ -53,6 +53,7 @@ class CreatJwxtTable extends Migration
             $table->string('comp_grade')->comment('成绩');
             $table->string('type')->comment('选修类型')->nullable();
             $table->string('class_type')->comment('课程类型')->nullable();
+            $table->string('term')->comment('学期');
             $table->string('nature_of_test')->comment('考试方式')->nullable();
             $table->float('credit')->comment('学分');
         });
