@@ -1,2 +1,1 @@
-* * * * * /usr/local/bin/php /Users/zy/web/gong/artisan schedule:run 
-*/1 * * * * ls
+* * * * * /usr/local/bin/docker exec gong_php /usr/local/bin/php artisan schedule:run > /dev/null 2>&1

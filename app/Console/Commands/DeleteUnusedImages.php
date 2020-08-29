@@ -7,6 +7,7 @@ use App\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use \Redis;
+use Illuminate\Support\Facades\Log;
 class DeleteUnusedImages extends Command
 {
     /**
@@ -40,6 +41,7 @@ class DeleteUnusedImages extends Command
      */
     public function handle()
     {
+        Log::info("It works！");
         $redis_files = [];
         try {                          //遍历redis
             $redis = new Redis();
