@@ -2,8 +2,8 @@ import json
 import requests
 import config
 from flask import Flask, request, abort, make_response
-from spider import PersonalSpider, EcardSpider
-from pipeline import InfoPipeline, GradePipeline, SchedulePipeline, AllSchedulePipeline, ExamPipeline
+from spider import PersonalSpider, EcardSpider, JWXTSpider
+from pipeline import InfoPipeline, GradePipeline, SchedulePipeline, ExamPipeline, GPAPipeline
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -179,43 +179,43 @@ def get_now_schedule():
     return response
 
 
-@app.route('/all_schedule', methods=['POST'])
-def get_all_schedule():
-    sid = request.form.get('sid')
-    pwd = request.form.get('pwd')
-    refresh = request.form.get('refresh')
-    if refresh == None:
-        refresh = False
-
-    if not all((sid, pwd)):
-        abort(404)
-
-    pipiline = AllSchedulePipeline(sid)
-    if refresh:
-        pipiline.delete_data()
-        spider = PersonalSpider(sid, pwd)
-        all_schedule = spider.get_all_schedule()
-        pipiline.insert_data(all_schedule)
-    else:
-        flag = pipiline.get_flag()
-        if flag == 0:
-            spider = PersonalSpider(sid, pwd)
-            all_schedule = spider.get_all_schedule()
-            pipiline.insert_data(all_schedule)
-        elif flag == 1:
-            all_schedule = pipiline.output_data()
-
-    result = {
-        'errcode': '0',
-        'status': '200',
-        'errmsg': 'success',
-        'data': all_schedule
-    }
-
-
-    response = make_response(json.dumps(result, ensure_ascii=False))
-    response.mimetype = 'text/json'
-    return response
+#@app.route('/all_schedule', methods=['POST'])
+# def get_all_schedule():
+#     sid = request.form.get('sid')
+#     pwd = request.form.get('pwd')
+#     refresh = request.form.get('refresh')
+#     if refresh == None:
+#         refresh = False
+#
+#     if not all((sid, pwd)):
+#         abort(404)
+#
+#     pipiline = AllSchedulePipeline(sid)
+#     if refresh:
+#         pipiline.delete_data()
+#         spider = PersonalSpider(sid, pwd)
+#         all_schedule = spider.get_all_schedule()
+#         pipiline.insert_data(all_schedule)
+#     else:
+#         flag = pipiline.get_flag()
+#         if flag == 0:
+#             spider = PersonalSpider(sid, pwd)
+#             all_schedule = spider.get_all_schedule()
+#             pipiline.insert_data(all_schedule)
+#         elif flag == 1:
+#             all_schedule = pipiline.output_data()
+#
+#     result = {
+#         'errcode': '0',
+#         'status': '200',
+#         'errmsg': 'success',
+#         'data': all_schedule
+#     }
+#
+#
+#     response = make_response(json.dumps(result, ensure_ascii=False))
+#     response.mimetype = 'text/json'
+#     return response
 
 
 @app.route('/schedule', methods=['POST'])
@@ -284,7 +284,7 @@ def get_balance():
 	else:
 		ecard = EcardSpider(sid, pwd)
 		results = dict(errcode='0', status='200', errmsg='success',
-			data=ecard.data)
+			data=[ecard.data])
 
 	response = make_response(json.dumps(results, ensure_ascii=False))
 	response.mimetype = 'text/json'
@@ -340,6 +340,48 @@ def get_today_bill():
 
 
 
+
+@app.route('/gpa', methods=['POST'])
+def get_gpa():
+    sid = request.form.get('sid')
+    pwd = request.form.get('pwd')
+    term = request.form.get('term')
+    refresh = request.form.get('refresh')
+    if refresh == None:
+        refresh = False
+
+    if not all((sid, pwd)):
+        abort(404)
+
+    pipiline = GPAPipeline(sid)
+    if refresh:
+        pipiline.delete_data()
+        spider = JWXTSpider(sid, pwd)
+        all_gpa = spider.get_all_gpa()
+        pipiline.insert_data(all_gpa)
+        gpa = all_gpa[term]
+    else:
+        flag = pipiline.get_flag()
+        if flag == 0:
+            spider = JWXTSpider(sid, pwd)
+            all_gpa = spider.get_all_gpa()
+            pipiline.insert_data(all_gpa)
+            gpa = all_gpa[term]
+        else:
+            gpa = pipiline.output_data(term)
+
+    result = {
+        'errcode': '0',
+        'status': '200',
+        'errmsg': 'success',
+        'data': [
+            gpa
+        ]
+    }
+
+    response = make_response(json.dumps(result, ensure_ascii=False))
+    response.mimetype = 'text/json'
+    return response
 
 
 

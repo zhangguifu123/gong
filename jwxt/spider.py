@@ -6,6 +6,7 @@ from threading import Thread, Lock
 from queue import LifoQueue, Queue
 import http.cookiejar
 import urllib.request
+import base64
 
 # 通过 week 获取 week_string
 def get_week_string(string):
@@ -156,25 +157,34 @@ class PersonalSpider():
                 self.params['zc'] = i
                 res = requests.get(self.url, params=self.params, headers=self.HEADERS)
                 schedules = res.json()
-                items = []
+                items = {
+                    '1': [],
+                    '2': [],
+                    '3': [],
+                    '4': [],
+                    '5': [],
+                    '6': [],
+                    '7': [],
+                }
                 for schedule in schedules:
                     item = {}
-                    try:
-                        item['course'] = schedule['kcmc']  # 课程名称
-                        item['teacher'] = schedule['jsxm']  # 老师名称
-                        item['location'] = schedule['jsmc']  # 课程地点
-                        # item['time'] = schedule['kcsj']  # 上课时间， 格式为x0a0b 表示为 周x第a节到第b节
-                        item['day'] = schedule['kcsj'][0]
-                        item['section_start'] = str(int(schedule['kcsj'][1:3]))
-                        item['section_end'] = str(int(schedule['kcsj'][3:5]))
-                        item['section_length'] = str(int(item['section_end']) - int(item['section_start']) + 1)
-                        item['start_time'] = schedule['kssj']  # 开始时间
-                        item['end_time'] = schedule['jssj']  # 结束时间
-                        item['week'] = schedule['kkzc']  # 开课周次
-                        item['week_string'] = get_week_string(item['week'])
-                    except Exception as e:
-                        print(e)
-                    items.append(item)
+                    if schedule:
+                        try:
+                            item['course'] = schedule['kcmc']  # 课程名称
+                            item['teacher'] = schedule['jsxm']  # 老师名称
+                            item['location'] = schedule['jsmc']  # 课程地点
+                            # item['time'] = schedule['kcsj']  # 上课时间， 格式为x0a0b 表示为 周x第a节到第b节
+                            item['day'] = schedule['kcsj'][0]
+                            item['section_start'] = str(int(schedule['kcsj'][1:3]))
+                            item['section_end'] = str(int(schedule['kcsj'][3:5]))
+                            item['section_length'] = str(int(item['section_end']) - int(item['section_start']) + 1)
+                            item['start_time'] = schedule['kssj']  # 开始时间
+                            item['end_time'] = schedule['jssj']  # 结束时间
+                            item['week'] = schedule['kkzc']  # 开课周次
+                            item['week_string'] = get_week_string(item['week'])
+                        except Exception as e:
+                            print(e)
+                        items[item['day']].append(item)
                 result[i] = items
         all_schedule[q] = result
 
@@ -191,7 +201,15 @@ class PersonalSpider():
             self.params['zc'] = i
             res = requests.get(self.url, params=self.params, headers=self.HEADERS)
             schedules = res.json()
-            items = []
+            items = {
+                '1': [],
+                '2': [],
+                '3': [],
+                '4': [],
+                '5': [],
+                '6': [],
+                '7': [],
+            }
             for schedule in schedules:
                 item = {}
                 try:
@@ -210,7 +228,7 @@ class PersonalSpider():
                 except:
                     pass
                 if item:
-                    items.append(item)
+                    items[item['day']].append(item)
             result[i] = items
         return result
 
@@ -421,11 +439,150 @@ class EcardSpider():
 					balance=balance, time=time))
 
 
+class JWXTSpider():
+    Headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36',
+    }
+    def __init__(self, sid, pwd):
+        self.sid = sid
+        self.pwd = pwd
+        self.session = requests.Session()
+        self.lock = Lock()
+        self.login()
+
+
+    def get_verifycode(self):
+        # 获取验证码，并转为base64数据
+        url1 = "http://jwxt.xtu.edu.cn/jsxsd/framework/main.jsp"
+        url2 = "http://jwxt.xtu.edu.cn/jsxsd/verifycode.servlet"
+        self.session.get(url1, headers=self.Headers)
+        r = self.session.get(url2, headers=self.Headers)
+        base64_str = base64.b64encode(r.content).decode('utf8')
+
+        requests.packages.urllib3.disable_warnings()
+        url = 'https://api.sky31.com/edu_idcode.php?role=gonggong-android&hash=0c95c64db9e48afbdff87a3869386124'
+        data = {
+            'data': base64_str
+        }
+        res = self.session.post(url, data=data, verify=False, headers=self.Headers)
+        verifycode = res.json()['idcode']
+        return verifycode
+
+    def get_encoded(self):
+        # 获取加密参数encoded
+        url = 'http://jwxt.xtu.edu.cn/jsxsd/xk/LoginToXk?flag=sess'
+        data = f'USERNAME={self.sid}&PASSWORD={self.pwd}'
+        res = self.session.post(url, data=data, headers=self.Headers)
+        data = res.json()['data']
+        scode = data.split('#')[0]
+        sxh = data.split('#')[1]
+        code = self.sid + r'%%%' + self.pwd
+
+        encoded = ''
+        i = 0
+        while i < len(code):
+            if i < 20:
+                encoded = encoded + code[i] + scode[0: int(sxh[i])]
+                scode = scode[int(sxh[i]): len(scode)]
+            else:
+                encoded = encoded + code[i: len(code)]
+                i = len(code)
+            i += 1
+
+        return encoded
+
+
+    def login(self):
+        # 模拟登录
+        url = 'http://jwxt.xtu.edu.cn/jsxsd/xk/LoginToXk'
+        encoded = self.get_encoded()
+        verifycode = self.get_verifycode()
+        data = {
+            'USERNAME': self.sid,
+            'PASSWORD': self.pwd,
+            'encoded': encoded,
+            'RANDOMCODE': verifycode
+        }
+        self.session.post(url, data=data, headers=self.Headers)
+
+
+    def parse_html(self, url, method='GET', **kwargs):
+        # 返回lxml解析后的html对象
+        if method == 'GET':
+            res = self.session.get(url, params=kwargs['params'], headers=self.Headers)
+        elif method == 'POST':
+            res = self.session.post(url, data=kwargs['data'], headers=self.Headers)
+
+        html = etree.HTML(res.text)
+        return html
+
+
+    def get_gpa(self, term, results):
+        url = 'http://jwxt.xtu.edu.cn/jsxsd/kscj/cjjd_list'
+        data = {
+            'kksj': term,
+            'kclb': '1',
+            'zsb': '0'
+        }
+        html = self.parse_html(url, method='POST', data=data)
+        items = html.xpath("//div[@class='Nsb_pw'][2]/table//tr[2]/td/text()")
+        gpa, average_grade, gpa_class_rank, gpa_major_rank = items
+        result = dict(term=term, gpa=gpa, average_grade=average_grade, gpa_class_rank=gpa_class_rank, gpa_major_rank=gpa_major_rank)
+        with self.lock:
+            if isinstance(term, list):
+                result['term'] = 'all'
+                results['all'] = result
+            else:
+                results[term] = result
+
+
+    def get_query_range(self):
+        start = int(self.sid[0:4])
+        end = datetime.now().year
+        # end = 2021
+        month = datetime.now().month
+        # month = 
+
+        L = []
+        for i in range(start, end):
+            L.append(f'{i}-{i+1}-1')
+            L.append(f'{i}-{i+1}-2')
+
+        if month == 1:
+            L.pop()
+            L.pop()
+        elif 2 <= month < 8:
+            L.pop()
+        return L
+
+
+    def get_all_gpa(self):
+        results = {}
+        L = self.get_query_range()
+        threads = [Thread(target=self.get_gpa, args=(L,results))]
+        for term in L:
+            t = Thread(target=self.get_gpa, args=(term,results))
+            threads.append(t)
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+
+        return results
+
+
+
+
+
+
+
+
 if __name__ == '__main__':
     pass
     sid = '201805710203'
     pwd = 'SKTFaker11'
-    spider = PersonalSpider(sid, pwd)
+    spider = JWXTSpider(sid, pwd)
     # print(spider.get_exam_info())
     # print(spider.get_exam())
-    spider.get_schedule('2018-2019-1')
+    # print(spider.get_schedule('2020-2021-1'))
+    print(spider.get_all_gpa())
