@@ -92,12 +92,12 @@ class CreatJwxtTable extends Migration
         //总绩点及排名
         Schema::create('gpa',function(Blueprint $table){
             $table->id();
-            $table->string('sid')->comment('学号')->nullable();
-            $table->string('term')->comment('学期')->nullable();
-            $table->string('gpa')->comment('总绩点')->nullable();
-            $table->string('avarage_grade')->comment('总成绩')->nullable();
-            $table->string('gpa_class_rank')->comment('班级绩点排名')->nullable();
-            $table->string('gpa_major_rank')->comment('专业绩点排名')->nullable();
+            $table->string('sid')->comment('学号');
+            $table->string('term')->comment('学期');
+            $table->string('gpa')->comment('总绩点');
+            $table->string('avarage_grade')->comment('总成绩');
+            $table->string('gpa_class_rank')->comment('班级绩点排名');
+            $table->string('gpa_major_rank')->comment('专业绩点排名');
         });
         //过期时间存储
         Schema::create('update_time',function(Blueprint $table){
