@@ -11,7 +11,8 @@ servers:
         default: gonggong.sky31.com
         enum:
           - gonggong.sky31.com
-          - 'zgf.jsky31.cn:10302'
+          - zgf.jsky31.cn:10302
+          - zgf.jsky31.cn:5000
       basePath:
         description: API服务器地址Ø
         default: api
@@ -733,17 +734,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Association'
   /course:
-    get:
+    post:
       summary: 查看课表
       tags:
         - course
-      parameters:
-        - name: stu_id
-          description: 学号
-          in: query
-          required: true
-          schema:
-            type: string
+      requestBody:
+        $ref: '#/components/requestBodies/JwxtBody'
       responses:
         '200':
           description: 成功
@@ -755,76 +751,172 @@ paths:
                 code: 0
                 status: 成功
                 data:
-                  '1':
-                    '1':
-                      - course: 数据结构
-                        location: 计算机中心406
-                        teacher: 谢勇
-                        week:
-                          - 2,3.4,5,6.7,8,9
-                        section_length: 2
-                        section_start: 1
-                        section_end: 2
-                      - course: 宏观经济学
-                        location: 计算机中心406
-                        teacher: 谢勇
-                        week:
-                          - 2,3.4,5,6.7,8,9
-                        section_length: 2
-                        section_start: 1
-                        section_end: 2
-                    '2':
-                      - course: 软件工程
-                        location: 计算机中心306
-                        teacher: 谢智
-                        week:
-                          - 2,3.4,5,6.7,8,9
-                        section_length: 2
-                        section_start: 1
-                        section_end: 2
-                      - course: 软件测试
-                        location: 计算机中心206
-                        teacher: 谢伟
-                        week:
-                          - 2,3.4,5,6.7,8,9
-                        section_length: 4
-                        section_start: 5
-                        section_end: 8
                   '2':
                     '1':
                       - course: 数据结构
                         location: 计算机中心406
                         teacher: 谢勇
-                        week:
-                          - 2,3.4,5,6.7,8,9
+                        week: 2,3.4,5,6.7,8,9
+                        week_string: 2-9
+                        day: 1
                         section_length: 2
                         section_start: 1
                         section_end: 2
+                        start_time: 08:00
+                        end_time: 09:40
                       - course: 宏观经济学
                         location: 计算机中心406
                         teacher: 谢勇
-                        week:
-                          - 2,3.4,5,6.7,8,9
+                        week: 2,3.4,5,6.7,8,9
+                        week_string: 2-9
+                        day: 1
                         section_length: 2
                         section_start: 1
                         section_end: 2
+                        start_time: 08:00
+                        end_time: 09:40
+                    '2':
+                      - course: 软件工程
+                        location: 计算机中心306
+                        teacher: 谢智
+                        week: 2,3.4,5,6.7,8,9
+                        week_string: 2-9
+                        day: 2
+                        section_length: 2
+                        section_start: 1
+                        section_end: 2
+                        start_time: 08:00
+                        end_time: 09:40
+                      - course: 软件测试
+                        location: 计算机中心206
+                        teacher: 谢伟
+                        week: 2,3.4,5,6.7,8,9
+                        week_string: 2-9
+                        day: 2
+                        section_length: 4
+                        section_start: 5
+                        section_end: 8
+                        start_time: 14:00
+                        end_time: 17:50
+                  '3':
+                    '1':
+                      - course: 数据结构
+                        location: 计算机中心406
+                        teacher: 谢勇
+                        week: 2,3.4,5,6.7,8,9
+                        week_string: 2-9
+                        day: 1
+                        section_length: 2
+                        section_start: 1
+                        section_end: 2
+                        start_time: 08:00
+                        end_time: 09:40
+                      - course: 宏观经济学
+                        location: 计算机中心406
+                        teacher: 谢勇
+                        week: 2,3.4,5,6.7,8,9
+                        week_string: 2-9
+                        day: 1
+                        section_length: 2
+                        section_start: 1
+                        section_end: 2
+                        start_time: 08:00
+                        end_time: 09:40
         '401':
           $ref: '#/components/responses/NotAuthorization'
         '403':
           $ref: '#/components/responses/NoPermission'
         '404':
           $ref: '#/components/responses/NotFound'
+  /associated_schedule:
     post:
       summary: 关联课表
       tags:
         - course
+      requestBody:
+        $ref: '#/components/requestBodies/AssocationBody'
       responses:
         '200':
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Success'
+                $ref: '#/components/schemas/Course'
+              example:
+                code: 0
+                status: 成功
+                data:
+                  '2':
+                    '1':
+                      - course: 数据结构
+                        location: 计算机中心406
+                        teacher: 谢勇
+                        week: 2,3.4,5,6.7,8,9
+                        week_string: 2-9
+                        day: 1
+                        section_length: 2
+                        section_start: 1
+                        section_end: 2
+                        start_time: 08:00
+                        end_time: 09:40
+                      - course: 宏观经济学
+                        location: 计算机中心406
+                        teacher: 谢勇
+                        week: 2,3.4,5,6.7,8,9
+                        week_string: 2-9
+                        day: 1
+                        section_length: 2
+                        section_start: 1
+                        section_end: 2
+                        start_time: 08:00
+                        end_time: 09:40
+                    '2':
+                      - course: 软件工程
+                        location: 计算机中心306
+                        teacher: 谢智
+                        week: 2,3.4,5,6.7,8,9
+                        week_string: 2-9
+                        day: 2
+                        section_length: 2
+                        section_start: 1
+                        section_end: 2
+                        start_time: 08:00
+                        end_time: 09:40
+                      - course: 软件测试
+                        location: 计算机中心206
+                        teacher: 谢伟
+                        week: 2,3.4,5,6.7,8,9
+                        week_string: 2-9
+                        day: 2
+                        section_length: 4
+                        section_start: 5
+                        section_end: 8
+                        start_time: 14:00
+                        end_time: 17:50
+                  '3':
+                    '1':
+                      - course: 数据结构
+                        location: 计算机中心406
+                        teacher: 谢勇
+                        week: 2,3.4,5,6.7,8,9
+                        week_string: 2-9
+                        day: 1
+                        section_length: 2
+                        section_start: 1
+                        section_end: 2
+                        start_time: 08:00
+                        end_time: 09:40
+                      - course: 宏观经济学
+                        location: 计算机中心406
+                        teacher: 谢勇
+                        week: 2,3.4,5,6.7,8,9
+                        week_string: 2-9
+                        day: 1
+                        section_length: 2
+                        section_start: 1
+                        section_end: 2
+                        start_time: 08:00
+                        end_time: 09:40
         '401':
           $ref: '#/components/responses/NotAuthorization'
         '403':
@@ -897,6 +989,45 @@ paths:
           $ref: '#/components/responses/NoPermission'
         '404':
           $ref: '#/components/responses/NotFound'
+  /countdown/exam:
+    post:
+      summary: 考试安排(教务系统)
+      tags:
+        - countdown
+      requestBody:
+        $ref: '#/components/requestBodies/JwxtBody'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExamInfo'
+              example:
+                code: 0
+                status: 成功
+                data:
+                  - course: 操作系统
+                    date: "2020-09-14"
+                    week: 4
+                    day: 星期一
+                    start_time: "10:20"
+                    end_time: "12:20"
+                    location: 逸夫楼-310
+                  - course: 数据结构
+                    date: "2020-09-21"
+                    week: 5
+                    day: 星期一
+                    start_time: "10:20"
+                    end_time: "12:20"
+                    location: 逸夫楼-107
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      deprecated: false
   /countdown/top/{id}:
     put:
       summary: 置顶
@@ -1584,21 +1715,14 @@ paths:
           $ref: '#/components/responses/NoPermission'
         '404':
           $ref: '#/components/responses/NotFound'
-  '/score/all/{stu_id}':
-    get:
+  '/score/grade':
+    post:
       summary: 成绩详单
       operationId: 成绩详单
       tags:
         - score
-      parameters:
-        - $ref: '#/components/parameters/stu_id'
-        - name: Semester
-          description: 学年-学期(选填)
-          in: query
-          required: false
-          schema:
-            type: string
-          example: 2020-02
+      requestBody:
+        $ref: '#/components/requestBodies/JwxtBody'
       responses:
         '200':
           description: 成功
@@ -1616,55 +1740,59 @@ paths:
                     type: string
                     example: 成功
                   data:
-                    description: 成绩列表
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Score'
+                    $ref: '#/components/schemas/Score'
                 example:
                   code: 0
                   status: 成功
                   data:
-                    - id: 1
-                      stu_id: 201805710601
-                      course: 高等数学I
-                      type: 必修
-                      credit: 6
-                      daily_grade: 90
-                      exam_grade: 80
-                      comp_grade: 80.4
-                      term: 2018-2019-1
-                      study_time: 64
-                      class_type: 公共基础课
-                      isPass: 1
-                    - id: 2
-                      stu_id: 201805710601
-                      course: 高等数学II
-                      type: 必修
-                      credit: 6
-                      daily_grade: 90
-                      exam_grade: 90
-                      comp_grade: 90
-                      term: 2018-2019-2
-                      study_time: 64
-                      class_type: 公共基础课
-                      isPass: 1
+                    2018-2019-1:
+                      - name: 姓名
+                        sid: 201805710601
+                        course: 高等数学I
+                        type: 必修
+                        credit: 6.0
+                        comp_grade: 80.4
+                        term: 2018-2019-1
+                        nature_of_test: 正常考试
+                        class_type: 公共基础课
+                      - name: 姓名
+                        stu_id: 201805710601
+                        course: 高等数学II
+                        type: 必修
+                        credit: 6.0
+                        comp_grade: 90
+                        term: 2018-2019-2
+                        nature_of_test: 正常考试
+                        class_type: 公共基础课
+                    2018-2019-2:
+                      - name: 姓名
+                        sid: 201805710601
+                        course: 高等数学I
+                        type: 必修
+                        credit: 6.0
+                        comp_grade: 80.4
+                        term: 2018-2019-1
+                        nature_of_test: 正常考试
+                        class_type: 公共基础课
+                      - name: 姓名
+                        stu_id: 201805710601
+                        course: 高等数学II
+                        type: 必修
+                        credit: 6.0
+                        comp_grade: 90
+                        term: 2018-2019-2
+                        nature_of_test: 正常考试
+                        class_type: 公共基础课
         '403':
           $ref: '#/components/responses/NoPermission'
-  '/score/{stu_id}':
-    get:
+  '/score/gpa':
+    post:
       summary: 绩点及排名
       operationId: 绩点及排名
       tags:
         - score
-      parameters:
-        - $ref: '#/components/parameters/stu_id'
-        - name: Semester
-          description: 学年-学期(选填)
-          in: query
-          required: false
-          schema:
-            type: string
-          example: 2020-02
+      requestBody:
+        $ref: '#/components/requestBodies/GpaBody'
       responses:
         '200':
           description: 成功
@@ -2001,18 +2129,13 @@ paths:
           $ref: '#/components/responses/NotFound'
   
   
-  '/consume/{stu_id}':
-    get:
-      summary: 查看消费
+  '/consume/today_billing':
+    post:
+      summary: 查校园卡当天消费记录
       tags:
         - consume
-      parameters:
-        - name: stu_id
-          description: 学号
-          in: path
-          required: true
-          schema:
-            type: string
+      requestBody:
+        $ref: '#/components/requestBodies/ConsumeBody'
       responses:
         '200':
           description: 成功
@@ -2038,26 +2161,23 @@ paths:
                   code: 0
                   status: 成功
                   data:
-                    - id: 1
+                    - date: '2019-11-30 10:45:00'
                       location: 南苑新食堂一楼益禾堂
-                      money: '-6.00'
-                      datatime: '2019-11-30 10:45:00'
-                    - id: 2
+                      amount: '-6.00'
+                      balance: '94.00'
+                      time: '1032'
+                    - date: '2019-11-30 10:45:00'
                       location: 校园卡充值
-                      money: '+100'
-                      datatime: '2019-12-25 12:35:00'
-  '/backend/{stu_id}':
-    get:
-      summary: 消费余额
+                      amount: '+100.00'
+                      balance: '194.00'
+                      time: '1032'
+  '/consume/billing':
+    post:
+      summary: 查校园某段时间消费记录
       tags:
         - consume
-      parameters:
-        - name: stu_id
-          description: 学号
-          in: path
-          required: true
-          schema:
-            type: string
+      requestBody:
+        $ref: '#/components/requestBodies/BillingBody'
       responses:
         '200':
           description: 成功
@@ -2076,16 +2196,59 @@ paths:
                     example: 成功
                   data:
                     description: 成绩列表
-                    type: object
-                    $ref: '#/components/schemas/Bankcard'
-              example:
-                code: 0
-                status: 成功
-                data:
-                  id: 1
-                  card: 6XXX XXXX XXXX XXXX XXX
-                  money: '20.00'
-                  wait_money: '100.00'
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Consume'
+                example:
+                  code: 0
+                  status: 成功
+                  data:
+                    - date: '2019-11-30 10:45:00'
+                      location: 南苑新食堂一楼益禾堂
+                      amount: '-6.00'
+                      balance: '94.00'
+                      time: '1032'
+                    - date: '2019-11-30 10:45:00'
+                      location: 校园卡充值
+                      amount: '+100.00'
+                      balance: '194.00'
+                      time: '1032'
+  '/consume/balance':
+    post:
+      summary: 消费余额
+      tags:
+        - consume
+      requestBody:
+        $ref: '#/components/requestBodies/ConsumeBody'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                    example: 0
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Bankcard'
+                example:
+                  code: 0
+                  status: 成功
+                  data:
+                    - name: 张桂福
+                      ecard_id: '128940'
+                      balance: '100.00'
+                      unclaimed: '0.00'
+                      status: '0'
   /guide/search:
     get:
       summary: 搜索地点
@@ -2180,6 +2343,100 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   requestBodies:
+    AssocationBody:
+      description: 关联码
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              association_code:
+                type: string
+                description: 关联码
+                example: UX8NA9H
+    GpaBody:
+      description: 教务系统
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              sid:
+                type: string
+                description: 学号
+                example: 201805710601
+              pwd:
+                type: string
+                description: 教务密码
+                example: xxxxxx
+              refresh:
+                type: boolean
+                description: 强制刷新参数(选填)
+              term:
+                type: string
+                description: 学期(all返回总绩点及排名)
+                example: 2018-2019-1
+    JwxtBody:
+      description: 教务系统
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              sid:
+                type: string
+                description: 学号
+                example: 201805710601
+              pwd:
+                type: string
+                description: 教务密码
+                example: xxxxxx
+              refresh:
+                type: boolean
+                description: 强制刷新参数(选填)
+    ConsumeBody:
+      description: 消费系统
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              sid:
+                type: string
+                description: 学号
+                example: 201805710601
+              pwd:
+                type: string
+                description: 消费密码(默认身份证后六位)
+                example: xxxxxx  
+    BillingBody:
+      description: 某段时间消费记录
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              sid:
+                type: string
+                description: 学号
+                example: 201805710601
+              pwd:
+                type: string
+                description: 消费密码(默认身份证后六位)
+                example: xxxxxx  
+              StartDate:
+                type: string
+                description: 起始时间
+                example: 20191101
+              EndDate:
+                type: string
+                description: 起始时间
+                example: 20191201
     CountDownBody:
       description: 倒计时信息
       required: true
@@ -2664,22 +2921,26 @@ components:
       description: 消费信息
       type: object
       properties:
-        id:
-          type: integer
-          description: 编号
-          example: 1
+        date:
+          type: string
+          description: 消费日期
+          example: '2019/11/30 10:45:00'
         location:
           type: string
           description: 消费地点
           example: 南苑新食堂一楼益禾堂
-        money:
+        amount:
           type: string
           description: 消费金额
           example: '-6.00'
-        datatime:
+        balance:
           type: string
-          description: 消费日期
-          example: '2019-11-30 10:45:00'
+          description: 消费余额
+          example: '94.00'
+        time:
+          type: string
+          description: 我也不知道是啥
+          example: '1032'
     EatestCommentsNotice:
       description: 消费信息
       type: object
@@ -2748,90 +3009,84 @@ components:
       description: 消费余额
       type: object
       properties:
-        id:
-          type: integer
-          description: 编号
-          example: 1
-        card:
+        name:
           type: string
-          description: 银行卡号
-          example: 6XXX XXXX XXXX XXXX XXX
-        money:
+          description: 姓名
+          example: 张桂福
+        ecard_id:
+          type: string
+          description: 校园卡id
+          example: 128940
+        balance:
           description: 余额
           type: integer
-          example: '20.00'
-        wait_money:
+          example: '8.22'
+        unclaimed:
           description: 待圈存
           type: integer
           example: '100.00'
+        status:
+          description: 状态
+          type: boolean
+          example: 0
     Score:
       description: 成绩列表
       type: object
       properties:
-        id:
-          description: 数据编号
-          type: string
-          example: 1
-        stu_id:
-          description: 学号
-          type: integer
-          example: 201805710601
-        course:
-          description: 课程名称
-          type: string
-          example: 高等数学I
-        type:
-          description: 课程类型
-          type: string
-          example: 必修
-        credit:
-          description: 学分
-          type: string
-          example: 6
-        daily_grade:
-          description: 平时成绩
-          type: string
-          example: 90
-        exam_grade:
-          description: 考试成绩
-          type: string
-          example: 80
-        comp_grade:
-          description: 综合成绩
-          type: string
-          example: 80.3
-        term:
+        2018-2019-1:
           description: 学期
-          type: integer
-          example: 2018-2019-1
-        test_way:
-          description: 考试方式
-          type: string
-          example: 考试
-        study_time:
-          description: 学时
-          type: integer
-          example: 64
-        class_type:
-          description: 课程性质
-          type: string
-          example: 公共基础课
-        isPass:
-          description: 是否及格
-          type: integer
-          example: 1
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                description: 姓名
+                type: string
+                example: 张桂福
+              sid:
+                description: 学号
+                type: integer
+                example: 201805710601
+              course:
+                description: 课程名称
+                type: string
+                example: 高等数学I
+              type:
+                description: 课程类型
+                type: string
+                example: 必修
+              credit:
+                description: 学分
+                type: string
+                example: 6.0
+              comp_grade:
+                description: 综合成绩
+                type: string
+                example: 80.3
+              term:
+                description: 学期
+                type: integer
+                example: 2018-2019-1
+              nature_of_test:
+                description: 考试方式
+                type: string
+                example: 正常考试
+              class_type:
+                description: 课程性质
+                type: string
+                example: 公共基础课
     point:
       description: 绩点及排名
       type: object
       properties:
-        stu_id:
-          description: 学号
-          type: integer
-          example: 201805710601
+        term:
+          description: 学期
+          type: string
+          example: all
         gpa:
           description: 绩点
           type: integer
-          example: 2.666
+          example: 4.0
         average_grade:
           description: 平均成绩
           type: integer
@@ -2977,6 +3232,43 @@ components:
               description: 关联码
               type: string
               example: BV54434W
+    ExamInfo:
+      description: 考试安排
+      type: object
+      properties:
+        code:
+          description: 状态码
+          type: integer
+        status:
+          description: 状态
+          type: string
+          example: 成功
+        data:
+          description: 安排数据
+          type: array
+          items:
+            type: object
+            properties:
+              course:
+                description: 课程
+                type: string
+                example: 操作系统
+              date:
+                description: 考试日期
+                type: string
+                example: '2020-09-14'
+              start_time:
+                description: 开始时间
+                type: string
+                example: '10:20'
+              end_time:
+                description: 结束时间
+                type: string
+                example: '12:20'
+              location:
+                description: 考试地点
+                type: string
+                example: 逸夫楼-310
     Course:
       description: 查看课表
       type: object
@@ -3014,19 +3306,35 @@ components:
                         description: 讲师
                         type: string
                         example: 谢勇
+                      day:
+                        description: 周几
+                        type: string
+                        example: 1
+                      week_string:
+                        description: 所属周次(详)
+                        type: string
+                        example: '2,3,4,5,6,7,8,9'
                       week:
                         description: 所属周次
                         type: string
-                        example: '2,3,4,5,6,7,8,9'
+                        example: '2-9'
                       section_length:
                         description: 课程节数
                         type: integer
                         example: 2
                       section_start:
-                        description: 开始时间
+                        description: 开始节次
                         type: integer
                         example: 1
                       section_end:
+                        description: 结束节次
+                        type: integer
+                        example: 2
+                      start_time:
+                        description: 开始时间
+                        type: integer
+                        example: 1
+                      end_time:
                         description: 结束时间
                         type: integer
                         example: 2
@@ -3039,31 +3347,47 @@ components:
                       course:
                         description: 课程
                         type: string
-                        example: 宏观经济学
+                        example: 数据结构
                       location:
                         description: 地点
                         type: string
-                        example: 兴湘306
+                        example: 计算机中心406
                       teacher:
                         description: 讲师
                         type: string
-                        example: 龙朝阳
+                        example: 谢勇
+                      day:
+                        description: 周几
+                        type: string
+                        example: 1
+                      week_string:
+                        description: 所属周次(详)
+                        type: string
+                        example: '2,3,4,5,6,7,8,9'
                       week:
                         description: 所属周次
                         type: string
-                        example: '3,4,5,6,7,8,9,10,11'
+                        example: '2-9'
                       section_length:
                         description: 课程节数
                         type: integer
                         example: 2
                       section_start:
+                        description: 开始节次
+                        type: integer
+                        example: 1
+                      section_end:
+                        description: 结束节次
+                        type: integer
+                        example: 2
+                      start_time:
                         description: 开始时间
                         type: integer
-                        example: 3
-                      section_end:
+                        example: 1
+                      end_time:
                         description: 结束时间
                         type: integer
-                        example: 4
+                        example: 2
     CountDown:
       description: 查看倒计时
       type: object
