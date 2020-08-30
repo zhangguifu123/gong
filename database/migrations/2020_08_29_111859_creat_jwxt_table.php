@@ -95,7 +95,7 @@ class CreatJwxtTable extends Migration
             $table->string('sid')->comment('学号');
             $table->string('term')->comment('学期');
             $table->string('gpa')->comment('总绩点');
-            $table->string('avarage_grade')->comment('总成绩');
+            $table->string('average_grade')->comment('总成绩');
             $table->string('gpa_class_rank')->comment('班级绩点排名');
             $table->string('gpa_major_rank')->comment('专业绩点排名');
         });
