@@ -10,6 +10,7 @@ class GongGongPipeline():
     """
     def __init__(self, sid=None):
         self.connection = CONNECTION
+        self.connection.ping(reconnect=True)
         self.cursor = self.connection.cursor()
         self.sid = sid
         self.today = date.today()

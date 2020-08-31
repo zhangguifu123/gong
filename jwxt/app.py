@@ -56,7 +56,7 @@ def get_info():
     return response
 
 
-@app.route('/grade', methods=['POST'])
+@app.route('/score/grade', methods=['POST'])
 def get_grade():
     # method = 'getCjcx'
     sid = request.form.get('sid')
@@ -96,7 +96,7 @@ def get_grade():
     return response
 
 
-@app.route('/exam', methods=['POST'])
+@app.route('/countdown/exam', methods=['POST'])
 def get_exam():
     sid = request.form.get('sid')
     pwd = request.form.get('pwd')
@@ -138,7 +138,7 @@ def get_exam():
 
 
 
-@app.route('/now_schedule', methods=['POST'])
+@app.route('/course', methods=['POST'])
 def get_now_schedule():
     # method = 'getKbcxAzc'
     xq = '2020-2021-1'
@@ -254,7 +254,10 @@ def get_associated_schedule():
     sid = get_sid(association_code)
     schedulepipeline = SchedulePipeline(sid)
     infopipeline = InfoPipeline(sid)
-    name = infopipeline.output_data()['name']
+    try:
+      name = infopipeline.output_data()['name']
+    except:
+      name = ''
     now_schedule = schedulepipeline.output_data()
 
     result = {
@@ -274,7 +277,7 @@ def get_associated_schedule():
 
 
 
-@app.route('/ecard/balance', methods=['POST'])
+@app.route('/consume/balance', methods=['POST'])
 def get_balance():
 	sid = request.form.get('sid')
 	pwd = request.form.get('pwd')
@@ -292,7 +295,7 @@ def get_balance():
 	return response
 
 
-@app.route('/ecard/billing', methods=['POST'])
+@app.route('/consume/billing', methods=['POST'])
 def get_bill():
 	sid = request.form.get('sid')
 	pwd = request.form.get('pwd')
@@ -320,7 +323,7 @@ def get_bill():
 	return response
 
 
-@app.route('/ecard/today_billing', methods=['POST'])
+@app.route('/consumetoday_billing', methods=['POST'])
 def get_today_bill():
     sid = request.form.get('sid')
     pwd = request.form.get('pwd')
@@ -341,7 +344,7 @@ def get_today_bill():
 
 
 
-@app.route('/gpa', methods=['POST'])
+@app.route('/score/gpa', methods=['POST'])
 def get_gpa():
     sid = request.form.get('sid')
     pwd = request.form.get('pwd')
