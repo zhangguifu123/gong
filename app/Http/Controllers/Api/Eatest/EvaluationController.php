@@ -53,6 +53,10 @@ class EvaluationController extends Controller
         User::query()->find($evaluation->publisher)->del_eatest($evaluation->id);
         $evaluation->delete();
 
+        $data = $evaluation->get('img')->toArray();
+        //获取图片链接
+        $imgs = json_decode($data['img']);
+
         return msg(0, __LINE__);
     }
 

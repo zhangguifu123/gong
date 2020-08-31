@@ -19,7 +19,7 @@ class CreateEvaluationsTable extends Migration
             $table->unsignedBigInteger("publisher")->comment("发布者id");
             $table->string("nickname")->comment("昵称");
             $table->string("title")->comment("标题");
-            $table->string("label")->comment("标签");
+            $table->json("label")->comment("标签");
             $table->string("content");
             $table->integer("top")->default(0)->comment("置顶");
 //            $table->string("location")->comment("地点");
@@ -29,7 +29,7 @@ class CreateEvaluationsTable extends Migration
             $table->integer("collections")->default(0)->comment("被收藏次数");
             $table->integer("like")->default(0)->comment("赞数");
 //            $table->integer("unlike")->default(0)->comment("踩数");
-            $table->string("img")->comment("数组");
+            $table->json("img")->comment("数组");
         });
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Model\Eatest\Evaluation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -57,29 +58,10 @@ class ImageController extends Controller
 
     //测试
     public function get(Request $request){
-        // 如果redis连接失败 中止保存
-        try {
-            $redis = new Redis();
-            $redis->connect('gong_redis', 6379);
-        } catch (Exception $e) {
-            return msg(4, "连接redis失败" . __LINE__);
-        }
-        print_r($redis->hGetAll('images'));
-        $disk = Storage::disk('img')->allFiles();
-        print_r($disk);
-        $files = Storage::allFiles();   //遍历存储文件
-        if (!$files){
-            return msg(5,"文件仓库为空".__LINE__);
-        }
-        foreach ($files as $file){
-            //遍历结果去掉前缀
-            $test = stripos($file,"jpg");
-            if ($test){
-                $Storage_replace = str_replace("public/image/","",$file);
-                $Storage_files[] = $Storage_replace;
-            }
-        }
-        print_r($Storage_files);
+        $evaluation = Evaluation::query()->find($request->route('id'),'img')->toArray();
+        print_r($evaluation);
+        $imgs = $evaluation['img'];
+        print_r($imgs);
 
     }
 

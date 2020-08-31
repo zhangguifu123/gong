@@ -112,7 +112,7 @@ Route::namespace('Api')->group(function (){
 
 
         //测试
-        Route::get('/image', "ImageController@get");
+        Route::get('/image/{id}', "ImageController@get");
 
 
     });
