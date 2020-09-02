@@ -61,7 +61,7 @@ class ImageController extends Controller
         $evaluation = Evaluation::query()->find($request->route('id'),'img')->toArray();
         print_r($evaluation);
         $imgs = json_decode($evaluation['img']);
-        print_r($imgs);
+
 
     }
 

@@ -28,7 +28,7 @@ class AssociationCodeController extends Controller
     //通过学号获取关联码
     public function get_association(Request $request){
         $uid = $request->route('uid');
-        $association = AssociationCode::query()->where('uid','=',$uid)->get()->toArray();
+        $association = AssociationCode::query()->where('uid','=',$uid)->get(['uid','association_code'])->toArray();
         if ($association == null){
             return $this->create($request);
         }else{
@@ -79,7 +79,7 @@ class AssociationCodeController extends Controller
         $Association = AssociationCode::query()->where('uid','=',$uid);
         $update = $Association->update(['association_code' => $code]);
         if ($update) {
-            return $Association->get()->toArray();
+            return $Association->get(['uid','association_code'])->toArray();
         }
         return 4;
     }

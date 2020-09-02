@@ -28,7 +28,9 @@ Route::namespace('Api')->group(function (){
     Route::post('/image','ImageController@upload');
     Route::get('/eatest/list/{page}', "Eatest\EvaluationController@get_list")->where(["page" => "[0-9]+"]);
     Route::post('/eatest/image/delete','ImageController@delete');
-    Route::get('/course/uid/{association}','jwxt\AssociationCodeController@get_uid')->where(["association" => "\w{8}"]);
+
+    //测试
+    Route::get('/image/{id}', "ImageController@get");
     /**Upick 管理员*/
     //用户登录验证
     Route::get('/food', "Eatest\FoodController@get");
@@ -108,11 +110,18 @@ Route::namespace('Api')->group(function (){
             Route::put('/notice/eatest/reply/{id}',"jwxt\NoticeController@eatest_reply_update")->where(["id" => "[0-9]+"])->middleware('reply.id.check');
 
         /**AssociationCode */
+        //获取关联码
         Route::get('/course/association/{uid}','jwxt\AssociationCodeController@get_association')->where(["uid"=>"[0-9]{12}"]);
+        //获取学号
+        Route::get('/course/uid/{association}','jwxt\AssociationCodeController@get_uid')->where(["association" => "\w{8}"]);
+        //关联课表、空课表
+        Route::post('/course/empty','jwxt\CourseController@empty_course');
+        Route::post('/course/associate','jwxt\CourseController@associate_course');
+        Route::post('/course/info','jwxt\CourseController@info');
 
 
-        //测试
-        Route::get('/image/{id}', "ImageController@get");
+
+
 
 
     });
