@@ -27,11 +27,10 @@ class FoodController extends Controller
         }
         //删除路由记录
         foreach ($imgs as $i) {
-            $redis->hDel('eatest_image', $i);
+            $redis->hDel('images', $i);
         }
         $data = $data + ["publisher" => session("mid")];
         $food = new Food($data);
-
         if($food->save()) {
             return msg(0, __LINE__);
         }
@@ -40,7 +39,6 @@ class FoodController extends Controller
     }
 
     //更新美食信息
-
     public function update(Request $request) {
         $data = $this->data_handle($request);
         if(!is_array($data)) {
@@ -68,15 +66,14 @@ class FoodController extends Controller
     }
 
 
-    //管理员获取美食信息列表
+    //获取美食信息列表
 
     public function get_list(Request $request) {
-        $offset = $request->route("page") * 7 - 7;
-        $food_list = Food::query()->offset($offset)->limit(7)->orderByDesc("foods.id")
-            ->leftJoin("managers", "foods.publisher", "=", "managers.id")
+        $food_list = Food::query()->orderByDesc("food.id")
+            ->leftJoin("managers", "food.publisher", "=", "managers.id")
             ->get([
-                "foods.id as id", "managers.name as publisher", "nickname", "location",
-                "img",  "discount", "foods.created_at as time"
+                "food.id as id", "managers.name as publisher", "nickname", "location",
+                "img",  "discount", "food.created_at as time","collections"
             ])->toArray();
         $list_count = Food::query()->count();
         $message = ['total'=>$list_count,'list'=>$food_list];

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Eatest;
 
 use App\Http\Controllers\Controller;
+use App\Model\Eatest\Food;
 use Illuminate\Http\Request;
 use App\User;
 use App\Model\Eatest\Evaluation;
@@ -64,7 +65,39 @@ class CollectionController extends Controller
                 return msg(3, __LINE__);
             }
         }
+        return msg(0, __LINE__);
+    }
 
+    public function upick_keep(Request $request)
+    {
+        if (!$request->has('action')) {
+            return msg(1, "缺失参数");
+        }
+        $mod = ['action' => ["regex:/^keep$|^unkeep$/"]];
+
+        $data = $request->only(array_keys($mod));
+        $validator = Validator::make($data, $mod);
+        if ($validator->fails()) {
+            return msg(1, '非法参数' . __LINE__);
+        }
+
+        $user = User::query()->find(session("uid"));
+        $upick_id = $request->route("id");
+        $upick = Food::query()->find($upick_id);
+
+        if ($request->input("action") == "keep") {
+            if ($user->add_upick($upick_id)) {
+                $upick->increment("collections");
+            } else {
+                return msg(3, __LINE__);
+            }
+        } else {
+            if ($user->del_upick($upick_id)) {
+                $upick->decrement("collections");
+            } else {
+                return msg(3, __LINE__);
+            }
+        }
         return msg(0, __LINE__);
     }
 

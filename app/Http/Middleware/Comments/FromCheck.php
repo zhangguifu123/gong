@@ -16,7 +16,7 @@ class FromCheck
      */
     public function handle($request, Closure $next)
     {
-        $user = User::query()->find($request->route('fromId'));
+        $user = User::query()->find($request->input('fromId'));
         if(!$user) {
             return response(msg(3, "目标不存在" . __LINE__));
         } else {

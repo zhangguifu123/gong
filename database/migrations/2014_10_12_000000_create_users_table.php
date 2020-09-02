@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->json('collection');
             $table->json('like');
             $table->json('eatest');
+            $table->json('upick');
             $table->json('gulu');
             $table->json('countdown')->comment('倒计时');
             $table->json('avatar')->comment("头像");

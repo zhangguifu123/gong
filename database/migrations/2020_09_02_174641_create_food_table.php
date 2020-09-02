@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFoodsTable extends Migration
+class CreateFoodTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateFoodsTable extends Migration
      */
     public function up()
     {
-        Schema::create('foods', function (Blueprint $table) {
-
+        Schema::create('food', function (Blueprint $table) {
             $table->id();
             $table->string('publisher')->comment('发布者')->index();
             $table->string('nickname')->comment('美食名称');
             $table->string('location')->comment('美食位置');
             $table->string('discount')->comment('折扣信息');
+            $table->integer("collections")->default(0)->comment("被收藏次数");
             $table->string('img')->comment('图片链接');
             $table->timestamps();
         });
@@ -32,6 +32,6 @@ class CreateFoodsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('foods');
+        Schema::dropIfExists('food');
     }
 }

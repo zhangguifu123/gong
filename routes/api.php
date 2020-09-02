@@ -22,7 +22,7 @@ Route::namespace('Api')->group(function (){
     /** 公共区 */
     Route::post('login','StudentLoginController@login');
     Route::post('/manager/login', "ManagerController@login");
-    Route::get('/upick/list/{page}', "Eatest\FoodController@get_list")->where(["page" => "[0-9]+"]);
+    Route::get('/upick', "Eatest\FoodController@get_list");
     Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware("eatest.exist.check");
     //图片上传
     Route::post('/image','ImageController@upload');

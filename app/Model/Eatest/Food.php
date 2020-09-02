@@ -6,8 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Food extends Model
 {
-    //
     protected $fillable = [
-        "nickname", "img", "location", "discount", "publisher"
+        "collections","nickname", "img", "location", "discount", "publisher"
     ];
 }

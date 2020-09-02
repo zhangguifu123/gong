@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'countdown','gulu','like','name','nickname', 'stu_id', 'password', 'collection', 'eatest', "remember","avatar"
+        'upick','countdown','gulu','like','name','nickname', 'stu_id', 'password', 'collection', 'eatest', "remember","avatar"
     ];
 
     /**
@@ -50,6 +50,26 @@ class User extends Authenticatable
             'remember' => $this->remember,
             'avatar' => $this->avatar
         ];
+    }
+
+    public function add_upick($upick_id)
+    {
+        $upick_list = json_decode($this->upick, true);
+        if (!key_exists($upick_id, $upick_list)) {
+            $upick_list[$upick_id] = 1;
+        }
+        $this->upick = json_encode($upick_list);
+        $this->save();
+    }
+
+    public function del_upick($upick_id)
+    {
+        $upick_list = json_decode($this->upick, true);
+        if (key_exists($upick_id, $upick_list)) {
+            unset($upick_list[$upick_id]);
+        }
+        $this->upick = json_encode($upick_list);
+        $this->save();
     }
 
     public function add_countdown($countdown_id)
