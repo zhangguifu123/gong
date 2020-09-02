@@ -55,7 +55,10 @@ Route::namespace('Api')->group(function (){
     Route::group(['middleware' => 'food.exist.check'], function () {
         Route::put('/upick/{id}', "Eatest\FoodController@update")->where(["id" => "[0-9]+"]);
         Route::delete('/upick/{id}', "Eatest\FoodController@delete")->where(["id" => "[0-9]+"]);
+        Route::post('/upick/keep/{id}', "Eatest\CollectionController@upick_keep")->where(["id" => "[0-9]+"])->middleware(['login.check']);
     });
+
+
 
     /** 用户区 */
     Route::group(['middleware' => 'login.check'], function () {
@@ -84,7 +87,7 @@ Route::namespace('Api')->group(function (){
         //Eatest点赞收藏
         Route::group(["middleware" => 'eatest.exist.check'], function () {
             Route::post('/eatest/like/{id}', "Eatest\LikeController@like")->where(["id" => "[0-9]+"]);
-            Route::post('/eatest/keep/{id}', "Eatest\CollectionController@keep")->where(["id" => "[0-9]+"]);
+            Route::post('/eatest/keep/{id}', "Eatest\CollectionController@eatest_keep")->where(["id" => "[0-9]+"]);
         });
 
         //Eatest评论

@@ -46,6 +46,7 @@ class User extends Authenticatable
             'like' => $this->like,
             'eatest' => $this->eatest,
             'gulu' => $this->gulu,
+            'upick' => $this->upick,
             'countdown' => $this->countdown,
             'remember' => $this->remember,
             'avatar' => $this->avatar
@@ -57,9 +58,12 @@ class User extends Authenticatable
         $upick_list = json_decode($this->upick, true);
         if (!key_exists($upick_id, $upick_list)) {
             $upick_list[$upick_id] = 1;
+        }else{
+            return false;
         }
         $this->upick = json_encode($upick_list);
         $this->save();
+        return true;
     }
 
     public function del_upick($upick_id)
@@ -67,9 +71,12 @@ class User extends Authenticatable
         $upick_list = json_decode($this->upick, true);
         if (key_exists($upick_id, $upick_list)) {
             unset($upick_list[$upick_id]);
+        }else{
+            return false;
         }
         $this->upick = json_encode($upick_list);
         $this->save();
+        return true;
     }
 
     public function add_countdown($countdown_id)
@@ -77,9 +84,12 @@ class User extends Authenticatable
         $countdown_list = json_decode($this->countdown, true);
         if (!key_exists($countdown_id, $countdown_list)) {
             $countdown_list[$countdown_id] = 1;
+        }else{
+            return false;
         }
         $this->countdown = json_encode($countdown_list);
         $this->save();
+        return true;
     }
 
     public function del_countdown($countdown_id)
@@ -87,9 +97,12 @@ class User extends Authenticatable
         $countdown_list = json_decode($this->countdown, true);
         if (key_exists($countdown_id, $countdown_list)) {
             unset($countdown_list[$countdown_id]);
+        }else{
+            return false;
         }
         $this->countdown = json_encode($countdown_list);
         $this->save();
+        return true;
     }
 
     public function add_eatest($evaluation_id)
@@ -97,9 +110,12 @@ class User extends Authenticatable
         $eatest_list = json_decode($this->eatest, true);
         if (!key_exists($evaluation_id, $eatest_list)) {
             $eatest_list[$evaluation_id] = 1;
+        }else{
+            return false;
         }
         $this->eatest = json_encode($eatest_list);
         $this->save();
+        return true;
     }
 
     public function del_eatest($evaluation_id)
@@ -107,9 +123,12 @@ class User extends Authenticatable
         $eatest_list = json_decode($this->eatest, true);
         if (key_exists($evaluation_id, $eatest_list)) {
             unset($eatest_list[$evaluation_id]);
+        }else{
+            return false;
         }
         $this->eatest = json_encode($eatest_list);
         $this->save();
+        return true;
     }
     /**
      * @param $evaluation_id

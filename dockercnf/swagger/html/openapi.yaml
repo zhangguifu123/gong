@@ -1378,7 +1378,45 @@ paths:
                     time: 2020-08-24 19:48:16
         '403':
           $ref: '#/components/responses/InvalidProperties'
-  /upick/list/{page}:
+  /upick/keep/{id}:
+    post:
+      summary: upick收藏
+      tags:
+        - upick
+      parameters:
+        - name: id
+          description: Upick id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 2
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  description: 状态 keep收藏 unkeep取消收藏 
+                  example: keep
+                
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /upick:
     get:
       summary: Upick列表
       operationId: UpickList
@@ -1433,7 +1471,6 @@ paths:
                     time: "2020-08-24 18:48:58"
         '403':
           $ref: '#/components/responses/InvalidProperties'
-  /upick:
     post:
       summary: 发布upick
       operationId: UpickPublish

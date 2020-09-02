@@ -33,7 +33,7 @@ class CollectionController extends Controller
      * @param Request $request
      * @return string
      */
-    public function keep(Request $request)
+    public function eatest_keep(Request $request)
     {
         if (!$request->has('action')) {
             return msg(1, "缺失参数");
@@ -89,13 +89,13 @@ class CollectionController extends Controller
             if ($user->add_upick($upick_id)) {
                 $upick->increment("collections");
             } else {
-                return msg(3, __LINE__);
+                return msg(3, '已添加'.__LINE__);
             }
         } else {
             if ($user->del_upick($upick_id)) {
                 $upick->decrement("collections");
             } else {
-                return msg(3, __LINE__);
+                return msg(3,'未收藏'.__LINE__);
             }
         }
         return msg(0, __LINE__);
