@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Eatest;
 
 use App\Http\Controllers\Controller;
+use App\Model\Eatest\EatestReplies;
 use App\Model\Eatest\Evaluation;
 use App\User;
 use App\Model\Eatest\EatestComments;
@@ -23,20 +24,38 @@ class CommentController extends Controller
         $comments = new EatestComments($data);
 
         if ($comments->save()) {
-            return msg(0, __LINE__);
+            return msg(0,$comments->id);
         }
         //未知错误
         return msg(4, __LINE__);
     }
 
+    //获取美文评论
+    public function get_list(Request $request){
+        $comment_list = EatestComments::query()->
+        where('eatest_id','=',$request->route('id'))->get([
+            'id','toId','fromId','fromName','fromAvatar','content'
+        ])->toArray();
+
+        $message = ['total' => count($comment_list), 'list' => $comment_list];
+        return msg(0, $message);
+    }
+
     //删除
     public function delete(Request $request)
     {
-        $Comments = EatestComments::query()->find($request->route('id'));
-        // 将该评测从我的发布中删除
-        $Comments->delete();
 
-        return msg(0, __LINE__);
+        $comments = EatestComments::query()->find($request->route('id'));
+        // 将该评测从我的发布中删除
+
+        $toId = $comments->id;
+        $reply = EatestReplies::query()->find($toId);
+        if ($reply){
+            $reply->delete();
+        }
+        $comments->delete();
+        $data = ['删除comment_id' => $toId];
+        return msg(0, $data);
     }
 
     //检查函数

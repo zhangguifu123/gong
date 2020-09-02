@@ -62,14 +62,12 @@ class CourseController extends Controller
         if (!is_string($association)){
             return msg(3,__LINE__);
         }
-        $uid = DB::table('association_codes')->where('association_code',$association)->get('uid')->toArray();
+        $uid = DB::table('association_codes')->where('association_code',$association)->uid;
         if (!$uid){
             return msg(11,__LINE__);
         }
-        $uid = $uid[0]->uid;
 
-        $user = DB::table('users')->where('stu_id',$uid)->get('name')->toArray();
-        $name = $user[0]->name;
+        $name = DB::table('users')->where('stu_id',$uid)->name;
 
         $data = ['std'=>$uid,'name'=>$name,'association'=>$association];
         return msg(0,$data);
@@ -101,8 +99,7 @@ class CourseController extends Controller
         foreach ($uids as $item){
             $uid = $item->uid;
             //获取姓名
-            $user = DB::table('users')->where('stu_id',$uid)->get('name')->toArray();
-            $name = $user[0]->name;
+            $name = DB::table('users')->where('stu_id',$uid)->name;
             for ($i = 2;$i < 18;$i++){
                 //抓取第i周第j天的课表
                 for ($j = 1;$j < 8;$j++){

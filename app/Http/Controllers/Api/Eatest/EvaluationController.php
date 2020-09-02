@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Eatest;
 
+use Illuminate\Support\Facades\Storage;
 use \Redis;
 use App\Http\Controllers\Controller;
 use App\Model\Eatest\Evaluation;
@@ -48,14 +49,22 @@ class EvaluationController extends Controller
     //删除
     public function delete(Request $request)
     {
+        $files = [];
         $evaluation = Evaluation::query()->find($request->route('id'));
         // 将该评测从我的发布中删除
         User::query()->find($evaluation->publisher)->del_eatest($evaluation->id);
-        $evaluation->delete();
 
-        $data = $evaluation->get('img')->toArray();
-        //获取图片链接
-        $imgs = json_decode($data['img']);
+        $imgs = Evaluation::query()->find($request->route('id'))->img;
+        $imgs = json_decode($imgs);
+        foreach ($imgs as $file){           //遍历结果去掉前缀
+            $replace = str_replace(config("app.url")."/storage/image/","",$file);
+            $files[] = $replace;
+        }
+        $disk = Storage::disk('img');
+        foreach ($files as $file){   //遍历删除
+            $disk->delete($file);
+        }
+        $evaluation->delete();
 
         return msg(0, __LINE__);
     }

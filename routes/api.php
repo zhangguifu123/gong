@@ -75,7 +75,7 @@ Route::namespace('Api')->group(function (){
         Route::post('/eatest','Eatest\EvaluationController@publish');
         Route::get('/eatest/me/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware("owner.check");
             // 测评所有者和管理员均可操作
-        Route::group(["middleware" => ['owner.eatest.check', "eatest.exist.check"]], function () {
+        Route::group(["middleware" => ["eatest.exist.check",'owner.eatest.check']], function () {
             Route::put('/eatest/{id}','Eatest\EvaluationController@update')->where(["id" => "[0-9]+"]);
             Route::delete('/eatest/{id}', "Eatest\EvaluationController@delete")->where(["id" => "[0-9]+"]);
         });
@@ -89,6 +89,9 @@ Route::namespace('Api')->group(function (){
 
         //Eatest评论
         Route::post('eatest/{id}/comments','Eatest\CommentController@publish')->where(["id"=>"[0-9]+"])->middleware(['eatest.exist.check','comment.from.check']);
+
+        Route::get('eatest/{id}/comments','Eatest\CommentController@get_list')->where(["id"=>"[0-9]+"])->middleware(['eatest.exist.check']);
+        Route::delete('eatest/{id}/comments','Eatest\CommentController@delete')->where(["id"=>"[0-9]+"])->middleware(['comment.exist.check']);
         //Eatest评论回复
         Route::post('eatest/{toId}/reply/{fromId}','Eatest\ReplyController@publish')->where(["toId"=>"[0-9]+","fromId"=>"[0-9]+"])->middleware('reply.exist.check');
 

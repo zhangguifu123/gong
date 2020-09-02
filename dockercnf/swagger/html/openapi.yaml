@@ -682,7 +682,7 @@ paths:
         '403':
           $ref: '#/components/responses/NoPermission'
     delete:
-      summary: 删除评论
+      summary: 删除评论及其回复
       operationId: 删除评论
       tags:
         - gulu
@@ -1657,6 +1657,42 @@ paths:
         '403':
           $ref: '#/components/responses/InvalidProperties'
   /eatest/{id}/comments:
+    get:
+      summary: 拉取当前Eatest评论
+      tags:
+        - eatest
+      parameters:
+        - name: id
+          description: Eatest_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                description: 返回成功信息
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                    example: 0
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  data:
+                    $ref: '#/components/schemas/EatestCommentMessage'
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
     post:
       summary: 发布评论
       tags:
@@ -1676,7 +1712,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Success'
+                description: 返回成功信息
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                    example: 0
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  data:
+                    description: 评论id
+                    type: string
+                    example: 4
         '401':
           $ref: '#/components/responses/NotAuthorization'
         '403':
@@ -1684,13 +1734,13 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
     delete:
-      summary: 删除评论
+      summary: 删除评论及其回复(发布者or本人)
       operationId: del_eatest_comment
       tags:
         - eatest
       parameters:
         - name: id
-          description: 用户id
+          description: 评论id
           in: path
           required: true
           schema:
@@ -1729,7 +1779,7 @@ paths:
             type: integer
           example: 2
       requestBody:
-        $ref: '#/components/requestBodies/CommentBody'
+        $ref: '#/components/requestBodies/ReplyBody'
       responses:
         '200':
           description: 成功
@@ -3245,6 +3295,37 @@ components:
             description: 发布时间
             type: string
             example: "2020-08-24 18:48:58"
+    EatestCommentMessage:
+      description: Eatest评论列表
+      type: array
+      items:
+        description: 单条信息
+        type: object
+        properties:
+          id:
+            description: 编号
+            type: integer
+            example: 1
+          toId:
+            description: 被评论者Id
+            type: integer
+            example: 4
+          fromId:
+            description: 评论者Id
+            type: integer
+            example: 6
+          fromName:
+            description: 评论者姓名
+            type: string
+            example: 小甜甜
+          fromAvatar:
+            description: 评论者头像
+            type: string
+            example: json太长了
+          content:
+            description: 内容
+            type: string
+            example: 不错！点赞！
     EatestMessage:
       description: 美食评测列表
       type: array

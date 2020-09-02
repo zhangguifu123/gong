@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware\Eatest;
 
-use App\Models\Evaluation;
+use App\Model\Eatest\Evaluation;
 use Closure;
 
 class OwnerCheck

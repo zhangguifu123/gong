@@ -58,10 +58,17 @@ class ImageController extends Controller
 
     //测试
     public function get(Request $request){
-        $evaluation = Evaluation::query()->find($request->route('id'),'img')->toArray();
-        print_r($evaluation);
-        $imgs = json_decode($evaluation['img']);
-
+        $files = [];
+        $imgs = Evaluation::query()->find($request->route('id'))->img;
+        $imgs = json_decode($imgs);
+        foreach ($imgs as $file){           //遍历结果去掉前缀
+            $replace = str_replace(config("app.url")."/storage/image/","",$file);
+            $files[] = $replace;
+        }
+        $disk = Storage::disk('img');
+        foreach ($files as $file){   //遍历删除
+            $disk->delete($file);
+        }
 
     }
 
@@ -93,7 +100,7 @@ class ImageController extends Controller
         }
         $files = $redis->hkeys("images");
         foreach ($files as $file){           //遍历结果去掉前缀
-            $redis_replace = str_replace("http://zgf.jsky31.cn:10302/storage/image/","",$file);
+            $redis_replace = str_replace(config("app.url")."/storage/image/","",$file);
             $redis_files[] = $redis_replace;
         }
         print_r($redis_files);

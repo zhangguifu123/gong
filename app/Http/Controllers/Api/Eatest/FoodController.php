@@ -75,6 +75,7 @@ class FoodController extends Controller
                 "food.id as id", "managers.name as publisher", "nickname", "location",
                 "img",  "discount", "food.created_at as time","collections"
             ])->toArray();
+
         $list_count = Food::query()->count();
         $message = ['total'=>$list_count,'list'=>$food_list];
         return msg(0, $message);

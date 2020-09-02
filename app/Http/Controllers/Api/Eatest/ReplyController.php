@@ -27,6 +27,10 @@ class ReplyController extends Controller
         return msg(4, __LINE__);
     }
 
+    public function get_list(Request $request){
+
+    }
+
     //删除
     public function delete(Request $request)
     {
