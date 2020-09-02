@@ -76,11 +76,13 @@ class Kernel extends HttpKernel
         //Upick
         'food.exist.check' => \App\Http\Middleware\Food\ExistCheck::class,
         //EatestComment
-        'comment.from.check' => \App\Http\Middleware\Comments\FromCheck::class,
-        'comment.exist.check' => \App\Http\Middleware\Comments\ExistCheck::class,
+        'comment.from.check' => \App\Http\Middleware\Eatest\Comments\FromCheck::class,
+        'comment.exist.check' => \App\Http\Middleware\Eatest\Comments\ExistCheck::class,
+        'comment.owner.check' => \App\Http\Middleware\Eatest\Comments\OwnerCheck::class,
         //EatestReply
-        'reply.id.check' => \App\Http\Middleware\Comments\ReplyIdCheck::class,
-        'reply.exist.check' => \App\Http\Middleware\Manager\ReplyCheck::class,
+        'reply.exist.check' => \App\Http\Middleware\Eatest\Reply\ExistCheck::class,
+        'reply.tofrom.check' => \App\Http\Middleware\Eatest\Reply\FromToCheck::class,
+        'reply.owner.check' => \App\Http\Middleware\Eatest\Reply\OwnerCheck::class,
         //Eatest
         'owner.eatest.check' => \App\Http\Middleware\Eatest\OwnerCheck::class,
         'eatest.exist.check' => \App\Http\Middleware\Eatest\ExistCheck::class,

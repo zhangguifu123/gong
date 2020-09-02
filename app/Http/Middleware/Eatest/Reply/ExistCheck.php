@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Middleware\Comments;
+namespace App\Http\Middleware\Eatest\Reply;
 
-use App\User;
+use App\Model\Eatest\EatestReplies;
 use Closure;
 
-class FromCheck
+class ExistCheck
 {
     /**
      * Handle an incoming request.
@@ -16,7 +16,7 @@ class FromCheck
      */
     public function handle($request, Closure $next)
     {
-        $user = User::query()->find($request->input('fromId'));
+        $user = EatestReplies::query()->find($request->route('id'));
         if(!$user) {
             return response(msg(3, "目标不存在" . __LINE__));
         } else {

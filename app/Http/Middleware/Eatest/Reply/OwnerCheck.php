@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Middleware\Comments;
+namespace App\Http\Middleware\Eatest\Reply;
 
 use App\Model\Eatest\EatestReplies;
 use Closure;
 
-class ReplyIdCheck
+class OwnerCheck
 {
     /**
      * Handle an incoming request.
@@ -17,8 +17,8 @@ class ReplyIdCheck
     public function handle($request, Closure $next)
     {
         $user = EatestReplies::query()->find($request->route('id'));
-        if(!$user) {
-            return response(msg(3, "目标不存在" . __LINE__));
+        if(!$user->fromId == session('uid')) {
+            return response(msg(11,  __LINE__));
         } else {
             return $next($request);
         }

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Middleware\Manager;
+namespace App\Http\Middleware\Eatest\Comments;
 
 use App\User;
 use Closure;
 
-class ReplyCheck
+class FromCheck
 {
     /**
      * Handle an incoming request.
@@ -16,9 +16,8 @@ class ReplyCheck
      */
     public function handle($request, Closure $next)
     {
-        $commenter = User::query()->find($request->route('fromId'));
-        $replyer = User::query()->find($request->route('toId'));
-        if(!$commenter || !$replyer) {
+        $user = User::query()->find($request->input('fromId'));
+        if(!$user) {
             return response(msg(3, "目标不存在" . __LINE__));
         } else {
             return $next($request);

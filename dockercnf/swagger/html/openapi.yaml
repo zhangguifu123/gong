@@ -1686,7 +1686,7 @@ paths:
                     type: string
                     example: 成功
                   data:
-                    $ref: '#/components/schemas/EatestCommentMessage'
+                    $ref: '#/components/schemas/CommentReplyMessage'
         '401':
           $ref: '#/components/responses/NotAuthorization'
         '403':
@@ -1741,6 +1741,62 @@ paths:
       parameters:
         - name: id
           description: 评论id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /eatest/{id}/reply:
+    get:
+      summary: 拉取comment回复
+      tags:
+        - eatest
+      parameters:
+        - name: id
+          description: comment_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                description: 返回成功信息
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                    example: 0
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  data:
+                    $ref: '#/components/schemas/CommentReplyMessage'
+    delete:
+      summary: 删除回复(本人)
+      operationId: del_eatest_reply
+      tags:
+        - eatest
+      parameters:
+        - name: id
+          description: reply_id
           in: path
           required: true
           schema:
@@ -3295,7 +3351,7 @@ components:
             description: 发布时间
             type: string
             example: "2020-08-24 18:48:58"
-    EatestCommentMessage:
+    CommentReplyMessage:
       description: Eatest评论列表
       type: array
       items:
@@ -3326,6 +3382,10 @@ components:
             description: 内容
             type: string
             example: 不错！点赞！
+          time:
+            description: 内容
+            type: string
+            example: "2020-09-03 00:03:13"
     EatestMessage:
       description: 美食评测列表
       type: array

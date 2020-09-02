@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Eatest;
 
 use App\Http\Controllers\Controller;
+use App\Model\Eatest\EatestComments;
 use App\Model\Eatest\EatestReplies;
 use App\User;
 use Illuminate\Http\Request;
@@ -17,10 +18,14 @@ class ReplyController extends Controller
         if (!is_array($data)) {
             return $data;
         }
+        $comment = EatestComments::query()->find($request->input('comment_id'));
+        if(!$comment) {
+            return response(msg(3, "eatest不存在" . __LINE__));
+        }
         $data = $data + ["status" => 0,"fromId"=>$request->route("fromId"),"toId"=>$request->route("toId")];
-        $comments = new EatestReplies($data);
+        $reply = new EatestReplies($data);
 
-        if ($comments->save()) {
+        if ($reply->save()) {
             return msg(0, __LINE__);
         }
         //未知错误
@@ -28,7 +33,13 @@ class ReplyController extends Controller
     }
 
     public function get_list(Request $request){
-
+        $reply_list = EatestReplies::query()
+            ->where('comment_id','=',$request->route('id'))
+            ->get([
+                'id','fromId','fromName','toId','comment_id','fromAvatar','content','created_at as time'
+            ])->toArray();
+        $message = ['total' => count($reply_list), 'list' => $reply_list];
+        return msg(0, $message);
     }
 
     //删除
@@ -37,7 +48,6 @@ class ReplyController extends Controller
         $reply = EatestReplies::query()->find($request->route('id'));
         // 将该评测从我的发布中删除
         $reply->delete();
-
         return msg(0, __LINE__);
     }
 

@@ -34,7 +34,7 @@ class CommentController extends Controller
     public function get_list(Request $request){
         $comment_list = EatestComments::query()->
         where('eatest_id','=',$request->route('id'))->get([
-            'id','toId','fromId','fromName','fromAvatar','content'
+            'id','toId','fromId','fromName','fromAvatar','content','created_at as time'
         ])->toArray();
 
         $message = ['total' => count($comment_list), 'list' => $comment_list];
