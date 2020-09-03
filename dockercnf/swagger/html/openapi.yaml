@@ -46,7 +46,7 @@ tags:
   - name: admin
     description: 管理 API
 paths:
-  /manager/logion:
+  /manager/login:
     post:
       tags:
         - manager
@@ -85,6 +85,53 @@ paths:
                     example: 成功
                   data:
                     $ref: '#/components/schemas/ManagerInfo'
+          links:
+            me:
+              operationId: 获取用户信息
+              parameters:
+                Authentication: '$response.body#/token'
+        '403':
+          description: 登录失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /avatar:
+    post:
+      tags:
+        - user
+      summary: 更换头像
+      description: 更换头像(jpg, jpeg, png, gif)
+      requestBody:
+        content:
+          form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  description: 头像文件
+                  type: object
+                  example: 这是一个小于10MB(jpg, jpeg, png, gif)文件！！
+      responses:
+        '200':
+          description: 登录成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  # token:
+                  #   description: jwt token
+                  #   type: string
+                  code:
+                    description: 状态码
+                    type: integer
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  data:
+                    $ref: '#/components/schemas/UserInfo'
           links:
             me:
               operationId: 获取用户信息

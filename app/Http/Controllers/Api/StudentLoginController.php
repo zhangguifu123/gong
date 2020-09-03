@@ -40,7 +40,7 @@ class StudentLoginController extends Controller
             if ($output['code'] == 0) {
                 $user = new User([
                     'nickname' => "快来想个昵称吧",
-                    'avatar'=> json_encode("https://test.gong.com/storage/image/290d42e9ac9703ee27e99f49ff40909c.jpg"),
+                    'avatar'=> json_encode( config("app.url")."/storage/avatar/avatar.jpg"),
                     'name' => $output['data']['name'], //默认信息
                     'stu_id' => $data['stu_id'],
                     'password' => md5($data['password']),

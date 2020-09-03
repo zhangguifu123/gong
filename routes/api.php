@@ -62,6 +62,8 @@ Route::namespace('Api')->group(function (){
 
     /** 用户区 */
     Route::group(['middleware' => 'login.check'], function () {
+        /**头像上传 */
+        Route::post('/avatar','AvatarImageController@upload');
         /**CountDown倒计时 */
         Route::post('/countdown', 'jwxt\CountDownController@addCountDown');
         Route::group(["middleware" => ["owner.countdown.check","countdown.exist.check"]],function (){
