@@ -47,7 +47,6 @@ Route::namespace('Api')->group(function (){
 
         // 美食库区域
         Route::post('/upick', "Eatest\FoodController@publish");
-
     });
     /**
      * 测试Upick暂时移出来
@@ -64,6 +63,7 @@ Route::namespace('Api')->group(function (){
     Route::group(['middleware' => 'login.check'], function () {
         /**头像上传 */
         Route::post('/avatar','AvatarImageController@upload');
+        Route::put('/nickname','StudentLoginController@update_nickname');
         /**CountDown倒计时 */
         Route::post('/countdown', 'jwxt\CountDownController@addCountDown');
         Route::group(["middleware" => ["owner.countdown.check","countdown.exist.check"]],function (){

@@ -96,6 +96,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /nickname:
+    put:
+      tags:
+        - user
+      summary: 更改昵称
+      description: 更改昵称
+      requestBody:
+        content:
+          x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                nickname:
+                  description: 昵称
+                  type: string
+                  example: 我是你的小甜甜
+      responses:
+        '200':
+          description: 登录成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+        
   /avatar:
     post:
       tags:
@@ -120,9 +152,6 @@ paths:
               schema:
                 type: object
                 properties:
-                  # token:
-                  #   description: jwt token
-                  #   type: string
                   code:
                     description: 状态码
                     type: integer
@@ -131,7 +160,9 @@ paths:
                     type: string
                     example: 成功
                   data:
-                    $ref: '#/components/schemas/UserInfo'
+                    description: 返回数据
+                    type: string
+                    example:  "http://zgf.jsky31.cn/storage/avatar/1bc5b36f5bd71e32c89fb7b48063b06c.jpg"
           links:
             me:
               operationId: 获取用户信息
@@ -1322,7 +1353,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
     
-  /eatest/image:
+  /image:
     post:
       summary: 图片上传
       operationId: EatestImage

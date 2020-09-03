@@ -83,6 +83,19 @@ class StudentLoginController extends Controller
         return msg(2, __LINE__);
     }
 
+    public function update_nickname(Request $request){
+        $user = User::query()->find(session('uid'));
+        $name = $request->input('nickname');
+        if (!$name){
+            return msg(1,__LINE__);
+        }
+        if (!is_string($name)){
+            return msg(3,__LINE__);
+        }
+        $user->update(['nickname' => $name]);
+        return msg(0,__LINE__);
+    }
+
     public function get_user_publish_list(Request $request)
     {
         $user_id = $request->route("uid");
