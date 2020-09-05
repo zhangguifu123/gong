@@ -104,7 +104,7 @@ class CreatJwxtTable extends Migration
             $table->id();
             $table->unsignedBigInteger('sid')->comment('学号');
             $table->date('info')->comment('个人信息')->nullable();
-            $table->date('grade')->comment('成绩')->nullable();
+            $table->date('grades')->comment('成绩')->nullable();
             $table->date('schedule')->comment('课表')->nullable();
             $table->date('all_schedule')->comment('所有课表')->nullable();
             $table->date('exam')->comment('考试安排')->nullable();

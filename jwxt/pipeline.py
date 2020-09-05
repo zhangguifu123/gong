@@ -135,7 +135,7 @@ class GradePipeline(GongGongPipeline):
         self.select_data_sql = f"SELECT * FROM grades WHERE sid={self.sid}"
         self.delete_data_sql = f"DELETE FROM grades WHERE sid={self.sid}"
 
-        self.insert_update_time_sql = f"""INSERT INTO update_time (sid, info, grade, schedule, all_schedule, exam, gpa)
+        self.insert_update_time_sql = f"""INSERT INTO update_time (sid, info, grades, schedule, all_schedule, exam, gpa)
                                                           VALUES ({self.sid}, NULL, NULL, NULL, NULL, NULL, NULL)"""
         self.get_update_time_sql = f"SELECT grades FROM update_time WHERE sid={self.sid}"
         self.update_update_time_sql = f"UPDATE update_time SET grades='{self.today.strftime('%Y-%m-%d')}' WHERE sid={self.sid}"
