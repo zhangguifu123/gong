@@ -332,7 +332,7 @@ class InfoPipeline(GongGongPipeline):
                                     class VARCHAR(255) NOT NULL,
                                     phone VARCHAR(255) ,
                                     qq VARCHAR(255) ,
-                                    email VARCHAR(255) 
+                                    email VARCHAR(255)
                                     )"""
 
         self.insert_flag_sql = f"INSERT INTO flag (sid, info, grades, schedule, all_schedule, exam, gpa) VALUES({self.sid}, 0, 0, 0, 0, 0, 0)"
