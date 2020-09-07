@@ -24,28 +24,81 @@ class CourseController extends Controller
         if (!is_string($association)){
             return msg(3,__LINE__);
         }
-        $uid = DB::table('association_codes')->where('association_code',$association)->get('uid')->toArray();
+        $uid = DB::table('association_codes')->where('association_code','=',$association)->get(['uid'])->toArray();
+        $uid = $uid[0]->uid;
         if (!$uid){
             return msg(11,__LINE__);
         }
-        $uid = $uid[0]->uid;
-        for ($i = 2;$i < 18;$i++){
-            //抓取第i周第j天的课表
-            for ($j = 1;$j < 8;$j++){
+
+        for ($i = 1;$i < 8;$i++){
+            //查询周一的课表
                 $courses = DB::table('schedule')
-                    ->where('sid',$uid)
-                    ->where('week',$i)
-                    ->where('day',$j)->get([
+                    ->where('sid','=',$uid)
+                    ->where('day','=',$i)->get([
                         'course','teacher','location','day','section_start','section_end','section_length','start_time','end_time','weeks as week','week_string'
                     ])->toArray();
-                //课表存入第i周第j天
-                $week_course[(string)$j] = $courses;
+//                print_r(json_encode($courses));
+                $one_course = [];
+                $two_course = [];
+                $three_course = [];
+                $four_course = [];
+                $five_course = [];
+                foreach($courses as $j){
+                    print_r($j);
+                    switch ($j->section_start){
+                        case 1:
+                            foreach ($one_course as $item){
+                                if ($item->course == $j->course && $item->section_start == $j->sectionstart){
+                                    break;
+                                }
+                                $one_course[] = $j;
+                                print_r($one_course);
+                            }
+                            break;
+                        case 3:
+                            foreach ($two_course as $item){
+                                if ($item->course == $j->course && $item->section_start == $j->sectionstart){
+                                    break;
+                                }
+                                $two_course[] = $j;
+                            }
+                            $two_course[] = $j;
+                            break;
+                        case 5:
+                            foreach ($three_course as $item){
+                                if ($item->course == $j->course && $item->section_start == $j->sectionstart){
+                                    break;
+                                }
+                                $three_course[] = $j;
+                            }
+                            $three_course[] = $j;
+                            break;
+                        case 7:
+                            foreach ($four_course as $item){
+                                if ($item->course == $j->course && $item->section_start == $j->sectionstart){
+                                    break;
+                                }
+                                $four_course[] = $j;
+                            }
+                            $four_course[] = $j;
+                            break;
+                        case 9:
+                            foreach ($five_course as $item){
+                                if ($item->course == $j->course && $item->section_start == $j->sectionstart){
+                                    break;
+                                }
+                                $five_course[] = $j;
+                            }
+                            $five_course[] = $j;
+                            break;
+                    }
+                    print_r(json_encode($one_course));
             }
-            //一整周课表存入第i周
-            $schedule[(string)$i] = $week_course;
+
+//                print_r(json_encode($courses));
         }
 
-        return msg(0,$schedule);
+//        return msg(0,$schedule);
     }
 
     public function info(Request $request){
