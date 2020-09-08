@@ -152,7 +152,7 @@ class CourseController extends Controller
         foreach ($uids as $item){
             $uid = $item->uid;
             //获取姓名
-            $name = DB::table('users')->where('stu_id',$uid)->name;
+            $name = DB::table('users')->where('stu_id',$uid)->get()->toArray()[0]->name;
             for ($i = 2;$i < 18;$i++){
                 //抓取第i周第j天的课表
                 for ($j = 1;$j < 8;$j++){
