@@ -1645,6 +1645,61 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   '/eatest/{id}':
+    get:
+      summary: 获取详细评测
+      operationId: EatestGet
+      tags:
+        - eatest
+      parameters:
+        - name: id
+          description: 美文id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                  status:
+                    description: 状态
+                    type: string
+                  data:
+                    description: 我的评测列表
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EatestMessage'
+              example:
+                code: 0
+                status: 成功
+                data:
+                    id: 1,
+                    publisher_name: 我是你的小可爱吗
+                    label: 
+                     - 好吃
+                       贼好吃
+                    views: 0
+                    like: 12
+                    collections: 43
+                    top: 0
+                    img: 
+                      - 太长了
+                        太长了
+                    title: 小可爱开店啦！
+                    content: 大家来吃啊～～
+                    is_like: false
+                    is_collection: false
+                    time: '2020-08-24 18:48:16'
+
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
     put:
       summary: 修改评测
       operationId: EatestUpdate
@@ -1697,13 +1752,161 @@ paths:
           $ref: '#/components/responses/NoPermission'
         '404':
           $ref: '#/components/responses/NotFound'
-  /eatest/me/{id}:
+  /eatest/me/{uid}:
     get:
       summary: 我的评测
       tags:
         - eatest
       parameters:
-        - name: id
+        - name: uid
+          description: 用户id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    description: 页码
+                    type: integer
+                  limit:
+                    description: 每页限制
+                    type: integer
+                  total:
+                    description: 总页数
+                    type: integer
+                  data:
+                    description: 我的评测列表
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EatestMessage'
+              example:
+                page: 1
+                limit: 1
+                total: 2
+                data:
+                  - id: 1,
+                    publisher_name: 我是你的小可爱吗
+                    label: 
+                     - 好吃
+                       贼好吃
+                    views: 0
+                    like: 12
+                    collections: 43
+                    top: 0
+                    img: 
+                      - 太长了
+                        太长了
+                    title: 小可爱开店啦！
+                    location: 联建
+                    shop_name: 小可爱的店铺
+                    time: 2020-08-24 18:48:16
+                    
+                  - id: 2
+                    publisher_name: 我是你的大可爱吗
+                    label: 
+                     - 难吃
+                       贼难吃
+                    views: 66
+                    like: 12
+                    collections: 54
+                    top: 1
+                    img: 
+                      - 太长了
+                        太长了
+                    title: 小可爱开店啦！
+                    location: 联建
+                    shop_name: 小可爱的店铺
+                    time: 2020-08-24 19:48:16
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
+  /eatest/collection/{uid}:
+    get:
+      summary: 我的收藏
+      tags:
+        - eatest
+      parameters:
+        - name: uid
+          description: 用户id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    description: 页码
+                    type: integer
+                  limit:
+                    description: 每页限制
+                    type: integer
+                  total:
+                    description: 总页数
+                    type: integer
+                  data:
+                    description: 我的评测列表
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EatestMessage'
+              example:
+                page: 1
+                limit: 1
+                total: 2
+                data:
+                  - id: 1,
+                    publisher_name: 我是你的小可爱吗
+                    label: 
+                     - 好吃
+                       贼好吃
+                    views: 0
+                    like: 12
+                    collections: 43
+                    top: 0
+                    img: 
+                      - 太长了
+                        太长了
+                    title: 小可爱开店啦！
+                    location: 联建
+                    shop_name: 小可爱的店铺
+                    time: 2020-08-24 18:48:16
+                    
+                  - id: 2
+                    publisher_name: 我是你的大可爱吗
+                    label: 
+                     - 难吃
+                       贼难吃
+                    views: 66
+                    like: 12
+                    collections: 54
+                    top: 1
+                    img: 
+                      - 太长了
+                        太长了
+                    title: 小可爱开店啦！
+                    location: 联建
+                    shop_name: 小可爱的店铺
+                    time: 2020-08-24 19:48:16
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
+  /eatest/like/{uid}:
+    get:
+      summary: 我的喜欢
+      tags:
+        - eatest
+      parameters:
+        - name: uid
           description: 用户id
           in: path
           required: true

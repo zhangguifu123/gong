@@ -103,7 +103,39 @@ class EvaluationController extends Controller
 
         return msg(0, $evaluation->info());
     }
+    public function get_me_list(Request $request){
+        $uid = $request->route('uid');
+        $eatest = User::query()->find($uid)->eatest;
+        $eatest = array_keys(json_decode($eatest,true));
+        $evaluation_list = Evaluation::query()->whereIn('id',$eatest)->get([
+            "id", "nickname as publisher_name", "label", "views","like",
+            "collections", "top", "img", "title", "created_at as time"
+        ])->toArray();
 
+        return msg(0,$evaluation_list);
+    }
+    public function get_like_list(Request $request){
+        $uid = $request->route('uid');
+        $like = User::query()->find($uid)->like;
+        $like = array_keys(json_decode($like,true));
+        $evaluation_list = Evaluation::query()->whereIn('id',$like)->get([
+            "id", "nickname as publisher_name", "label", "views","like",
+            "collections", "top", "img", "title", "created_at as time"
+        ])->toArray();
+
+        return msg(0,$evaluation_list);
+    }
+    public function get_collection_list(Request $request){
+        $uid = $request->route('uid');
+        $collection = User::query()->find($uid)->collection;
+        $collection = array_keys(json_decode($collection,true));
+        $evaluation_list = Evaluation::query()->whereIn('id',$collection)->get([
+            "id", "nickname as publisher_name", "label", "views","like",
+            "collections", "top", "img", "title", "created_at as time"
+        ])->toArray();
+
+        return msg(0,$evaluation_list);
+    }
         //拉取列表信息
     public function get_list(Request $request)
     {

@@ -79,9 +79,12 @@ Route::namespace('Api')->group(function (){
 
         //Eatest增删改查
         Route::post('/eatest','Eatest\EvaluationController@publish');
-        Route::get('/eatest/me/{uid}', "Eatest\EvaluationController@get")->where(["uid" => "[0-9]+"])->middleware("owner.check");
+        Route::get('/eatest/me/{uid}','Eatest\EvaluationController@get_me_list');
+        Route::get('/eatest/like/{uid}','Eatest\EvaluationController@get_like_list');
+        Route::get('/eatest/collection/{uid}','Eatest\EvaluationController@get_collection_list');
             // 测评所有者和管理员均可操作
         Route::group(["middleware" => ["eatest.exist.check",'owner.eatest.check']], function () {
+            Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"]);
             Route::put('/eatest/{id}','Eatest\EvaluationController@update')->where(["id" => "[0-9]+"]);
             Route::delete('/eatest/{id}', "Eatest\EvaluationController@delete")->where(["id" => "[0-9]+"]);
         });
