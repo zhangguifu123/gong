@@ -60,6 +60,8 @@ services:
       - "82:8080"
     volumes:
       - ./dockercnf/swagger/html:/usr/share/nginx/html
+    environment:
+      API_URL: /openapi.yaml
   swagger-editor:
     image: "swaggerapi/swagger-editor"
     container_name: "swagger-editor"
