@@ -1974,6 +1974,32 @@ paths:
                     time: 2020-08-24 19:48:16
         '403':
           $ref: '#/components/responses/InvalidProperties'
+  /eatest/comments/{cid}:
+    delete:
+      summary: 删除评论及其回复(发布者or本人)
+      operationId: del_eatest_comment
+      tags:
+        - eatest
+      parameters:
+        - name: cid
+          description: 评论cid
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /eatest/{id}/comments:
     get:
       summary: 拉取当前Eatest评论
@@ -2051,32 +2077,8 @@ paths:
           $ref: '#/components/responses/NoPermission'
         '404':
           $ref: '#/components/responses/NotFound'
-    delete:
-      summary: 删除评论及其回复(发布者or本人)
-      operationId: del_eatest_comment
-      tags:
-        - eatest
-      parameters:
-        - name: id
-          description: 评论id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Success'
-        '401':
-          $ref: '#/components/responses/NotAuthorization'
-        '403':
-          $ref: '#/components/responses/NoPermission'
-        '404':
-          $ref: '#/components/responses/NotFound'
-  /eatest/{id}/reply:
+    
+  /eatest/comment/{id}/reply:
     get:
       summary: 拉取comment回复
       tags:
@@ -2107,6 +2109,7 @@ paths:
                     example: 成功
                   data:
                     $ref: '#/components/schemas/CommentReplyMessage'
+  /eatest/reply/{id}:
     delete:
       summary: 删除回复(本人)
       operationId: del_eatest_reply
@@ -2132,21 +2135,14 @@ paths:
           $ref: '#/components/responses/NoPermission'
         '404':
           $ref: '#/components/responses/NotFound'
-  /eatest/{toId}/reply/{fromId}:
+  /eatest/comment/{id}}/reply:
     post:
       summary: 评论回复
       tags:
         - eatest
       parameters:
-        - name: toId
-          description: 被评论者Id
-          in: path
-          required: true
-          schema:
-            type: integer
-          example: 2
-        - name: fromId
-          description: 评论者Id
+        - name: id
+          description: comment id
           in: path
           required: true
           schema:
@@ -3254,14 +3250,18 @@ components:
           schema:
             type: object
             properties:
-              comment_id:
+              fromId:
                 type: integer
-                description: 评论id
+                description: 评论者id
                 example: 1
+              toId:
+                type: integer
+                description: 被评论者id
+                example: 3
               fromName:
                 type: integer
                 description: 评论者昵称
-                example: 1
+                example: 小可爱
               content:
                 type: string
                 description: 评论内容
@@ -3269,7 +3269,7 @@ components:
               fromAvatar:
                 type: integer
                 description: 评论者头像url
-                example: 3
+                example: 太长了
   parameters:
     stu_id:
       name: stu_id
