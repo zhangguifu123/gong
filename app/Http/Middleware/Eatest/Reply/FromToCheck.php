@@ -16,10 +16,10 @@ class FromToCheck
      */
     public function handle($request, Closure $next)
     {
-        $commenter = User::query()->find($request->route('fromId'));
-        $replyer = User::query()->find($request->route('toId'));
+        $commenter = User::query()->find($request->input('fromId'));
+        $replyer = User::query()->find($request->input('toId'));
         if(!$commenter || !$replyer) {
-            return response(msg(3, "目标不存在" . __LINE__));
+            return response(msg(3, "评论or被评论者不存在" . __LINE__));
         } else {
             return $next($request);
         }

@@ -55,7 +55,8 @@ class ReplyController extends Controller
     private function data_handle(Request $request = null){
         //声明理想数据格式
         $mod = [
-            "comment_id" => ["integer"],
+            "toId" => ["integer"],
+            "fromId" => ["integer"],
             "fromName" => ["string", "max:20"],
             "fromAvatar" => ["json"],
             "content" => ["string", "max:50"]

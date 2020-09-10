@@ -31,17 +31,17 @@ Route::namespace('Api')->group(function (){
 
     //测试
     Route::get('/image/{id}', "ImageController@get");
-    /**Upick 管理员*/
+    /**管理员*/
     //用户登录验证
     Route::get('/food', "Eatest\FoodController@get");
     //管理员登录验证区
     Route::group(['middleware' => 'manager.login.check'], function () {
         Route::post('/manager/update', "ManagerController@update");
         Route::get('/manager/list', "ManagerController@list");
+        /** Upick  */
         Route::group(['middleware' => 'food.exist.check'], function () {
             Route::put('/upick/{id}', "Eatest\FoodController@update")->where(["id" => "[0-9]+"]);
             Route::delete('/upick/{id}', "Eatest\FoodController@delete")->where(["id" => "[0-9]+"]);
-
         });
         // 超级管理员验证
         Route::group(['middleware' => 'manager.super.check'], function () {
@@ -101,11 +101,12 @@ Route::namespace('Api')->group(function (){
         //Eatest评论
         Route::post('eatest/{id}/comments','Eatest\CommentController@publish')->where(["id"=>"[0-9]+"])->middleware(['eatest.exist.check','comment.from.check']);
         Route::get('eatest/{id}/comments','Eatest\CommentController@get_list')->where(["id"=>"[0-9]+"])->middleware(['eatest.exist.check']);
-        Route::delete('eatest/{id}/comments','Eatest\CommentController@delete')->where(["id"=>"[0-9]+"])->middleware(['comment.exist.check','comment.owner.check']);
+        Route::delete('eatest/comments/{id}','Eatest\CommentController@delete')->where(["id"=>"[0-9]+"])->middleware(['comment.exist.check','comment.owner.check']);
         //Eatest评论回复
-        Route::post('eatest/{toId}/reply/{fromId}','Eatest\ReplyController@publish')->where(["toId"=>"[0-9]+","fromId"=>"[0-9]+"])->middleware('reply.tofrom.check');
-        Route::get('eatest/{id}/reply','Eatest\ReplyController@get_list')->where(["id"=>"[0-9]+"])->middleware(['comment.exist.check']);
-        Route::delete('eatest/{id}/reply','Eatest\ReplyController@delete')->where(["id"=>"[0-9]+"])->middleware(['reply.exist.check','reply.owner.check']);
+//        Route::post('eatest/{toId}/reply/{fromId}','Eatest\ReplyController@publish')->where(["toId"=>"[0-9]+","fromId"=>"[0-9]+"])->middleware('reply.tofrom.check');
+        Route::post('eatest/comment/{id}/reply','Eatest\ReplyController@publish')->where(["id"=>"[0-9]+"])->middleware('reply.tofrom.check');
+        Route::get('eatest/comment/{id}/reply','Eatest\ReplyController@get_list')->where(["id"=>"[0-9]+"])->middleware(['comment.exist.check']);
+        Route::delete('eatest/reply/{id}','Eatest\ReplyController@delete')->where(["id"=>"[0-9]+"])->middleware(['reply.exist.check','reply.owner.check']);
         /**User */
         Route::group(["middleware" => ['owner.check']], function () {
         //获取收藏列表

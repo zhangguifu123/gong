@@ -103,6 +103,7 @@ class EvaluationController extends Controller
 
         return msg(0, $evaluation->info());
     }
+    //拉取我的列表
     public function get_me_list(Request $request){
         $uid = $request->route('uid');
         $eatest = User::query()->find($uid)->eatest;
@@ -114,6 +115,7 @@ class EvaluationController extends Controller
 
         return msg(0,$evaluation_list);
     }
+    //拉取我的喜欢
     public function get_like_list(Request $request){
         $uid = $request->route('uid');
         $like = User::query()->find($uid)->like;
@@ -125,6 +127,7 @@ class EvaluationController extends Controller
 
         return msg(0,$evaluation_list);
     }
+    //拉取我的收藏
     public function get_collection_list(Request $request){
         $uid = $request->route('uid');
         $collection = User::query()->find($uid)->collection;
