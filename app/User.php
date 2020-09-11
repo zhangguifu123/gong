@@ -108,7 +108,6 @@ class User extends Authenticatable
     public function add_eatest($evaluation_id)
     {
         $eatest_list = json_decode($this->eatest, true);
-        print_r($evaluation_id);
         if (!key_exists($evaluation_id, $eatest_list)) {
             $eatest_list[$evaluation_id] = 1;
         }else{

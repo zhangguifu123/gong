@@ -39,7 +39,7 @@ class EvaluationController extends Controller
         //发布，同时将评测加入我的发布
         if ($evaluation->save()) {
             User::query()->find(session("uid"))->add_eatest($evaluation->id);
-
+	    
             return msg(0, __LINE__);
         }
         //未知错误
@@ -108,7 +108,8 @@ class EvaluationController extends Controller
         $uid = $request->route('uid');
         $eatest = User::query()->find($uid)->eatest;
         $eatest = array_keys(json_decode($eatest,true));
-        $evaluation_list = Evaluation::query()->whereIn('publisher',$eatest)->get([
+        #print_r($eatest);
+	$evaluation_list = Evaluation::query()->whereIn('id',$eatest)->get([
             "id", "nickname as publisher_name", "label", "views","like",
             "collections", "top", "img", "title", "created_at as time"
         ])->toArray();
