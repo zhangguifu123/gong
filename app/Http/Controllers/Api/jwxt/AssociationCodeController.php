@@ -34,7 +34,7 @@ class AssociationCodeController extends Controller
         }else{
             //判断是否过期
             $result = $this->judge_time($request);
-            if ($result > 7){
+            if ($result > 180){
                 //更新关联码
                 $result = $this->update($request);
                 if(!is_array($result)){

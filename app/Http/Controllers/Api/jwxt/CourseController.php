@@ -31,10 +31,7 @@ class CourseController extends Controller
             return msg(11,__LINE__);
         }
         //http请求
-        $response = Http::asForm()->post('https://campus_data.acver.xyz/api/student/course',[
-            'sid' => '201805710601',
-            'pwd' => 'Zgf991219'
-        ]);
+        $response = Http::get('https://campus_data.acver.xyz/api/student/'.$uid.'/course');
         return $response->body();
 
     }
@@ -70,7 +67,7 @@ class CourseController extends Controller
         $schedule = [];
         //声明理想数据格式
         $mod = [
-            "associations" => ["json"]
+            "associations" => ["string"]
         ];
         //是否缺失参数
         if (!$request->has(array_keys($mod))){
