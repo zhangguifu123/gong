@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\jwxt;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class CourseController extends Controller
 {
@@ -29,76 +30,13 @@ class CourseController extends Controller
         if (!$uid){
             return msg(11,__LINE__);
         }
+        //http请求
+        $response = Http::asForm()->post('https://campus_data.acver.xyz/api/student/course',[
+            'sid' => '201805710601',
+            'pwd' => 'Zgf991219'
+        ]);
+        return $response->body();
 
-        for ($i = 1;$i < 8;$i++){
-            //查询周一的课表
-                $courses = DB::table('schedule')
-                    ->where('sid','=',$uid)
-                    ->where('day','=',$i)->get([
-                        'course','teacher','location','day','section_start','section_end','section_length','start_time','end_time','weeks as week','week_string'
-                    ])->toArray();
-//                print_r(json_encode($courses));
-                $one_course = [];
-                $two_course = [];
-                $three_course = [];
-                $four_course = [];
-                $five_course = [];
-                foreach($courses as $j){
-                    print_r($j);
-                    switch ($j->section_start){
-                        case 1:
-                            foreach ($one_course as $item){
-                                if ($item->course == $j->course && $item->section_start == $j->sectionstart){
-                                    break;
-                                }
-                                $one_course[] = $j;
-                                print_r($one_course);
-                            }
-                            break;
-                        case 3:
-                            foreach ($two_course as $item){
-                                if ($item->course == $j->course && $item->section_start == $j->sectionstart){
-                                    break;
-                                }
-                                $two_course[] = $j;
-                            }
-                            $two_course[] = $j;
-                            break;
-                        case 5:
-                            foreach ($three_course as $item){
-                                if ($item->course == $j->course && $item->section_start == $j->sectionstart){
-                                    break;
-                                }
-                                $three_course[] = $j;
-                            }
-                            $three_course[] = $j;
-                            break;
-                        case 7:
-                            foreach ($four_course as $item){
-                                if ($item->course == $j->course && $item->section_start == $j->sectionstart){
-                                    break;
-                                }
-                                $four_course[] = $j;
-                            }
-                            $four_course[] = $j;
-                            break;
-                        case 9:
-                            foreach ($five_course as $item){
-                                if ($item->course == $j->course && $item->section_start == $j->sectionstart){
-                                    break;
-                                }
-                                $five_course[] = $j;
-                            }
-                            $five_course[] = $j;
-                            break;
-                    }
-                    print_r(json_encode($one_course));
-            }
-
-//                print_r(json_encode($courses));
-        }
-
-//        return msg(0,$schedule);
     }
 
     public function info(Request $request){
