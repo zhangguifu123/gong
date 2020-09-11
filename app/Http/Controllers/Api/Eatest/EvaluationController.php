@@ -108,7 +108,7 @@ class EvaluationController extends Controller
         $uid = $request->route('uid');
         $eatest = User::query()->find($uid)->eatest;
         $eatest = array_keys(json_decode($eatest,true));
-        $evaluation_list = Evaluation::query()->whereIn('id',$eatest)->get([
+        $evaluation_list = Evaluation::query()->whereIn('publisher',$eatest)->get([
             "id", "nickname as publisher_name", "label", "views","like",
             "collections", "top", "img", "title", "created_at as time"
         ])->toArray();
