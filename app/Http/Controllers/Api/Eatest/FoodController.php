@@ -72,7 +72,8 @@ class FoodController extends Controller
         $upick = User::query()->find($uid)->upick;
         $upick = array_keys(json_decode($upick,true));
         #print_r($upick);
-        $evaluation_list = Food::query()->whereIn('id',$upick)->get([
+        $evaluation_list = Food::query()->whereIn('id',$upick)
+            ->get([
             "id", "nickname as food_name", "location", "discount",
             "collections", "img", "created_at as time"
         ])->toArray();

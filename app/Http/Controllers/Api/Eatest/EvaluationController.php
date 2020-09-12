@@ -39,7 +39,7 @@ class EvaluationController extends Controller
         //发布，同时将评测加入我的发布
         if ($evaluation->save()) {
             User::query()->find(session("uid"))->add_eatest($evaluation->id);
-	    
+
             return msg(0, __LINE__);
         }
         //未知错误
@@ -155,10 +155,12 @@ class EvaluationController extends Controller
         $value = session('collect_count');
         //若与前面的推荐美文重复，将其剔除 whereNotIn()
         $evaluation_list = Evaluation::query()->limit(10)
-            ->offset($offset)->orderByDesc("created_at")
-            ->whereNotIn('id',$value)->get([
-                "id", "nickname as publisher_name", "label", "views","like",
-                "collections", "top", "img", "title", "created_at as time"
+            ->offset($offset)->orderByDesc("evaluations.created_at")
+            ->whereNotIn('evaluations.id',$value)
+            ->leftJoin('users','evaluations.publisher','=','users.id')
+            ->get([
+                "evaluations.id", "evaluations.nickname as publisher_name", "label", "views","evaluations.like",
+                "collections", "top", "img", "title", "users.avatar","evaluations.created_at as time"
             ])->toArray();
 
         //判断若拉取首页，将推荐美文和正常拉取合并
@@ -201,9 +203,10 @@ class EvaluationController extends Controller
         //获取前20推荐分值最高美文
         $list = Evaluation::query()->limit(20)->orderByDesc("score")
             ->where("top", "=", "0")
+            ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
-                "id", "nickname as publisher_name", "label", "views","like",
-                "collections", "top", "img", "title", "created_at as time"
+                "evaluations.id", "evaluations.nickname as publisher_name", "label", "views","evaluations.like",
+                "collections", "top", "img", "title", "users.avatar","evaluations.created_at as time"
             ])
             ->toArray();
 
