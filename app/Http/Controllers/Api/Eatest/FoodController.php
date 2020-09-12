@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Eatest;
 
+use App\User;
 use \Redis;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -65,6 +66,19 @@ class FoodController extends Controller
         return msg(0, __LINE__);
     }
 
+    //拉取我的Upick
+    public function get_upick_list(Request $request){
+        $uid = $request->route('uid');
+        $upick = User::query()->find($uid)->upick;
+        $upick = array_keys(json_decode($upick,true));
+        #print_r($upick);
+        $evaluation_list = Food::query()->whereIn('id',$upick)->get([
+            "id", "nickname as food_name", "location", "discount",
+            "collections", "img", "created_at as time"
+        ])->toArray();
+
+        return msg(0,$evaluation_list);
+    }
 
     //获取美食信息列表
 
