@@ -1494,6 +1494,62 @@ paths:
           $ref: '#/components/responses/NoPermission'
         '404':
           $ref: '#/components/responses/NotFound'
+  /upick/me/{uid}:
+    get:
+      summary: 我的Upick列表
+      operationId: UpickLMeList
+      tags:
+        - upick
+      parameters:
+        - name: uid
+          description: 用户id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                  status:
+                    description: 状态
+                    type: string
+                  data:
+                    description: Upick列表
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UpickMessage'
+              example:
+                code: 0
+                status: 成功
+                data:
+                  - id: 1,
+                    publisher: 1
+                    nickname: 联建一点点
+                    discount: 八八折
+                    location: 联建
+                    img: 
+                      - 太长了
+                        太长了
+                    time: "2020-08-24 18:48:58"
+                  - id: 2
+                    publisher: 1
+                    nickname: 联建一点点
+                    discount: 八八折
+                    location: 联建
+                    img: 
+                      - 太长了
+                        太长了
+                    time: "2020-08-24 18:48:58"
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
   /upick:
     get:
       summary: Upick列表
@@ -1530,7 +1586,7 @@ paths:
                 total: 2
                 data:
                   - id: 1,
-                    publisher: 张桂福
+                    publisher: 1
                     nickname: 联建一点点
                     discount: 八八折
                     location: 联建
@@ -1539,7 +1595,7 @@ paths:
                         太长了
                     time: "2020-08-24 18:48:58"
                   - id: 2
-                    publisher: 张桂福
+                    publisher: 1
                     nickname: 联建一点点
                     discount: 八八折
                     location: 联建
