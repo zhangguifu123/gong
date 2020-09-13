@@ -36,6 +36,14 @@ class CommentController extends Controller
         where('eatest_id','=',$request->route('id'))->get([
             'id','toId','fromId','fromName','fromAvatar','content','created_at as time'
         ])->toArray();
+        foreach ($comment_list as $i){
+            $reply_list = EatestReplies::query()
+                ->where('comment_id','=',$i->id)
+                ->get([
+                    'id','fromId','fromName','toId','comment_id','fromAvatar','content','created_at as time'
+                ])->toArray();
+            $i = $i + ['reply' => $reply_list];
+        }
 
         $message = ['total' => count($comment_list), 'list' => $comment_list];
         return msg(0, $message);
