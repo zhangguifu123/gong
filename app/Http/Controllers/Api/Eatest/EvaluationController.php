@@ -100,8 +100,13 @@ class EvaluationController extends Controller
             $evaluation->increment("views");
             session(["mark" => time()]);
         }
+        $evaluation_list = $evaluation->info();
+        $uid = $evaluation_list['publisher'];
 
-        return msg(0, $evaluation->info());
+        $avatar = User::query()->find($uid)->avatar;
+        $evaluation_list = $evaluation_list + ['avatar' => $avatar];
+
+        return msg(0, $evaluation_list);
     }
     //拉取我的列表
     public function get_me_list(Request $request){
