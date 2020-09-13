@@ -50,12 +50,12 @@ class CourseController extends Controller
         if (!is_string($association)){
             return msg(3,__LINE__);
         }
-        $uid = DB::table('association_codes')->where('association_code',$association)->uid;
+        $uid = DB::table('association_codes')->where('association_code',$association)->get('uid')->toArray()[0]->uid;
         if (!$uid){
             return msg(11,__LINE__);
         }
 
-        $name = DB::table('users')->where('stu_id',$uid)->name;
+        $name = DB::table('users')->where('stu_id',$uid)->get('name')->toArray()[0]->name;
 
         $data = ['std'=>$uid,'name'=>$name,'association'=>$association];
         return msg(0,$data);
