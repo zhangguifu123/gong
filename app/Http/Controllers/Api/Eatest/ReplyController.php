@@ -18,11 +18,11 @@ class ReplyController extends Controller
         if (!is_array($data)) {
             return $data;
         }
-        $comment = EatestComments::query()->find($request->input('comment_id'));
+        $comment = EatestComments::query()->find($request->route('id'));
         if(!$comment) {
-            return response(msg(3, "eatest不存在" . __LINE__));
+            return response(msg(3, "eatest评论不存在" . __LINE__));
         }
-        $data = $data + ["status" => 0,"fromId"=>$request->route("fromId"),"toId"=>$request->route("toId")];
+        $data = $data + ["status" => 0,"comment_id"=>$request->route("id")];
         $reply = new EatestReplies($data);
 
         if ($reply->save()) {

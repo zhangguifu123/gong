@@ -32,20 +32,21 @@ class CommentController extends Controller
 
     //获取美文评论
     public function get_list(Request $request){
+        $all_list = [];
         $comment_list = EatestComments::query()->
         where('eatest_id','=',$request->route('id'))->get([
             'id','toId','fromId','fromName','fromAvatar','content','created_at as time'
         ])->toArray();
         foreach ($comment_list as $i){
             $reply_list = EatestReplies::query()
-                ->where('comment_id','=',$i->id)
+                ->where('comment_id','=',$i['id'])
                 ->get([
                     'id','fromId','fromName','toId','comment_id','fromAvatar','content','created_at as time'
                 ])->toArray();
-            $i = $i + ['reply' => $reply_list];
+            $all_list[] = $i + ['reply'=>$reply_list];
         }
 
-        $message = ['total' => count($comment_list), 'list' => $comment_list];
+        $message = ['total' => count($comment_list), 'list' => $all_list];
         return msg(0, $message);
     }
 
