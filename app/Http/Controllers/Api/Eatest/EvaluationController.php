@@ -40,7 +40,7 @@ class EvaluationController extends Controller
         if ($evaluation->save()) {
             User::query()->find(session("uid"))->add_eatest($evaluation->id);
 
-            return msg(0, __LINE__);
+            return msg(0, $evaluation);
         }
         //未知错误
         return msg(4, __LINE__);
