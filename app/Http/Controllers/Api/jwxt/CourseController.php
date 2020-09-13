@@ -56,7 +56,9 @@ class CourseController extends Controller
         }
 
         $name = DB::table('users')->where('stu_id',$uid)->get('name')->toArray()[0]->name;
-
+        if (!$name){
+            return msg(11,__LINE__);
+        }
         $data = ['std'=>$uid,'name'=>$name,'association'=>$association];
         return msg(0,$data);
     }
