@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::namespace('Api')->group(function (){
 
     /** 公共区 */
-    Route::post('login','StudentLoginController@login');
+    Route::post('/login','StudentLoginController@login');
     Route::post('/manager/login', "ManagerController@login");
     Route::get('/upick', "Eatest\FoodController@get_list");
     Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware("eatest.exist.check");
@@ -107,9 +107,9 @@ Route::namespace('Api')->group(function (){
         Route::delete('eatest/comments/{id}','Eatest\CommentController@delete')->where(["id"=>"[0-9]+"])->middleware(['comment.exist.check','comment.owner.check']);
         //Eatest评论回复
 //        Route::post('eatest/{toId}/reply/{fromId}','Eatest\ReplyController@publish')->where(["toId"=>"[0-9]+","fromId"=>"[0-9]+"])->middleware('reply.tofrom.check');
-        Route::post('eatest/comment/{id}/reply','Eatest\ReplyController@publish')->where(["id"=>"[0-9]+"])->middleware('reply.tofrom.check');
-        Route::get('eatest/comment/{id}/reply','Eatest\ReplyController@get_list')->where(["id"=>"[0-9]+"])->middleware(['comment.exist.check']);
-        Route::delete('eatest/reply/{id}','Eatest\ReplyController@delete')->where(["id"=>"[0-9]+"])->middleware(['reply.exist.check','reply.owner.check']);
+        Route::post('/eatest/comment/{id}/reply','Eatest\ReplyController@publish')->where(["id"=>"[0-9]+"])->middleware('reply.tofrom.check');
+        Route::get('/eatest/comment/{id}/reply','Eatest\ReplyController@get_list')->where(["id"=>"[0-9]+"])->middleware(['comment.exist.check']);
+        Route::delete('/eatest/reply/{id}','Eatest\ReplyController@delete')->where(["id"=>"[0-9]+"])->middleware(['reply.exist.check','reply.owner.check']);
         /**User */
         Route::group(["middleware" => ['owner.check']], function () {
         //获取收藏列表
