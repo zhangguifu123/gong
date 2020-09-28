@@ -18,7 +18,9 @@ class FromToCheck
     {
         $commenter = User::query()->find($request->input('fromId'));
         $replyer = User::query()->find($request->input('toId'));
-        if(!$commenter || !$replyer) {
+        
+	if(!$commenter || !$replyer) {
+	
             return response(msg(3, "评论or被评论者不存在" . __LINE__));
         } else {
             return $next($request);

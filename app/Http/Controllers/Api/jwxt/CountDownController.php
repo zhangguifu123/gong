@@ -25,7 +25,7 @@ class CountDownController extends Controller
         //发布，同时将评测加入我的倒计时
         if ($countdown->save()) {
             User::query()->find(session("uid"))->add_countdown($countdown->id);
-            return msg(0, __LINE__);
+            return msg(0, ["id" => $countdown->id]);
         }
         //未知错误
         return msg(4, __LINE__);

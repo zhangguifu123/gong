@@ -58,7 +58,7 @@ class ReplyController extends Controller
             "toId" => ["integer"],
             "fromId" => ["integer"],
             "fromName" => ["string", "max:20"],
-            "fromAvatar" => ["json"],
+            "fromAvatar" => ["string"],
             "content" => ["string", "max:50"]
 
         ];
