@@ -103,6 +103,9 @@ class EvaluationController extends Controller
         $evaluation_list = $evaluation->info();
         $uid = $evaluation_list['publisher'];
 
+        //昵称覆写
+        $nickname = User::query()->find($uid)->nickname;
+        $evaluation_list['nickname'] = $nickname;
         $avatar = User::query()->find($uid)->avatar;
         $evaluation_list = $evaluation_list + ['avatar' => $avatar];
 
@@ -113,11 +116,12 @@ class EvaluationController extends Controller
         $uid = $request->route('uid');
         $eatest = User::query()->find($uid)->eatest;
         $eatest = array_keys(json_decode($eatest,true));
-        #print_r($eatest);
-	$evaluation_list = Evaluation::query()->whereIn('id',$eatest)->get([
-            "id", "nickname as publisher_name", "label", "views","like",
-            "collections", "top", "img", "title", "created_at as time"
-        ])->toArray();
+        $evaluation_list = Evaluation::query()->whereIn('id',$eatest)
+            ->leftJoin('users','evaluations.publisher','=','users.id')
+            ->get([
+                "evaluations.id", "users.nickname as publisher_name", "label", "views","evaluations.like",
+                "collections", "top", "img", "title", "evaluations.created_at as time"
+            ])->toArray();
 
         return msg(0,$evaluation_list);
     }
@@ -126,10 +130,12 @@ class EvaluationController extends Controller
         $uid = $request->route('uid');
         $like = User::query()->find($uid)->like;
         $like = array_keys(json_decode($like,true));
-        $evaluation_list = Evaluation::query()->whereIn('id',$like)->get([
-            "id", "nickname as publisher_name", "label", "views","like",
-            "collections", "top", "img", "title", "created_at as time"
-        ])->toArray();
+        $evaluation_list = Evaluation::query()->whereIn('id',$like)
+            ->leftJoin('users','evaluations.publisher','=','users.id')
+            ->get([
+                "evaluations.id", "users.nickname as publisher_name", "label", "views","evaluations.like",
+                "collections", "top", "img", "title", "evaluations.created_at as time"
+            ])->toArray();
 
         return msg(0,$evaluation_list);
     }
@@ -138,9 +144,11 @@ class EvaluationController extends Controller
         $uid = $request->route('uid');
         $collection = User::query()->find($uid)->collection;
         $collection = array_keys(json_decode($collection,true));
-        $evaluation_list = Evaluation::query()->whereIn('id',$collection)->get([
-            "id", "nickname as publisher_name", "label", "views","like",
-            "collections", "top", "img", "title", "created_at as time"
+        $evaluation_list = Evaluation::query()->whereIn('id',$collection)
+            ->leftJoin('users','evaluations.publisher','=','users.id')
+            ->get([
+            "evaluations.id", "users.nickname as publisher_name", "label", "views","evaluations.like",
+            "collections", "top", "img", "title", "evaluations.created_at as time"
         ])->toArray();
 
         return msg(0,$evaluation_list);
@@ -164,7 +172,7 @@ class EvaluationController extends Controller
             ->whereNotIn('evaluations.id',$value)
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
-                "evaluations.id", "evaluations.nickname as publisher_name", "label", "views","evaluations.like",
+                "evaluations.id", "users.nickname as publisher_name", "label", "views","evaluations.like",
                 "collections", "top", "img", "title", "users.avatar","evaluations.created_at as time"
             ])->toArray();
 
@@ -210,7 +218,7 @@ class EvaluationController extends Controller
             ->where("top", "=", "0")
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
-                "evaluations.id", "evaluations.nickname as publisher_name", "label", "views","evaluations.like",
+                "evaluations.id", "users.nickname as publisher_name", "label", "views","evaluations.like",
                 "collections", "top", "img", "title", "users.avatar","evaluations.created_at as time"
             ])
             ->toArray();

@@ -34,14 +34,17 @@ class CommentController extends Controller
     public function get_list(Request $request){
         $all_list = [];
         $comment_list = EatestComments::query()->
-        where('eatest_id','=',$request->route('id'))->get([
-            'id','toId','fromId','fromName','fromAvatar','content','created_at as time'
+        where('eatest_id','=',$request->route('id'))
+            ->leftJoin('users','eatest_comments.fromId','=','users.id')
+            ->get([
+            'eatest_comments.id','toId','fromId','users.nickname as fromName','users.avatar as fromAvatar','content','eatest_comments.created_at as time'
         ])->toArray();
         foreach ($comment_list as $i){
             $reply_list = EatestReplies::query()
                 ->where('comment_id','=',$i['id'])
+                ->leftJoin('users','eatest_replies.fromId','=','users.id')
                 ->get([
-                    'id','fromId','fromName','toId','comment_id','fromAvatar','content','created_at as time'
+                    'eatest_replies.id','fromId','users.nickname as fromName','toId','comment_id','users.avatar as fromAvatar','content','eatest_replies.created_at as time'
                 ])->toArray();
             $all_list[] = $i + ['reply'=>$reply_list];
         }
