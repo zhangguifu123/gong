@@ -26,10 +26,11 @@ class CourseController extends Controller
             return msg(3,__LINE__);
         }
         $uid = DB::table('association_codes')->where('association_code','=',$association)->get(['uid'])->toArray();
-        $uid = $uid[0]->uid;
         if (!$uid){
             return msg(11,__LINE__);
         }
+        $uid = $uid[0]->uid;
+
         //http请求
         $response = Http::get('https://campus_data.acver.xyz/api/student/'.$uid.'/course');
         return $response->body();
