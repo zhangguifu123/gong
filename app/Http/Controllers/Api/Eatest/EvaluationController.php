@@ -242,10 +242,10 @@ class EvaluationController extends Controller
     private function data_handle(Request $request = null){
         //声明理想数据格式
             $mod = [
-                "img" => ["json"],
-                "title" => ["string", "max:50"],
-                "content" => ["string", "max:400"],
-                "label" => ["json"],
+                "img"      => ["json"],
+                "title"    => ["string", "max:50"],
+                "content"  => ["string", "max:400"],
+                "label"    => ["json"],
                 "nickname" => ["string", "max:10"]
             ];
         //是否缺失参数

@@ -67,11 +67,9 @@ class CourseController extends Controller
         return msg(0,$data);
     }
 
-    public function empty_course(Request $request)
-    {
-        $week_course =[];
-        $schedule = [];
+    public function empty_course(Request $request){
         //声明理想数据格式
+        $all_user_schedule = [];
         $mod = [
             "associations" => ["string"]
         ];
@@ -90,33 +88,51 @@ class CourseController extends Controller
             return msg(11,'个别'+__LINE__);
         }
         //遍历学号
-        foreach ($uids as $item){
-            $uid = $item->uid;
+        foreach ($uids as $uid)
+        {
+            $uid = $uid->uid;
             //获取姓名
             $name = DB::table('users')->where('stu_id',$uid)->get()->toArray()[0]->name;
-            for ($i = 2;$i < 18;$i++){
-                //抓取第i周第j天的课表
-                for ($j = 1;$j < 8;$j++){
-                    $courses = DB::table('schedule')
-                        ->where('sid',$uid)
-                        ->where('week',$i)
-                        ->where('day',$j)->get([
-                            'course','teacher','location','day','section_start','section_end','section_length','start_time','end_time','weeks as week','week_string'
-                        ])->toArray();
-                    //课表存入第i周第j天
-                    $week_course[(string)$j] = $courses;
-                }
-                //一整周课表存入第i周
-                $schedule[(string)$i] = $week_course;
-            }
+            //http请求
+            $response = Http::get('https://campus_data.acver.xyz/api/student/'.$uid.'/course');
+            $class =  json_decode($response->body(),true);
+            $class = $class['data'];
             $user_schedule = array(
                 'name' => $name,
-                'schedule' => $schedule
+                'schedule' => $class
             );
             //存入总数组
             $all_user_schedule[] =  $user_schedule;
         }
-        return $this->tableFormat(json_encode($all_user_schedule));
+        return $this->tableFormat($all_user_schedule);
+    }
+
+    //辅助函数
+    private function check($count,$table){
+        switch ($count){
+            case 1:
+                $table['1'] = 0;
+                $table['2'] = 0;
+                break;
+            case 2:
+                $table['3'] = 0;
+                $table['4'] = 0;
+                break;
+            case 3:
+                $table['5'] = 0;
+                $table['6'] = 0;
+                break;
+            case 4:
+                $table['7'] = 0;
+                $table['8'] = 0;
+                break;
+            case 5:
+                $table['9'] = 0;
+                $table['10'] = 0;
+                $table['11'] = 0;
+                break;
+        }
+        return $table;
     }
 
     //空课表函数
@@ -124,44 +140,33 @@ class CourseController extends Controller
     {
         $result = array();
         $stuNum = 0;
-        $data = json_decode($data,true);
         foreach ($data as $stu)
         {
-            $schedule = $stu['schedule'];
+            $course = $stu['schedule'];
             $name = $stu['name'];
-            $table = array();
-            $table['name'] = $name;
+            $stuEmptyCourse = array();
+            $stuEmptyCourse['name'] = $name;
             for($i = 1; $i < 8; $i++)
             {
                 for($j = 1; $j < 12; $j++)
                 {
-                    $table[$i][$j] = 1;
+                    $stuEmptyCourse[$i][$j] = 1;
                 }
             }
-            foreach ($schedule as $keyS => $data)
+            foreach ($course as $i => $dayCourse)
             {
-                for($i = 1; $i < 8; $i++)
-                {
-                    if(!empty($data[$i]))
+                    foreach ($dayCourse as $key => $value)
                     {
-                        for($j = 1; $j < 6; $j++)
-                        {
-                            if(!empty($data[$i][$j]))
-                            {
-                                $val = $data[$i][$j];
-                                while($val['section_length']--)
-                                {
-                                    $table[$i][$val['section_start']++] = 0;
-                                }
-                            }
-                        }
+                        $stuEmptyCourse[$i] = $this->check($key,$stuEmptyCourse[$i]);
                     }
-                }
+
             }
-            $result[$stuNum++] = $table;
+            $result[$stuNum++] = $stuEmptyCourse;
         }
-        return json_encode(array("code" => 0, "message" => "查询成功","data" => $result), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        return msg(0,$result);
     }
+
+
     //空课表导出excel函数
     private function TableExcel($data)
     {
