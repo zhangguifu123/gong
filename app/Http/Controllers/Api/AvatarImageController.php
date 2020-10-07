@@ -16,7 +16,7 @@ class AvatarImageController extends Controller
         if (!$request->hasFile('image')) {
             return msg(1, "缺失参数" . __LINE__);
         }
-
+        print_r(1);
         $data = $request->only('image');
         $validator = Validator::make($data, [ // 图片文件小于10M
             'image' => 'max:10240'
