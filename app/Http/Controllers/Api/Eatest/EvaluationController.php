@@ -116,7 +116,7 @@ class EvaluationController extends Controller
         $uid = $request->route('uid');
         $eatest = User::query()->find($uid)->eatest;
         $eatest = array_keys(json_decode($eatest,true));
-        $evaluation_list = Evaluation::query()->whereIn('id',$eatest)
+        $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$eatest)
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "views","evaluations.like",
@@ -130,7 +130,7 @@ class EvaluationController extends Controller
         $uid = $request->route('uid');
         $like = User::query()->find($uid)->like;
         $like = array_keys(json_decode($like,true));
-        $evaluation_list = Evaluation::query()->whereIn('id',$like)
+        $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$like)
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "views","evaluations.like",
@@ -144,7 +144,7 @@ class EvaluationController extends Controller
         $uid = $request->route('uid');
         $collection = User::query()->find($uid)->collection;
         $collection = array_keys(json_decode($collection,true));
-        $evaluation_list = Evaluation::query()->whereIn('id',$collection)
+        $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$collection)
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
             "evaluations.id", "users.nickname as publisher_name", "label", "views","evaluations.like",
