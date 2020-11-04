@@ -15,7 +15,7 @@ class LoginCheck
      */
     public function handle($request, Closure $next)
     {
-        if((session()->has('login') && session('login') === true)||(session()->has('ManagerLogin') && session('ManagerLogin') === true)) {
+        if((session()->has('login') && session('login') == true)||(session()->has('ManagerLogin') && session('ManagerLogin') === true)) {
             return $next($request);
         } else {
             // 未登录返回 未登录
