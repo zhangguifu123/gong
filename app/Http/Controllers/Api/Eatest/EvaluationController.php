@@ -192,7 +192,7 @@ class EvaluationController extends Controller
         $evaluation_list = Evaluation::query()->limit(10)
             ->offset($offset)->orderByDesc("evaluations.created_at")
             ->whereNotIn('evaluations.id',$value)
-            ->where('evaluations.status','=','1')
+//            ->where('evaluations.status','=','1')
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "views","evaluations.like",
@@ -240,7 +240,7 @@ class EvaluationController extends Controller
         $list = Evaluation::query()->limit(20)->orderByDesc("score")
             ->where("top", "=", "0")
             ->leftJoin('users','evaluations.publisher','=','users.id')
-            ->where('evaluations.status','=','1')
+//            ->where('evaluations.status','=','1')
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "views","evaluations.like",
                 "collections", "top", "img", "title", "users.avatar","evaluations.created_at as time"
