@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'upick','countdown','gulu','like','name','nickname', 'stu_id', 'password', 'collection', 'eatest', "remember","avatar"
+        'upick','countdown','consume','library','status','like','name','nickname', 'stu_id', 'password', 'collection', 'eatest', "remember","avatar"
     ];
 
     /**
@@ -39,17 +39,17 @@ class User extends Authenticatable
     public function info()
     {
         return [
-            'id' => $this->id,
-            'nickname' => $this->nickname,
-            'stu_id' => $this->stu_id,
+            'id'         => $this->id,
+            'nickname'   => $this->nickname,
+            'stu_id'     => $this->stu_id,
             'collection' => $this->collection,
-            'like' => $this->like,
-            'eatest' => $this->eatest,
-            'gulu' => $this->gulu,
-            'upick' => $this->upick,
-            'countdown' => $this->countdown,
-            'remember' => $this->remember,
-            'avatar' => $this->avatar
+            'like'       => $this->like,
+            'eatest'     => $this->eatest,
+            'status'     => $this->status,
+            'upick'      => $this->upick,
+            'countdown'  => $this->countdown,
+            'remember'   => $this->remember,
+            'avatar'     => $this->avatar
         ];
     }
 

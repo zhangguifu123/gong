@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Eatest;
 
 use App\Http\Controllers\Controller;
+use App\Model\Eatest\EatestComments;
 use App\Model\Eatest\Evaluation;
 use App\User;
 use Illuminate\Http\Request;
@@ -34,38 +35,46 @@ class LikeController extends Controller
      */
     public function like(Request $request)
     {
-        if (!$request->has('action')) {
-            return msg(1, "缺失参数");
+        //检查是否存在数据格式
+        $mod = ["like" => ["boolean"]];
+        if (!$request->has(array_keys($mod))) {
+            return msg(1, __LINE__);
         }
-        $mod = ['action' => ["regex:/^like$|^unlike$/"]];
-
+        //数据格式是否正确
         $data = $request->only(array_keys($mod));
-        $validator = Validator::make($data, $mod);
-        if ($validator->fails()) {
-            return msg(1, '非法参数' . __LINE__);
-        }
+        if (Validator::make($data, $mod)->fails()) {
+            return msg(3, '数据格式错误' . __LINE__);
+        };
 
-        $user = User::query()->find(session("uid"));
-        $evaluation_id = $request->route("id");
-        $evaluation = Evaluation::query()->find($evaluation_id);
+        $data = ["user" => session("uid"), "comment" => $request->route("id"), "like" => $request->input("like")];
+        // 事务处理
+        DB::beginTransaction();
+        try {
+            //获取likes表数据，条件查询 user、eva_id
+            $like = DB::table("comment_likes")->where("user", session("uid"))->where("comment", $request->route("id"));
+            //获取Eatest or Upick表数据，条件查询 eva_id
+            $comment = DB::table('eatest_comments')->where('id', $data["comment"]);
 
-        if ($request->input("action") == "like") {
-            if ($user->add_like($evaluation_id)) {
-                $evaluation->increment("like");
-                $evaluation->increment("score");
-            } else {
-                return msg(3, __LINE__);
+            // 赞/踩
+            if($data["like"] != 1) {
+                if($like->count()) {
+                    if($like->get("like")[0]->like == 1) { //曾经赞过则为取消赞
+                        $comment->increment('like', -1);
+                        $like->delete();
+                    }
+                } else {
+                    $comment->increment('like', 1);
+                    DB::table("comment_likes")->insert($data);
+                }
             }
-        } else {
-            if ($user->del_like($evaluation_id)) {
-                $evaluation->decrement("like");
-                $evaluation->decrement("score");
-            } else {
-                return msg(3, __LINE__);
-            }
-        }
+            DB::commit();
 
-        return msg(0, __LINE__);
+            return msg(0, __LINE__);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            print_r($e);
+            return msg(7, __LINE__);
+        }
     }
 
     /**

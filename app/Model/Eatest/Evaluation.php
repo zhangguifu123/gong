@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Evaluation extends Model
 {
     protected $fillable = [
-        "publisher", "label", "views", "collections", "like","img", "title", "content", "nickname", "top"
+        "publisher", "label", "views", "collections", "like","img", "title", "content", "nickname", "top",'status'
     ];
 
 
@@ -39,7 +39,7 @@ class Evaluation extends Model
             "content" => $this->content,
             "is_like" => $is_like,
             "is_collection" => $is_collection,
-            "time" => date_format($this->created_at, "Y-m-d h:i:s")
+            "time" => date_format($this->created_at, "Y-m-d H:i:s")
         ];
     }
 }

@@ -14,7 +14,7 @@ class CreateFoodTable extends Migration
     public function up()
     {
         Schema::create('food', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->string('publisher')->comment('发布者')->index();
             $table->string('nickname')->comment('美食名称');
             $table->string('location')->comment('美食位置');

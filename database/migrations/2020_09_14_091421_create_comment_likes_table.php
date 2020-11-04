@@ -14,7 +14,7 @@ class CreateCommentLikesTable extends Migration
     public function up()
     {
         Schema::create('comment_likes', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->unsignedBigInteger("user")->index();
             $table->unsignedBigInteger("comment")->comment("被赞/踩评论id");
             $table->boolean("like")->comment("0踩 1赞");

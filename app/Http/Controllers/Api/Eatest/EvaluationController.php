@@ -87,6 +87,28 @@ class EvaluationController extends Controller
         return msg(4, __LINE__);
     }
 
+    //下架
+    public function update_status(Request $request)
+    {
+        //检查是否存在数据格式
+        $mod = ["status" => ["boolean"]];
+        if (!$request->has(array_keys($mod))) {
+            return msg(1, __LINE__);
+        }
+        //数据格式是否正确
+        $data = $request->only(array_keys($mod));
+        if (Validator::make($data, $mod)->fails()) {
+            return msg(3, '数据格式错误' . __LINE__);
+        };
+        //修改
+        $evaluation = Evaluation::query()->find($request->route('id'));
+        $evaluation = $evaluation->update($data);
+        if ($evaluation) {
+            return msg(0, __LINE__);
+        }
+        return msg(4, __LINE__);
+    }
+
     //拉取
         //拉取单篇信息
     public function get(Request $request)
@@ -170,6 +192,7 @@ class EvaluationController extends Controller
         $evaluation_list = Evaluation::query()->limit(10)
             ->offset($offset)->orderByDesc("evaluations.created_at")
             ->whereNotIn('evaluations.id',$value)
+            ->where('evaluations.status','=','1')
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "views","evaluations.like",
@@ -217,6 +240,7 @@ class EvaluationController extends Controller
         $list = Evaluation::query()->limit(20)->orderByDesc("score")
             ->where("top", "=", "0")
             ->leftJoin('users','evaluations.publisher','=','users.id')
+            ->where('evaluations.status','=','1')
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "views","evaluations.like",
                 "collections", "top", "img", "title", "users.avatar","evaluations.created_at as time"

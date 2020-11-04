@@ -29,6 +29,7 @@ class CreateEvaluationsTable extends Migration
             $table->integer("collections")->default(0)->comment("被收藏次数");
             $table->integer("like")->default(0)->comment("赞数");
 //            $table->integer("unlike")->default(0)->comment("踩数");
+            $table->boolean("status")->default(1)->comment("0下架 1上架");
             $table->json("img")->comment("数组");
         });
     }

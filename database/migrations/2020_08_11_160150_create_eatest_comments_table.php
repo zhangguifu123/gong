@@ -22,6 +22,7 @@ class CreateEatestCommentsTable extends Migration
             $table->string('fromName')->comment('评论者昵称');
             $table->string('fromAvatar')->comment('评论者头像');
             $table->string("content")->comment("留言内容");
+            $table->integer("like")->default(0)->comment("赞数");
             $table->timestamps();
         });
     }

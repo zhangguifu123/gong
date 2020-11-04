@@ -8,6 +8,7 @@ use App\Model\Eatest\Evaluation;
 use App\User;
 use App\Model\Eatest\EatestComments;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class CommentController extends Controller
@@ -102,5 +103,51 @@ class CommentController extends Controller
         $toId = Evaluation::query()->find($request->route('id'))->publisher;
         $data = $data + ["toId"=>$toId];
         return $data;
+    }
+
+
+    public function like(Request $request)
+    {
+        //检查是否存在数据格式
+        $mod = ["like" => ["boolean"]];
+        if (!$request->has(array_keys($mod))) {
+            return msg(1, __LINE__);
+        }
+        //数据格式是否正确
+        $data = $request->only(array_keys($mod));
+        if (Validator::make($data, $mod)->fails()) {
+            return msg(3, '数据格式错误' . __LINE__);
+        };
+
+        $data = ["user" => session("uid"), "comment" => $request->route("id"), "like" => $request->input("like")];
+        // 事务处理
+        DB::beginTransaction();
+        try {
+            //获取likes表数据，条件查询 user、eva_id
+            $like = DB::table("comment_likes")->where("user", session("uid"))->where("comment", $request->route("id"));
+            //获取Eatest or Upick表数据，条件查询 eva_id
+            $comment = DB::table('eatest_comments')->where('id', $data["comment"]);
+
+            // 赞/踩
+                if($data["like"] != 1) {
+                    if($like->count()) { //曾经赞过则为取消赞
+                        $comment->increment('like', -1);
+                        $like->delete();
+                    }
+                } else {
+                    if($like->count()) { //曾经赞过则为取消赞
+                        return msg(7,'请勿重复点赞');
+                    }
+                    $comment->increment('like', 1);
+                    DB::table("comment_likes")->insert($data);
+                }
+            DB::commit();
+
+            return msg(0, __LINE__);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            print_r($e);
+            return msg(7, __LINE__);
+        }
     }
 }

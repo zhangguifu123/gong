@@ -28,14 +28,16 @@ Route::namespace('Api')->group(function (){
     Route::post('/image','ImageController@upload');
     Route::get('/eatest/list/{page}', "Eatest\EvaluationController@get_list")->where(["page" => "[0-9]+"]);
     Route::post('/eatest/image/delete','ImageController@delete');
-
+    //Eatest拉取单页详情
+    Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware(['eatest.exist.check']);
     //测试
-    Route::get('/image/{id}', "ImageController@get");
+    Route::get('/image', "ImageController@get");
     /**管理员*/
     //用户登录验证
     Route::get('/food', "Eatest\FoodController@get");
     //管理员登录验证区
     Route::group(['middleware' => 'manager.login.check'], function () {
+        Route::put('/manager/eatest/{id}/ban', "Eatest\EvaluationController@update_status")->where(["id" => "[0-9]+"]);
         Route::post('/manager/update', "ManagerController@update");
         Route::get('/manager/list', "ManagerController@list");
         /** Upick  */
@@ -58,6 +60,9 @@ Route::namespace('Api')->group(function (){
 
     /** 用户区 */
     Route::group(['middleware' => 'login.check'], function () {
+        /** Ecard*/
+        Route::post('/ecard/binding',"Ecard\ConsumeController@binding");
+        Route::post('/library/binding',"Ecard\LibraryController@binding");
         /** Upick */
         Route::post('/upick/keep/{id}', "Eatest\CollectionController@upick_keep")->where(["id" => "[0-9]+"])->middleware(['food.exist.check']);
         Route::get('/upick/me/{uid}',"Eatest\FoodController@get_upick_list")->where(["uid" => "[0-9]+"])->middleware(['owner.check']);
@@ -94,14 +99,14 @@ Route::namespace('Api')->group(function (){
         Route::post('/eatest/image', "Eatest\ImageController@upload");
 
         Route::group(["middleware" => 'eatest.exist.check'], function () {
-//          //Eatest拉取单页详情
-            Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"]);
+//
             //Eatest点赞收藏
             Route::post('/eatest/like/{id}', "Eatest\LikeController@like")->where(["id" => "[0-9]+"]);
             Route::post('/eatest/keep/{id}', "Eatest\CollectionController@eatest_keep")->where(["id" => "[0-9]+"]);
         });
 
         //Eatest评论
+        Route::post('eatest/comments/like/{id}','Eatest\CommentController@like')->where(["id"=>"[0-9]+"])->middleware(['comment.exist.check']);
         Route::post('eatest/{id}/comments','Eatest\CommentController@publish')->where(["id"=>"[0-9]+"])->middleware(['eatest.exist.check','comment.from.check']);
         Route::get('eatest/{id}/comments','Eatest\CommentController@get_list')->where(["id"=>"[0-9]+"])->middleware(['eatest.exist.check']);
         Route::delete('eatest/comments/{id}','Eatest\CommentController@delete')->where(["id"=>"[0-9]+"])->middleware(['comment.exist.check','comment.owner.check']);
