@@ -96,6 +96,285 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /manager/appeal/list/{page}:
+    get:
+      summary: 申诉列表
+      operationId: AppealList
+      tags:
+        - manager
+      parameters:
+        - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    description: 页码
+                    type: integer
+                  limit:
+                    description: 每页限制
+                    type: integer
+                  total:
+                    description: 总页数
+                    type: integer
+                  data:
+                    description: 美食评测列表
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AppealMessage'
+              example:
+                page: 1
+                limit: 1
+                total: 2
+                data:
+                  - id: 1,
+                    eatest_id: 1
+                    name: "张桂福"
+                    uid: 201805710601
+                    phone: "16630603363"
+                    content: "我是良民，为什么封我"
+                    handle: "邮箱回执"
+                    remarks: "他就是坏的"
+                    status: 0
+                    time: "2020-11-07 14:10:59"
+                    
+                  - id: 2
+                    eatest_id: 1
+                    name: "张桂福"
+                    uid: 201805710601
+                    phone: "16630603363"
+                    content: "我是良民，为什么封我"
+                    handle: "邮箱回执"
+                    remarks: "他就是坏的"
+                    status: 1
+                    time: "2020-11-07 14:10:56"
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
+  /manager/tip/list/{page}:
+    get:
+      summary: 举报列表
+      operationId: TipList
+      tags:
+        - manager
+      parameters:
+        - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    description: 页码
+                    type: integer
+                  limit:
+                    description: 每页限制
+                    type: integer
+                  total:
+                    description: 总页数
+                    type: integer
+                  data:
+                    description: 美食评测列表
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TipMessage'
+              example:
+                page: 1
+                limit: 1
+                total: 2
+                data:
+                  - id: 1,
+                    eatest_id: 1
+                    reason: "涉嫌抄袭"
+                    uid: 201805710601
+                    phone: "166xxxx1133"
+                    content: "他不是良民，把他封了"
+                    img: 
+                      - 图片链接
+                      - 图片链接
+                      - 图片链接
+                    remarks:  阿吧啊吧啊吧
+                    status: 0
+                    fromId: 1
+                    toId: 2
+                    reporter: 张狗蛋
+                    time: "2020-11-07 14:10:59"
+                    
+                  - id: 2
+                    eatest_id: 1
+                    reason: "涉嫌抄袭"
+                    uid: 201805710601
+                    phone: "166xxxx1133"
+                    content: "他不是良民，把他封了"
+                    img: 
+                      - 图片链接
+                      - 图片链接
+                      - 图片链接
+                    remarks:  阿吧啊吧啊吧
+                    status: 0
+                    fromId: 1
+                    toId: 2
+                    reporter: 张狗蛋
+                    time: "2020-11-07 14:10:59"
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
+  /manager/appeal/{id}:
+    put:
+      parameters:
+        - name: id
+          description: 申诉id
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - manager
+      summary: 处理申诉
+      description: 三翼通行证登录
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                handle:
+                  description: 处理方式
+                  type: string
+                  example: 邮箱回执
+                remarks:
+                  description: 备注
+                  type: string
+                  example: 确实错误，必须下架
+      responses:
+        '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Success'
+  /tip:
+    post:
+      summary: 举报
+      operationId: TipPublish
+      tags:
+        - user
+      requestBody:
+        content:
+          form-data:
+            schema:
+              type: object
+              properties:
+                eatest_id:
+                  description: 评测id
+                  type: integer
+                  example: 1
+                reason:
+                  description: 原因
+                  type: string
+                  example: 涉嫌抄袭
+                content:
+                  description: 举报内容
+                  type: string
+                  example: "他不是良民，必须要禁它？？"
+                img:
+                  description: 图片
+                  type: array
+                  example:
+                    - 这是图片链接
+                    - 这是图片链接
+                    - 这是图片链接
+                  items:
+                    type: string
+                fromId:
+                  description: 举报人id
+                  type: integer
+                  example: 2
+                toId:
+                  description: 被举报人id
+                  type: integer
+                  example: 1
+                reporter:
+                  description: 举报人姓名
+                  type: string
+                  example: 张三
+                
+      responses:
+        '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Success'
+  /appeal:
+    post:
+      tags:
+        - user
+      summary: 提出申诉
+      description: 提出申诉
+      requestBody:
+        content:
+          form-data:
+            schema:
+              type: object
+              properties:
+                eatest_id:
+                  description: 评测id
+                  type: integer
+                  example: 1
+                name:
+                  description: 姓名
+                  type: string
+                  example: 张三
+                stu_id:
+                  description: 学号
+                  type: integer
+                  example: 201805710601
+                phone:
+                  description: 电话
+                  type: integer
+                  example: 12345678900
+                content:
+                  description: 申诉理由
+                  type: string
+                  example: "我是良民，为什么禁我？？"
+      responses:
+        '200':
+          description: 登录成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  data:
+                    description: 返回数据
+                    type: string
+                    example:  "http://zgf.jsky31.cn/storage/avatar/1bc5b36f5bd71e32c89fb7b48063b06c.jpg"
+          links:
+            me:
+              operationId: 获取用户信息
+              parameters:
+                Authentication: '$response.body#/token'
+        '403':
+          description: 登录失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
   /nickname:
     put:
       tags:
@@ -3850,7 +4129,104 @@ components:
             description: 发布时间
             type: string
             example: "020-08-24 18:48:16"
-    
+    AppealMessage:
+      description: 申诉评测列表
+      type: array
+      items:
+        description: 单条信息
+        type: object
+        properties:
+          id:
+            description: 编号
+            type: string
+            example: 1
+          name:
+            description: 姓名
+            type: string
+            example: 张三
+          uid:
+            description: 学号
+            type: integer
+            example: 201805710601
+          phone:
+            description: 电话
+            type: integer
+            example: xxx
+          content:
+            description: 申诉理由
+            type: string
+            example: 我是良民，为什么封我
+          handle:
+            description: 处理方式
+            type: string
+            example: 邮箱回执
+          remarks: 
+            description: 备注
+            type: string
+            example: 阿吧阿吧啊吧
+          status:
+            description: 0未处理 1已处理
+            type: boolean
+            example: 0
+          time:
+            description: 发布时间
+            type: string
+            example: "020-08-24 18:48:16"
+    TipMessage:
+      description: 举报评测列表
+      type: array
+      items:
+        description: 单条信息
+        type: object
+        properties:
+          id:
+            description: 编号
+            type: string
+            example: 1
+          eatest_id:
+            description: 评测id
+            type: string
+            example: integer
+          reason:
+            description: 举报原因
+            type: string
+            example: 涉嫌抄袭
+          img:
+            description: 图片链接 
+            type: array
+            example: 
+              - 图片链接
+              - 图片链接
+            items:
+              type: string 
+          status:
+            description: 0未处理 1已处理
+            type: boolean
+            example: 1
+          content:
+            description: 申诉理由
+            type: string
+            example: 我是良民，为什么封我
+          fromId:
+            description: 举报人
+            type: integer
+            example: 2
+          toId:
+            description: 被举报人
+            type: integer
+            example: 3
+          reporter:
+            description: 举报人姓名
+            type: string
+            example: 张三
+          remarks: 
+            description: 备注
+            type: string
+            example: 阿吧阿吧啊吧
+          time:
+            description: 发布时间
+            type: string
+            example: "020-08-24 18:48:16"        
     GuideMessage:
       description: 地点信息
       type: object
