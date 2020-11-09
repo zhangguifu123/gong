@@ -7,8 +7,8 @@ services:
       - "10302:80"
     volumes:
       - ./:/var/www/html/
-      - ./dockercnf/nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./dockercnf/nginx/ssl/:/etc/nginx/ssl/
+      - ./dockercnf/nginx1.17.5:/etc/nginx/conf.d
+      - ./dockercnf/nginx1.17.5/ssl/:/etc/nginx/ssl/
       - ./dockercnf/run:/sock
     depends_on:
       - php
@@ -20,8 +20,8 @@ services:
     volumes:
       - ./dockercnf/run:/sock
       - ./:/var/www/html/
-      - ./dockercnf/php7.3-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf
-      - ./dockercnf/php7.3-fpm/php.ini:/usr/local/etc/php/php.ini
+      - ./dockercnf/php7.3-fpm/php-fpm.d:/usr/local/etc/php-fpm.d
+      - ./dockercnf/php7.3-fpm/php:/usr/local/etc/php/php
     depends_on:
       - db
       - gong_redis_db

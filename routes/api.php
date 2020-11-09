@@ -37,9 +37,18 @@ Route::namespace('Api')->group(function (){
     Route::get('/food', "Eatest\FoodController@get");
     //管理员登录验证区
     Route::group(['middleware' => 'manager.login.check'], function () {
-        Route::put('/manager/eatest/{id}/ban', "Eatest\EvaluationController@update_status")->where(["id" => "[0-9]+"]);
+        /** Manager */
         Route::post('/manager/update', "ManagerController@update");
         Route::get('/manager/list', "ManagerController@list");
+        /** Tip */
+        Route::put('/tip/{id}',"Manager\TipController@update_status")->where(["id" => "[0-9]+"]);
+        Route::get('/tip/list/{page}', "Manager\TipController@get_list")->where(["page" => "[0-9]+"]);
+        /** Appeal */
+        Route::put('/manager/appeal/{id}',"Manager\AppealController@update_status")->where(["id" => "[0-9]+"]);
+        Route::get('/manager/appeal/list/{page}', "Manager\AppealController@get_list")->where(["page" => "[0-9]+"]);
+        /** Eatest */
+        Route::put('/manager/eatest/{id}/ban', "Eatest\EvaluationController@update_status")->where(["id" => "[0-9]+"]);
+
         /** Upick  */
         Route::group(['middleware' => 'food.exist.check'], function () {
             Route::put('/upick/{id}', "Eatest\FoodController@update")->where(["id" => "[0-9]+"]);
@@ -60,6 +69,12 @@ Route::namespace('Api')->group(function (){
 
     /** 用户区 */
     Route::group(['middleware' => 'login.check'], function () {
+        /** Tip */
+        Route::post('/tip',"Manager\TipController@upload");
+
+        /** Appeal */
+        Route::post('/appeal',"Manager\AppealController@upload");
+
         /** Ecard*/
         Route::post('/ecard/binding',"Ecard\ConsumeController@binding");
         Route::post('/library/binding',"Ecard\LibraryController@binding");

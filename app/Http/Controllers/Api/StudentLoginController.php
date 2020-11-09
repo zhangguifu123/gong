@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Model\User\Ecard;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -39,21 +40,29 @@ class StudentLoginController extends Controller
             $output = checkUser($data['stu_id'], $data['password']);
             if ($output['code'] == 0) {
                 $user = new User([
-                    'nickname' => "快来想个昵称吧",
-                    'avatar'=> json_encode( config("app.url")."/storage/avatar/avatar.jpg"),
-                    'name' => $output['data']['name'], //默认信息
-                    'stu_id' => $data['stu_id'],
-                    'password' => md5($data['password']),
-                    'like' => '[]',
-                    'eatest' => '[]', //mysql 中 json 默认值只能设置为NULL 为了避免不必要的麻烦，在创建的时候赋予初始值
-                    'gulu' => '[]',
-                    'upick' => '[]',
-                    'countdown' => '[]',
+                    'nickname'   => "快来想个昵称吧",
+                    'avatar'     => json_encode( config("app.url")."/storage/avatar/avatar.jpg"),
+                    'name'       => $output['data']['name'], //默认信息
+                    'stu_id'     => $data['stu_id'],
+                    'password'   => md5($data['password']),
+                    'like'       => '[]',
+                    'eatest'     => '[]', //mysql 中 json 默认值只能设置为NULL 为了避免不必要的麻烦，在创建的时候赋予初始值
+                    'upick'      => '[]',
+                    'countdown'  => '[]',
                     'collection' => '[]',
-                    'remember' => md5($data['password'] . time() . rand(1000, 2000))
+                    'remember'   => md5($data['password'] . time() . rand(1000, 2000))
                 ]);
-                $result = $user->save();
-                if ($result) {
+                //消费系统
+                $ecard  = new Ecard([
+                    'stu_id'     => $data['stu_id'],
+                    'name'       => $output['data']['name'], //默认信息
+                    'consume'      => '0',
+                    'library'    => '0'
+                ]);
+                $resultUser = $user->save();
+                $resultEcard = $ecard->save();
+
+                if ($resultUser && $resultEcard) {
                     //直接使用上面的 $user 会导致没有id  这个对象新建的时候没有id save后才有的id 但是该id只是在数据库中 需要再次查找模型
 //                    $user = User::query()->where('stu_id', $data['stu_id'])->first();
                     session(['login' => true, 'uid' => $user->id]);
