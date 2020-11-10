@@ -259,6 +259,62 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/Success'
+  
+  /ecard/billing:
+    post:
+      summary: 绑定一卡通
+      operationId: EcardPublish
+      tags:
+        - user
+      requestBody:
+        content:
+          form-data:
+            schema:
+              type: object
+              properties:
+                stu_id:
+                  description: 学号
+                  type: integer
+                  example: 201805710601
+                consume:
+                  description: 消费密码(默认身份证后六位)
+                  type: string
+                  example: 191515
+      responses:
+        '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Success'
+  /ecard/library:
+    post:
+      summary: 绑定图书馆
+      operationId: LibraryPublish
+      tags:
+        - user
+      requestBody:
+        content:
+          form-data:
+            schema:
+              type: object
+              properties:
+                stu_id:
+                  description: 学号
+                  type: integer
+                  example: 201805710601
+                consume:
+                  description: 图书馆密码(默认学号后六位)
+                  type: string
+                  example: 710601
+      responses:
+        '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Success'
+      
   /tip:
     post:
       summary: 举报
