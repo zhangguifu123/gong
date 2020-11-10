@@ -1,6 +1,6 @@
 #FROM php:7.3-fpm
 FROM php:7.4-fpm
-COPY redis /usr/src/php/ext/redis
+COPY _redis /usr/src/php/ext/redis
 COPY sources.list /etc/apt/sources.list
 RUN  rm -Rf /var/lib/apt/lists/* \
         && apt-get update && apt-get install -y build-essential libssl-dev zlib1g-dev libpng-dev libjpeg-dev libfreetype6-dev \
