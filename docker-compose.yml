@@ -14,7 +14,7 @@ services:
       - php
   php:
     build: ./dockercnf/php7.3-fpm/
-    image: "gong-php:7.3-fpm"
+#    image: "gong-php:7.3-fpm"
     container_name: "gong_php"
     privileged: true
     volumes:

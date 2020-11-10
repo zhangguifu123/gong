@@ -77,6 +77,7 @@ Route::namespace('Api')->group(function (){
 
         /** Ecard*/
         Route::post('/ecard/binding',"Ecard\ConsumeController@binding");
+        Route::get('/ecard/{stu_id}',"Ecard\ConsumeController@get");
         Route::post('/library/binding',"Ecard\LibraryController@binding");
         /** Upick */
         Route::post('/upick/keep/{id}', "Eatest\CollectionController@upick_keep")->where(["id" => "[0-9]+"])->middleware(['food.exist.check']);

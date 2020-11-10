@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Model\User\Ecard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use PharIo\Manifest\Library;
 
 class LibraryController extends Controller
 {
@@ -24,6 +25,21 @@ class LibraryController extends Controller
         $ecard = $ecard->update($data);
         if ($ecard) {
             return msg(0,__LINE__);
+        }
+        //未知错误
+        return msg(4, __LINE__);
+    }
+
+    public function get(Request $request){
+        //通过路由获取前端数据，并判断数据格式
+        $stu_id = $request->route('stu_id');
+        $Library = Library::query()->where('stu_id','=',$stu_id);
+        if (!$Library){
+            return msg(3,__LINE__);
+        }
+        $consume = $Library->select('consume')->get()['0'];
+        if ($consume) {
+            return msg(0,$consume);
         }
         //未知错误
         return msg(4, __LINE__);

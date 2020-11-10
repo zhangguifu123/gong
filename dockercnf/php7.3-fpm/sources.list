@@ -1,7 +1,20 @@
-deb https://mirrors.aliyun.com/debian buster main
-deb https://mirrors.aliyun.com/debian buster-updates main
+#deb https://mirrors.aliyun.com/debian buster main
+#deb https://mirrors.aliyun.com/debian buster-updates main
 
 
 #deb http://mirrors.aliyun.com/debian stretch main
 #deb http://mirrors.aliyun.com/debian stretch-updates main
 #deb http://mirrors.aliyun.com/debian-security stretch/updates main
+
+#deb https://mirrors.ustc.edu.cn/debian/ buster main contrib non-free
+#deb-src https://mirrors.ustc.edu.cn/debian/ buster main contrib non-free
+
+
+deb https://mirrors.ustc.edu.cn/debian/ buster main contrib non-free
+deb-src https://mirrors.ustc.edu.cn/debian/ buster main contrib non-free
+
+deb https://mirrors.ustc.edu.cn/debian/ buster-updates main contrib non-free
+deb-src https://mirrors.ustc.edu.cn/debian/ buster-updates main contrib non-free
+
+deb https://mirrors.ustc.edu.cn/debian-security/ buster/updates main contrib non-free
+deb-src https://mirrors.ustc.edu.cn/debian-security/ buster/updates main contrib non-free

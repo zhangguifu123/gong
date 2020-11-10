@@ -50,9 +50,9 @@ class ImageController extends Controller
         }
         $name = md5(session('uid') . time() . rand(1, 500));
         $all_name = $name . "." . $ext;
-
+        $pic_url = storage_path('app/public/image/'). $all_name;
         $result = $file->move(storage_path('app/public/image/'), $all_name);
-
+//        $result = Image::make($pic_url)->resize();
         if (!$result) {
             return msg(500, "图片保存失败" . __LINE__);
         }
@@ -66,14 +66,17 @@ class ImageController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);          //不直接输出获取到的内容
         curl_setopt($ch, CURLOPT_TIMEOUT, 6);    //设置响应超时时间
         $result = curl_exec($ch);
-        if (! mb_check_encoding($result, 'utf-8')) {             // 转换为utf-8编码
+        if (!mb_check_encoding($result, 'utf-8')) {             // 转换为utf-8编码
             $result = mb_convert_encoding($result,'UTF-8',['ASCII','UTF-8','GB2312','GBK']);
         }
         $responseData = json_decode($result,true);
         $accessToken  =  $responseData['access_token'];
 //        print_r($accessToken);
         $pic_url = storage_path('app/public/image/'). $all_name;
+//        $pic_url = config("app.url") . "/storage/image/". $all_name;
         // 图片压缩
+//        list($width, $height, $type) = getimagesize($pic_url);
+//        print_r($width);
 //        $image = compressedImage($pic_url,$pic_url);
 //        if (!$image){
 //            return msg(1,__LINE__);
@@ -91,13 +94,12 @@ class ImageController extends Controller
         $output = curl_exec($curl);
         $result = json_decode($output,true);
         curl_close($curl);
-
         if ($result['errcode'] != 0){
             return msg(12,__LINE__);
         }
 
         $pic_url = config("app.url") . "/storage/image/". $all_name;
-//        $redis->hSet("images", $pic_url, time()); // 存储图片上传时间 外部辅助脚本过期后删除
+        $redis->hSet("images", $pic_url, time()); // 存储图片上传时间 外部辅助脚本过期后删除
         return msg(0, $pic_url);
     }
 

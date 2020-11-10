@@ -30,6 +30,21 @@ class ConsumeController extends Controller
         return msg(4, __LINE__);
     }
 
+    public function get(Request $request){
+        //通过路由获取前端数据，并判断数据格式
+        $stu_id = $request->route('stu_id');
+        $ecard = Ecard::query()->where('stu_id','=',$stu_id);
+        if (!$ecard){
+            return msg(3,__LINE__);
+        }
+        $consume = $ecard->select('consume')->get()['0'];
+        if ($consume) {
+            return msg(0,$consume);
+        }
+        //未知错误
+        return msg(4, __LINE__);
+    }
+
     //检查函数
     private function data_handle(Request $request = null){
         //声明理想数据格式
