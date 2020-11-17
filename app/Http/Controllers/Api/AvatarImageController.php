@@ -16,12 +16,11 @@ class AvatarImageController extends Controller
         if (!$request->hasFile('image')) {
             return msg(1, "缺失参数" . __LINE__);
         }
-//
         $data = $request->only('image');
         $validator = Validator::make($data, [ // 图片文件小于10M
             'image' => 'max:10240'
         ]);
-        if ($validator->fails()) {
+	if ($validator->fails()) {
             if (config("app.debug")) {
                 return msg(1, '非法参数' . __LINE__ . $validator->errors());
             }
@@ -54,7 +53,7 @@ class AvatarImageController extends Controller
         if (!$result) {
             return msg(500, "图片保存失败" . __LINE__);
         }
-        $pic_url = config("app.url") . "/storage/avatar/". $all_name;
+        $pic_url = config("app.url")."/storage/avatar/".$all_name;
 
         $user = User::query()->find($uid);
         $data = ['avatar' => json_encode($pic_url)];
