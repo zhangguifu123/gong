@@ -16,8 +16,10 @@ class OwnerCheck
      */
     public function handle($request, Closure $next)
     {
+        $uid = handleUid($request);
+
         $user = EatestComments::query()->find($request->route('id'));
-        if($user->fromId != session('uid') && $user->toId != session('uid')) {
+        if($user->fromId != $uid && $user->toId != $uid) {
             return response(msg(11, __LINE__.'或文章拥有者不存在'));
         } else {
             return $next($request);

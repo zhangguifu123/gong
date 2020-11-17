@@ -64,7 +64,6 @@ class StudentLoginController extends Controller
 
                 if ($resultUser && $resultEcard) {
                     //直接使用上面的 $user 会导致没有id  这个对象新建的时候没有id save后才有的id 但是该id只是在数据库中 需要再次查找模型
-//                    $user = User::query()->where('stu_id', $data['stu_id'])->first();
                     session(['login' => true, 'uid' => $user->id]);
 
                     return msg(0, $user->info());
@@ -93,7 +92,10 @@ class StudentLoginController extends Controller
     }
 
     public function update_nickname(Request $request){
-        $user = User::query()->find(session('uid'));
+        //若没有session 判断remember
+        $uid = handleUid($request);
+
+        $user = User::query()->find($uid);
         $name = $request->input('nickname');
         if (!$name){
             return msg(1,__LINE__);

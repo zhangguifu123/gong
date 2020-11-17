@@ -34,6 +34,18 @@ class LikeController extends Controller
      */
     public function like(Request $request)
     {
+        //若没有session 判断remember
+        $mod = [
+            "remember"      => ["string"],
+            "uid"    => ["string", "max:50"]
+        ];
+        //是否默认登陆
+        if ($request->has(array_keys($mod))){
+            $uid = $request->input('uid');
+        }else{
+            $uid = session('uid');
+        }
+
         if (!$request->has('action')) {
             return msg(1, "缺失参数");
         }
@@ -45,7 +57,7 @@ class LikeController extends Controller
             return msg(1, '非法参数' . __LINE__);
         }
 
-        $user = User::query()->find(session("uid"));
+        $user = User::query()->find($uid);
         $evaluation_id = $request->route("id");
         $evaluation = Evaluation::query()->find($evaluation_id);
 

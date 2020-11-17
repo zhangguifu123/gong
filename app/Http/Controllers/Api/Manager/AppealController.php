@@ -16,7 +16,6 @@ class AppealController extends Controller
         if (!is_array($data)) {
             return $data;
         }
-//        $data = $data + ['id' => session('uid')];
         $appeal = new Appeal($data);
         if ($appeal->save()){
             return msg(0,__LINE__);

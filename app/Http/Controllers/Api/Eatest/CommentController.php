@@ -91,7 +91,8 @@ class CommentController extends Controller
             if ($request->routeIs("EatestComments_update")) {
                 $uid = EatestComments::query()->find($request->route('id'))->fromId;
             } else {
-                $uid = session("uid");
+                //若没有session 判断remember
+                $uid = handleUid($request);
             }
             $data["nickname"] = User::query()->find($uid)->nickname;
         }
@@ -119,12 +120,24 @@ class CommentController extends Controller
             return msg(3, '数据格式错误' . __LINE__);
         };
 
-        $data = ["user" => session("uid"), "comment" => $request->route("id"), "like" => $request->input("like")];
+        //若用remember登陆，获取 uid
+        $mod = [
+            "remember"      => ["string"],
+            "uid"    => ["string", "max:50"]
+        ];
+        //是否默认登陆
+        if ($request->has(array_keys($mod))){
+            $uid = $request->input('uid');
+        }else{
+            $uid = session('uid');
+        }
+
+        $data = ["user" => $uid, "comment" => $request->route("id"), "like" => $request->input("like")];
         // 事务处理
         DB::beginTransaction();
         try {
             //获取likes表数据，条件查询 user、eva_id
-            $like = DB::table("comment_likes")->where("user", session("uid"))->where("comment", $request->route("id"));
+            $like = DB::table("comment_likes")->where("user", $uid)->where("comment", $request->route("id"));
             //获取Eatest or Upick表数据，条件查询 eva_id
             $comment = DB::table('eatest_comments')->where('id', $data["comment"]);
 

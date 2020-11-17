@@ -16,8 +16,10 @@ class OwnerCheck
      */
     public function handle($request, Closure $next)
     {
+        $uid = handleUid($request);
+
         $evaluation = Evaluation::query()->find($request->route('id'));
-        if( (session("login") == true && $evaluation->publisher == session("uid")) // 发布者本人
+        if( (session("login") == true && $evaluation->publisher == $uid) // 发布者本人
             || session("ManagerLogin") == true // 或者管理员
         ) {
             return $next($request);

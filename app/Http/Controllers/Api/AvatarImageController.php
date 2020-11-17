@@ -16,7 +16,7 @@ class AvatarImageController extends Controller
         if (!$request->hasFile('image')) {
             return msg(1, "缺失参数" . __LINE__);
         }
-        print_r(1);
+//
         $data = $request->only('image');
         $validator = Validator::make($data, [ // 图片文件小于10M
             'image' => 'max:10240'
@@ -27,8 +27,12 @@ class AvatarImageController extends Controller
             }
             return msg(1, '非法参数' . __LINE__);
         }
+
+        //若没有session 判断remember
+        $uid = handleUid($request);
+
         //删除以前的头像
-        $old = User::query()->find(session('uid'))->avatar;
+        $old = User::query()->find($uid)->avatar;
         if ($old){
             $old_avatar = json_decode($old);
             $replace = str_replace(config("app.url")."/storage/avatar/","",$old_avatar);
@@ -44,7 +48,7 @@ class AvatarImageController extends Controller
         if (!in_array($ext, $allow_ext)) {
             return msg(3, "非法文件" . __LINE__);
         }
-        $name = md5(session('uid') . time() . rand(1, 500));
+        $name = md5($uid . time() . rand(1, 500));
         $all_name = $name . "." . $ext;
         $result = $file->move(storage_path('app/public/avatar/'), $all_name);
         if (!$result) {
@@ -52,7 +56,7 @@ class AvatarImageController extends Controller
         }
         $pic_url = config("app.url") . "/storage/avatar/". $all_name;
 
-        $user = User::query()->find(session('uid'));
+        $user = User::query()->find($uid);
         $data = ['avatar' => json_encode($pic_url)];
         if ($user->update($data)){
             return msg(0, $pic_url);

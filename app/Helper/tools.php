@@ -3,7 +3,21 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+function handleUid(Request $request){
+    //声明理想数据格式
+    $mod = [
+        "remember"      => ["string"],
+        "uid"    => ["string", "max:50"]
+    ];
+    //是否默认登陆
+    if ($request->has(array_keys($mod))){
+        $uid = $request->input('uid');
+    }else{
+        $uid = session('uid');
+    }
 
+    return $uid;
+}
 
 function compressedImage($imgsrc, $imgdst) {
     list($width, $height, $type) = getimagesize($imgsrc);
@@ -29,10 +43,12 @@ function compressedImage($imgsrc, $imgdst) {
                 imagejpeg($image_wp, $imgdst, 90);
                 imagedestroy($image_wp);
                 imagedestroy($image);
+
+                return 0;
             }
             break;
         case 2:
-            header('Content-Type:image/jpeg');
+//            header('Content-Type:image/jpeg');
             $image_wp = imagecreatetruecolor($new_width, $new_height);
             $image = imagecreatefromjpeg($imgsrc);
             imagecopyresampled($image_wp, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
@@ -40,6 +56,8 @@ function compressedImage($imgsrc, $imgdst) {
             imagejpeg($image_wp, $imgdst, 90);
             imagedestroy($image_wp);
             imagedestroy($image);
+
+            return 0;
             break;
         case 3:
             header('Content-Type:image/png');
@@ -50,6 +68,8 @@ function compressedImage($imgsrc, $imgdst) {
             imagejpeg($image_wp, $imgdst, 90);
             imagedestroy($image_wp);
             imagedestroy($image);
+
+            return 0;
             break;
     }
 }

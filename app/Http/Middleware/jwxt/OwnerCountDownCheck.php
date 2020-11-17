@@ -16,8 +16,10 @@ class OwnerCountDownCheck
      */
     public function handle($request, Closure $next)
     {
+        $uid = handleUid($request);
+
         $countdown = CountDown::query()->find($request->route('id'));
-        if( (session("login") == true && $countdown->uid == session("uid")) // 发布者本人
+        if( (session("login") == true && $countdown->uid == $uid) // 发布者本人
             || session("ManagerLogin") == true // 或者管理员
         ) {
             return $next($request);
