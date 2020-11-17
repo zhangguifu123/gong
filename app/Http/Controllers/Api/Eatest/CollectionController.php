@@ -46,7 +46,10 @@ class CollectionController extends Controller
             return msg(1, '非法参数' . __LINE__);
         }
 
-        $user = User::query()->find(session("uid"));
+        //若没有session 判断remember
+        $uid = handleUid($request);
+
+        $user = User::query()->find($uid);
         $evaluation_id = $request->route("id");
         $evaluation = Evaluation::query()->find($evaluation_id);
 
@@ -70,6 +73,17 @@ class CollectionController extends Controller
 
     public function upick_keep(Request $request)
     {
+        //若没有session 判断remember
+        $mod = [
+            "remember"      => ["string"],
+            "uid"    => ["string", "max:50"]
+        ];
+        //是否默认登陆
+        if ($request->has(array_keys($mod))){
+            $uid = $request->input('uid');
+        }else{
+            $uid = session('uid');
+        }
         if (!$request->has('action')) {
             return msg(1, "缺失参数");
         }
@@ -81,7 +95,7 @@ class CollectionController extends Controller
             return msg(1, '非法参数' . __LINE__);
         }
 
-        $user = User::query()->find(session("uid"));
+        $user = User::query()->find($uid);
         $upick_id = $request->route("id");
         $upick = Food::query()->find($upick_id);
 

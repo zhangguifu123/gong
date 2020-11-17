@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware\User;
 
+use App\User;
 use Closure;
 
 class LoginCheck
@@ -17,10 +18,14 @@ class LoginCheck
     {
         if((session()->has('login') && session('login') == true)||(session()->has('ManagerLogin') && session('ManagerLogin') === true)) {
             return $next($request);
-        } else {
-            // 未登录返回 未登录
-            // 正常情况不会出现未登录
-            return  response(msg(6, __LINE__), 200);
+        } else{
+            $remember = User::query()->where('remember','=',$request->input('remember'))->get()->toArray();
+            if ($remember == null){
+                // 未登录返回 未登录
+                // 正常情况不会出现未登录
+                return  response(msg(6, __LINE__));
+            }
+            return $next($request);
         }
     }
 }

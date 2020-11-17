@@ -43,12 +43,16 @@ class ImageController extends Controller
         }
         $file = $request->file('image');
         $ext = $file->getClientOriginalExtension(); // 获取后缀
-        $allow_ext = ['jpg', 'jpeg', 'png', 'gif','HEIC'];
+        $allow_ext = ['jpg', 'jpeg', 'png', 'gif','HEIC','JPG'];
 
         if (!in_array($ext, $allow_ext)) {
             return msg(3, "非法文件" . __LINE__);
         }
-        $name = md5(session('uid') . time() . rand(1, 500));
+
+        //若没有session 判断remember
+        $uid = handleUid($request);
+
+        $name = md5($uid . time() . rand(1, 500));
         $all_name = $name . "." . $ext;
         $pic_url = storage_path('app/public/image/'). $all_name;
         $result = $file->move(storage_path('app/public/image/'), $all_name);
@@ -73,14 +77,11 @@ class ImageController extends Controller
         $accessToken  =  $responseData['access_token'];
 //        print_r($accessToken);
         $pic_url = storage_path('app/public/image/'). $all_name;
-//        $pic_url = config("app.url") . "/storage/image/". $all_name;
         // 图片压缩
-//        list($width, $height, $type) = getimagesize($pic_url);
-//        print_r($width);
-//        $image = compressedImage($pic_url,$pic_url);
-//        if (!$image){
-//            return msg(1,__LINE__);
-//        }
+        $image = compressedImage($pic_url,$pic_url);
+        if ($image != 0){
+            return msg(4,__LINE__);
+        }
         $cfile = new \CURLFile($pic_url);
         $dataLQY = array('media' => $cfile);
         $curl = curl_init();

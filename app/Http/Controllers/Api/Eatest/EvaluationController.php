@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 
 class EvaluationController extends Controller
 {
+
     //发布
     public function publish(Request $request){
         //通过路由获取前端数据，并判断数据格式
@@ -20,8 +21,11 @@ class EvaluationController extends Controller
         if (!is_array($data)) {
             return $data;
         }
+        //声明理想数据格式
+        $uid = handleUid($request);
+
         //加上额外必要数据
-        $data = $data + ["top" => 0, "collections" => 0, "like" => 0, "views" => 0, "publisher" => session("uid")];
+        $data = $data + ["top" => 0, "collections" => 0, "like" => 0, "views" => 0, "publisher" => $uid];
         $evaluation = new Evaluation($data);
         //获取图片链接
         $imgs = json_decode($data['img']);
@@ -38,7 +42,7 @@ class EvaluationController extends Controller
         }
         //发布，同时将评测加入我的发布
         if ($evaluation->save()) {
-            User::query()->find(session("uid"))->add_eatest($evaluation->id);
+            User::query()->find($uid)->add_eatest($evaluation->id);
 
             return msg(0, ["id" => $evaluation->id]);
         }
@@ -282,8 +286,6 @@ class EvaluationController extends Controller
         if ($data["nickname"] === ""||empty($data["nickname"])){
             if ($request->routeIs("evaluation_update")) {
                 $uid = Evaluation::query()->find($request->route('id'))->publisher;
-            } else {
-                $uid = session("uid");
             }
             $data["nickname"] = User::query()->find($uid)->nickname;
         }
