@@ -39,7 +39,7 @@ Route::namespace('Api')->group(function (){
     Route::group(['middleware' => 'manager.login.check'], function () {
         /** Manager */
         Route::post('/manager/update', "ManagerController@update");
-        Route::get('/manager/list', "ManagerController@list");
+        Route::get('/manager/list', "ManagerController@get_list");
         /** Tip */
         Route::put('/tip/{id}',"Manager\TipController@update_status")->where(["id" => "[0-9]+"]);
         Route::get('/tip/list/{page}', "Manager\TipController@get_list")->where(["page" => "[0-9]+"]);
@@ -69,6 +69,8 @@ Route::namespace('Api')->group(function (){
 
     /** 用户区 */
     Route::group(['middleware' => 'login.check'], function () {
+        /** 推送 */
+//        Route::post('push/toSingle',"PushSdk\ToSingleController@pushMessage");
         /** Tip */
         Route::post('/tip',"Manager\TipController@upload");
 
