@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware\User;
 
+use App\User;
 use Closure;
 
 class OwnerCheck
@@ -19,6 +20,12 @@ class OwnerCheck
         if(session()->has('uid') && session('login') === true && $uid == $request->route("uid")) {
             return $next($request);
         } else {
+            $remember = User::query()->where('remember','=',$request->header('remember'))->get()->toArray();
+            if ($remember == null){
+                // 未登录返回 未登录
+                // 正常情况不会出现未登录
+                return  response(msg(6, __LINE__));
+            }
             // 未登录返回 未登录
             // 正常情况不会出现未登录
             return  response(msg(10, __LINE__), 200);

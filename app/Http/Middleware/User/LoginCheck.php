@@ -19,7 +19,7 @@ class LoginCheck
         if((session()->has('login') && session('login') == true)||(session()->has('ManagerLogin') && session('ManagerLogin') === true)) {
             return $next($request);
         } else{
-            $remember = User::query()->where('remember','=',$request->input('remember'))->get()->toArray();
+            $remember = User::query()->where('remember','=',$request->header('remember'))->get()->toArray();
             if ($remember == null){
                 // 未登录返回 未登录
                 // 正常情况不会出现未登录
