@@ -30,7 +30,7 @@ class FoodController extends Controller
         foreach ($imgs as $i) {
             $redis->hDel('images', $i);
         }
-        $data = $data + ["publisher" => session("uid")];
+        $data = $data + ["publisher" => session("mid")];
         $food = new Food($data);
         if($food->save()) {
             return msg(0, __LINE__);
