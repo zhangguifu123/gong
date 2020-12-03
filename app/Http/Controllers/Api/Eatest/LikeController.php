@@ -35,16 +35,7 @@ class LikeController extends Controller
     public function like(Request $request)
     {
         //若没有session 判断remember
-        $mod = [
-            "remember"      => ["string"],
-            "uid"    => ["string", "max:50"]
-        ];
-        //是否默认登陆
-        if ($request->has(array_keys($mod))){
-            $uid = $request->input('uid');
-        }else{
-            $uid = session('uid');
-        }
+        $uid = handleUid($request);
 
         if (!$request->has('action')) {
             return msg(1, "缺失参数");
