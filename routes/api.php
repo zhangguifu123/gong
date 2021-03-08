@@ -65,12 +65,13 @@ Route::namespace('Api')->group(function (){
     });
 
 
-
+    /** 推送 */
+    Route::post('push/send',"PushSdk\ToSingleController@send");
 
     /** 用户区 */
     Route::group(['middleware' => 'login.check'], function () {
         /** 推送 */
-//        Route::post('push/toSingle',"PushSdk\ToSingleController@pushMessage");
+        Route::post('push/toSingle',"PushSdk\ToSingleController@pushMessage");
         /** Tip */
         Route::post('/tip',"Manager\TipController@upload");
 
@@ -97,9 +98,16 @@ Route::namespace('Api')->group(function (){
 
         Route::get('/countdown/{uid}', 'jwxt\CountDownController@query')->where(["uid" => "[0-9]+"])->middleware("owner.check");
 
-
+        /** Course*/
+        Route::post('/course/extra',"jwxt\CourseController@publish");
+        //测评所有者和管理员均可操作
+        Route::get('/course/extra/{uid}',"jwxt\CourseController@get_list")->middleware("owner.check");
+        Route::group(["middleware" => ["course.exist.check",'owner.course.check']], function (){
+            Route::put('/course/extra/{id}',"jwxt\CourseController@update");
+            Route::delete('/course/extra/{id}',"jwxt\CourseController@delete");
+        });
         /**Eatest */
-
+        Route::post('/test','Eatest\EvaluationController@test');
         //Eatest增删改查
         Route::post('/eatest','Eatest\EvaluationController@publish');
         Route::group(["middleware" => 'owner.check'], function (){

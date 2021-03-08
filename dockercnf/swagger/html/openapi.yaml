@@ -96,6 +96,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  
   /manager/appeal/list/{page}:
     get:
       summary: 申诉列表
@@ -1351,7 +1352,7 @@ paths:
       tags:
         - course
       requestBody:
-        $ref: '#/components/requestBodies/AssocationBody'
+        $ref: '#/components/requestBodies/CourseBody'
       responses:
         '200':
           description: 成功
@@ -1445,6 +1446,8 @@ paths:
       summary: 添加课程
       tags:
         - course
+      requestBody:
+        $ref: '#/components/requestBodies/CourseBody'
       responses:
         '200':
           description: 成功
@@ -1458,10 +1461,79 @@ paths:
           $ref: '#/components/responses/NoPermission'
         '404':
           $ref: '#/components/responses/NotFound'
+  /course/extra/{uid}:
+    get:
+      summary: 获取课程
+      tags:
+        - course
+      parameters:
+        - name: uid
+          description: 学生学号
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtraCourse'
+              example:
+                code: 0
+                status: 成功
+                data:
+                  - id: 1
+                    course: 高等代数
+                    location: 逸夫楼211
+                    teacher: 谢勇
+                    week: [1,2,3]
+                    week_string: 第1-3周
+                    section_length: 2
+                    section_start: 1
+                    end_start: 2
+                    day: 1
+                  - id: 2
+                    course: 高等代数
+                    location: 逸夫楼211
+                    teacher: 谢勇
+                    week: [5,6,7,8,9]
+                    week_string: 第5-9周
+                    section_length: 2
+                    section_start: 1
+                    end_start: 2
+                    day: 1
+                  - id: 3
+                    course: 计算机网络
+                    location: 逸夫楼210
+                    teacher: 谢勇
+                    week: [5,6,7]
+                    week_string: 第5-7周
+                    section_length: 4
+                    section_start: 5
+                    end_start: 8
+                    day: 3
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /course/extra/{id}:  
     put:
       summary: 修改课程
       tags:
         - course
+      parameters:
+        - name: id
+          description: 课程id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateCourseBody'
       responses:
         '200':
           description: 成功
@@ -1481,12 +1553,6 @@ paths:
       tags:
         - course
       parameters:
-        - name: stu_id
-          description: 学号
-          in: query
-          required: true
-          schema:
-            type: string
         - name: id
           description: 需删课程id
           in: query
@@ -3294,6 +3360,95 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   requestBodies:
+    UpdateCourseBody:
+      description: 课程信息
+      required: true
+      content:
+        x-www-form-urlencoded:
+          schema:
+            type: object
+            properties:
+              
+              course:
+                type: string
+                description: 课程
+                example: 高等数学
+              location:
+                type: string
+                description: 地点
+                example: 逸夫楼201
+              teacher:
+                type: string
+                description: 老师
+                example: 谢勇
+              week:
+                type: string
+                description: 周次（详）
+                example: [1,2,3,4]
+              week_string:
+                type: string
+                description: 周次（详）
+                example: 第1-10周
+              section_length:
+                type: string
+                description: 课时长度
+                example: 2
+              section_start:
+                type: string
+                description: 开始小节
+                example: 5
+              end_start:
+                type: string
+                description: 结束小节
+                example: 6
+              day:
+                type: string
+                description: 周几
+                example: 2
+    CourseBody:
+      description: 课程信息
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              course:
+                type: string
+                description: 课程
+                example: 高等数学
+              location:
+                type: string
+                description: 地点
+                example: 逸夫楼201
+              teacher:
+                type: string
+                description: 老师
+                example: 谢勇
+              week:
+                type: string
+                description: 周次（详）
+                example: [1,2,3,4]
+              week_string:
+                type: string
+                description: 周次（详）
+                example: 第1-10周
+              section_length:
+                type: string
+                description: 课时长度
+                example: 2
+              section_start:
+                type: string
+                description: 开始小节
+                example: 5
+              end_start:
+                type: string
+                description: 结束小节
+                example: 6
+              day:
+                type: string
+                description: 周几
+                example: 2
     AssocationBody:
       description: 关联码
       required: true
@@ -3512,7 +3667,7 @@ components:
             properties:
               nickname:
                 type: string
-                description: 昵称
+                description: 店名
                 example: 小甜甜美食店
               location:
                 type: string
@@ -4556,6 +4711,63 @@ components:
                         description: 结束时间
                         type: integer
                         example: 2
+    ExtraCourse:
+      description: 自定义课表
+      type: object
+      properties:
+        code:
+          description: 状态码
+          type: integer
+          example: 0
+        status:
+          description: 状态
+          type: string
+          example: 成功
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                description: 课表id
+                type: integer
+                example: 1
+              uid:
+                description: 学生id
+                type: integer
+                example: 1
+              course:
+                description: 课程名称
+                type: string
+                example: 线性代数
+              location:
+                description: 地点
+                type: string
+                default: 逸夫楼211
+              week:
+                description: 周次（详）
+                type: string
+                example: ['1','2','3']
+              week_string:
+                description: 周次
+                type: string
+                example: 第1-3周
+              section_length:
+                description: 课程长度
+                type: string
+                example: 2
+              section_start:
+                description: 开始小节
+                type: string
+                example: 1
+              end_start:
+                description: 结束小节
+                type: string
+                example: 2
+              day:
+                description: 周几
+                type: string
+                example: 1
     CountDown:
       description: 查看倒计时
       type: object

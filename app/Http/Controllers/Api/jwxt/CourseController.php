@@ -3,12 +3,101 @@
 namespace App\Http\Controllers\Api\jwxt;
 
 use App\Http\Controllers\Controller;
+use App\Model\Eatest\Evaluation;
+use App\Model\jwxt\Course;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Validator;
 
 class CourseController extends Controller
 {
+    //发布
+    public function publish(Request $request){
+        //通过路由获取前端数据，并判断数据格式
+        $data = $this->data_handle($request);
+        if (!is_array($data)) {
+            return $data;
+        }
+        //声明理想数据格式
+        $uid = handleUid($request);
+
+        //加上额外必要数据
+        $course = new Course($data);
+
+        if ($course->save()) {
+            return msg(0, ["id" => $course->id]);
+        }
+        //未知错误
+        return msg(4, __LINE__);
+    }
+
+    //删除
+    public function delete(Request $request)
+    {
+        $course = Course::query()->find($request->route('id'));
+        $course->delete();
+
+        return msg(0, __LINE__);
+    }
+    //获取
+    public function get_list(Request $request){
+        $course_list = Course::query()->where('uid',$request->route('uid'))
+            ->get(['id','course', 'location','teacher','week','week_string','section_length','section_start','end_start','day'])
+            ->toArray();
+
+        $message = ['total' => count($course_list), 'list' => $course_list];
+        return msg(0, $message);
+    }
+    //修改
+    public function update(Request $request)
+    {
+        //通过路由获取前端数据，并判断数据格式
+        $data = $this->data_handle($request);
+        //如果$data非函数说明有错误，直接返回
+        if (!is_array($data)) {
+            return $data;
+        }
+        //修改
+        $course = Course::query()->find($request->route('id'));
+        $course = $course->update($data);
+        if ($course) {
+            return msg(0, __LINE__);
+        }
+        return msg(4, __LINE__);
+    }
+
+//检查函数
+    private function data_handle(Request $request = null){
+        //声明理想数据格式
+        $mod = [
+            "uid" => ["string"],
+            "course"      => ["string"],
+            "location"    => ["string", "max:50"],
+            "teacher"  => ["string", "max:50"],
+            "week"  => ["string", "max:50"],
+            "week_string"  => ["json"],
+            "section_length"  => ["string"],
+            "section_start"  => ["string"],
+            "end_start"  => ["string"],
+            "day"  => ["string"],
+        ];
+        //是否缺失参数
+        if (!$request->has(array_keys($mod))){
+            return msg(1,__LINE__);
+        }
+        //提取数据
+        $data = $request->only(array_keys($mod));
+
+        //判断数据格式
+        if (Validator::make($data, $mod)->fails()) {
+            return msg(3, '数据格式错误' . __LINE__);
+        };
+        return $data;
+    }
+
+
     public function associate_course(Request $request){
         $week_course =[];
         $schedule = [];

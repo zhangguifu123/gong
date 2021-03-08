@@ -15,6 +15,7 @@ class CreateCoursesTable extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger("uid")->comment("学生id");
             $table->string('course')->comment('课程');
             $table->string('location')->comment('地点');
             $table->string('teacher')->comment('老师');

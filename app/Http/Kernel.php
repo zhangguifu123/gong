@@ -86,6 +86,9 @@ class Kernel extends HttpKernel
         //Eatest
         'owner.eatest.check' => \App\Http\Middleware\Eatest\OwnerCheck::class,
         'eatest.exist.check' => \App\Http\Middleware\Eatest\ExistCheck::class,
+        //Course
+        'owner.course.check' => \App\Http\Middleware\Course\OwnerCheck::class,
+        'course.exist.check' => \App\Http\Middleware\Course\ExistCheck::class,
         //CountDown
         'countdown.exist.check' => \App\Http\Middleware\jwxt\CountDownExistCheck::class,
         'owner.countdown.check' => \App\Http\Middleware\jwxt\OwnerCountDownCheck::class,
