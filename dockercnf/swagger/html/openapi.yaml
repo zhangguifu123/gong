@@ -1555,7 +1555,7 @@ paths:
       parameters:
         - name: id
           description: 需删课程id
-          in: query
+          in: path
           required: true
           schema:
             type: string

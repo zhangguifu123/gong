@@ -24,6 +24,7 @@ class CourseController extends Controller
         $uid = handleUid($request);
 
         //加上额外必要数据
+        $data = $data + ['uid' => $uid];
         $course = new Course($data);
 
         if ($course->save()) {
