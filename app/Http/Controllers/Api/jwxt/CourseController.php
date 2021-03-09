@@ -73,7 +73,6 @@ class CourseController extends Controller
     private function data_handle(Request $request = null){
         //声明理想数据格式
         $mod = [
-            "uid" => ["string"],
             "course"      => ["string"],
             "location"    => ["string", "max:50"],
             "teacher"  => ["string", "max:50"],
