@@ -70,6 +70,11 @@ Route::namespace('Api')->group(function (){
 
     /** 用户区 */
     Route::group(['middleware' => 'login.check'], function () {
+        /** 关注 */
+
+        Route::post('focus',"Eatest\FocusController@focus")->middleware(['focus.exist.check']);
+        Route::post('unfocus',"Eatest\FocusController@unfocus")->middleware(['unfocus.exist.check']);
+        Route::get('focus/{uid}',"Eatest\FocusController@get_user_focus_list");
         /** 推送 */
         Route::post('push/toSingle',"PushSdk\ToSingleController@pushMessage");
         /** Tip */
