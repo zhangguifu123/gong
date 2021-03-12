@@ -260,7 +260,88 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/Success'
-  
+  /focus:
+    post:
+      summary: 关注 
+      operationId: Focus
+      tags:
+        - user
+      requestBody:
+        content:
+          form-data:
+            schema:
+              type: object
+              properties:
+                follow_uid:
+                  description: 关注用户ID
+                  type: string
+                  example: 2
+      responses:
+        '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    code:
+                      description: 状态码
+                      type: integer
+                    status:
+                      description: 状态
+                      type: string
+                      example: 成功
+                    data:
+                      description: 返回数据
+                      type: object
+                      properties:
+                        useFocusCount:
+                          description: 关注数量
+                          type: string
+                          example: 12
+                        ifMutual:
+                          description: 是否互相关注
+                          type: string
+                          example: 1
+  /unfocus:
+    post:
+      summary: 取消关注 
+      operationId: unFocus
+      tags:
+        - user
+      requestBody:
+        content:
+          form-data:
+            schema:
+              type: object
+              properties:
+                unFollowId:
+                  description: 关注用户ID
+                  type: string
+                  example: 2
+      responses:
+        '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    code:
+                      description: 状态码
+                      type: integer
+                    status:
+                      description: 状态
+                      type: string
+                      example: 成功
+                    data:
+                      description: 返回数据
+                      type: object
+                      properties:
+                        useFocusCount:
+                          description: 关注数量
+                          type: string
+                          example: 12
   /ecard/billing:
     post:
       summary: 绑定一卡通

@@ -92,5 +92,8 @@ class Kernel extends HttpKernel
         //CountDown
         'countdown.exist.check' => \App\Http\Middleware\jwxt\CountDownExistCheck::class,
         'owner.countdown.check' => \App\Http\Middleware\jwxt\OwnerCountDownCheck::class,
+        //FocusOn
+        'focus.exist.check' => \App\Http\Middleware\Focus\FocusExistCheck::class,
+        'unfocus.exist.check' => \App\Http\Middleware\Focus\UnFocusExistCheck::class,
     ];
 }

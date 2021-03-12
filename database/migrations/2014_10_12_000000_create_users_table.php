@@ -15,16 +15,17 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('nickname');
-            $table->string('name');
-            $table->string('stu_id', 20)->unique();
+            $table->string('nickname')->comment('昵称');
+            $table->string('name')->comment('姓名');
+            $table->string('stu_id', 20)->unique()->comment('学号');
             $table->string('password', 40)->comment("密码md5");
-            $table->json('collection');
-            $table->json('like');
-            $table->json('eatest');
-            $table->json('upick');
+            $table->json('collection')->comment('我的收藏');
+            $table->json('like')->comment('我的喜欢');
+            $table->json('eatest')->comment('我的发布');
             $table->boolean('status')->default(1)->comment('禁言');
             $table->json('countdown')->comment('倒计时');
+            $table->bigInteger('focused')->default(0)->comment('粉丝量');
+            $table->bigInteger('focus')->default(0)->comment('关注数');
             $table->json('avatar')->comment("头像");
             $table->string("remember")->unique();
             $table->timestamps();
