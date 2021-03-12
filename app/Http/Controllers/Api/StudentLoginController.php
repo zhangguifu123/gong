@@ -48,6 +48,8 @@ class StudentLoginController extends Controller
                     'like'       => '[]',
                     'eatest'     => '[]', //mysql 中 json 默认值只能设置为NULL 为了避免不必要的麻烦，在创建的时候赋予初始值
                     'countdown'  => '[]',
+                    'focus'      => 0,
+                    'focused'    => 0,
                     'collection' => '[]',
                     'remember'   => md5($data['password'] . time() . rand(1000, 2000))
                 ]);
