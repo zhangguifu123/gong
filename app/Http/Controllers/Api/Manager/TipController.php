@@ -71,7 +71,7 @@ class TipController extends Controller
         $mod = [
             "eatest_id" => ["integer"],
             "reason" => ["string"],
-//            "content" => ["string"],
+            "content" => ["string"],
             "img" => ['json'],
             "fromId" => ["integer"],
             "toId" => ["integer"],
@@ -82,6 +82,7 @@ class TipController extends Controller
             return msg(1,__LINE__);
         }
         //提取数据
+        $mod += ["content" => ["string"]];
         $data = $request->only(array_keys($mod));
         //判断数据格式
         if (Validator::make($data, $mod)->fails()) {
