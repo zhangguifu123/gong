@@ -71,7 +71,7 @@ class TipController extends Controller
         $mod = [
             "eatest_id" => ["integer"],
             "reason" => ["string"],
-            "content" => ["string"],
+//            "content" => ["string"],
             "img" => ['json'],
             "fromId" => ["integer"],
             "toId" => ["integer"],
