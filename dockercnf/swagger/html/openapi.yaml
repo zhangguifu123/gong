@@ -96,7 +96,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  
+  /manager:
+    post:
+      summary: 管理员添加
+      # operationId: addManager
+      tags:
+        - manager
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stu_id:
+                  description: 用户名
+                  type: string
+                department:
+                  description: 部门
+                  type: string
+      responses:
+        '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Success'
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
   /manager/appeal/list/{page}:
     get:
       summary: 申诉列表
@@ -155,10 +181,10 @@ paths:
                     time: "2020-11-07 14:10:56"
         '403':
           $ref: '#/components/responses/InvalidProperties'
-  /manager/tip/list/{page}:
+  /manager/report/list/{page}:
     get:
       summary: 举报列表
-      operationId: TipList
+      operationId: ReportList
       tags:
         - manager
       parameters:
@@ -184,7 +210,7 @@ paths:
                     description: 美食评测列表
                     type: array
                     items:
-                      $ref: '#/components/schemas/TipMessage'
+                      $ref: '#/components/schemas/ReportMessage'
               example:
                 page: 1
                 limit: 1
@@ -225,6 +251,146 @@ paths:
                     time: "2020-11-07 14:10:59"
         '403':
           $ref: '#/components/responses/InvalidProperties'
+  /manager/list:
+    get:
+      summary: 管理员列表
+      operationId: ManagerList
+      tags:
+        - manager
+      # parameters:
+      #   - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  # page:
+                  #   description: 页码
+                  #   type: integer
+                  # limit:
+                  #   description: 每页限制
+                  #   type: integer
+                  code:
+                    description: 状态码
+                    type: integer
+                  data:
+                    description: 返回数据
+                    type: array
+                  total:
+                    description: 管理员总数
+                    type: integer
+                  list:
+                    description: 管理员列表
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ManagerMessage'
+              example:
+                code: 0
+                status: "成功"
+                data:
+                  total: 2
+                  list:
+                    - id: 1,
+                      name: '敢敢' 
+                      stu_id: 201805710601
+                      deparment: '技术开发部'
+                      level: 0
+                      
+                    - id: 1,
+                      name: '憨憨' 
+                      stu_id: 201805710601
+                      deparment: '新闻通讯社'
+                      level: 1
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
+  /manager/user/list/{page}:
+    get:
+      summary: 用户列表
+      operationId: UserList
+      tags:
+        - manager
+      parameters:
+        - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  # page:
+                  #   description: 页码
+                  #   type: integer
+                  # limit:
+                  #   description: 每页限制
+                  #   type: integer
+                  code:
+                    description: 状态码
+                    type: integer
+                  data:
+                    description: 返回数据
+                    type: array
+                  total:
+                    description: 当页用户总数
+                    type: integer
+                  list:
+                    description: 管理员列表
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserMessage'
+              example:
+                code: 0
+                status: "成功"
+                data:
+                  total: 2
+                  list:
+                    - id: 1,
+                      nickname: '敢敢' 
+                      stu_id: 201805710601
+                      eatestTotal: 3 
+                      status: 0
+                      
+                    - id: 1,
+                      nickname: '憨憨' 
+                      stu_id: 201805710601
+                      eatestTotal: 3
+                      status: 1
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
+  /manager/user/{id}/status:
+    parameters:
+    - name: id
+      description: 用户id
+      in: path
+      required: true
+      schema:
+        type: integer
+      example: 1
+    put:
+      tags:
+        - manager
+      summary: 用户禁言状态修改
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  description: 用户状态
+                  type: integer
+                  example: 0
+      responses:
+        '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Success'
   /manager/appeal/{id}:
     put:
       parameters:
@@ -260,6 +426,53 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/Success'
+  /manager/{id}:
+    parameters:
+    - name: id
+      description: 管理员id
+      in: path
+      required: true
+      schema:
+        type: integer
+      example: 1
+    put:
+      tags:
+        - manager
+      summary: 管理员信息修改
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                deparment:
+                  description: 部门
+                  type: string
+                  example: 技术开发部
+                level:
+                  description: 管理员等级
+                  type: integer
+                  example: 1
+      responses:
+        '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Success'
+    delete:
+      tags:
+        - manager
+      summary: 管理员删除
+      responses:
+        '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Success'
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
   /focus:
     post:
       summary: 关注 
@@ -397,10 +610,10 @@ paths:
                 schema:
                   $ref: '#/components/schemas/Success'
       
-  /tip:
+  /report:
     post:
       summary: 举报
-      operationId: TipPublish
+      operationId: ReportPublish
       tags:
         - user
       requestBody:
@@ -4464,7 +4677,7 @@ components:
             description: 发布时间
             type: string
             example: "020-08-24 18:48:16"
-    TipMessage:
+    ReportMessage:
       description: 举报评测列表
       type: array
       items:
@@ -4519,6 +4732,60 @@ components:
             description: 发布时间
             type: string
             example: "020-08-24 18:48:16"        
+    ManagerMessage:
+      description: 管理员列表
+      type: array
+      items:
+        description: 单条信息
+        type: object
+        properties:
+          id:
+            description: 编号
+            type: integer
+            example: 1
+          name:
+            description: 管理员姓名
+            type: string
+            example: '敢敢'
+          stu_id:
+            description: 学号
+            type: string
+            example: 201805710601
+          department:
+            description: 部门
+            type: string
+            example: '技术开发部'
+          level:
+            description: 管理员等级
+            type: integer
+            example: 0  
+    UserMessage:
+      description: 用户列表
+      type: array
+      items:
+        description: 单条信息
+        type: object
+        properties:
+          id:
+            description: 编号
+            type: integer
+            example: 1
+          nickname:
+            description: 用户昵称
+            type: string
+            example: '敢敢'
+          stu_id:
+            description: 学号
+            type: string
+            example: 201805710601
+          eatestTotal:
+            description: 发帖数
+            type: integer
+            example: 1 
+          status:
+            description: 申诉状态
+            type: integer
+            example: 1      
     GuideMessage:
       description: 地点信息
       type: object

@@ -20,6 +20,7 @@ class CreateEvaluationsTable extends Migration
             $table->string("nickname")->comment("昵称");
             $table->string("title")->comment("标题");
             $table->json("label")->comment("标签");
+            $table->json("topic")->default([])->comment("话题");
             $table->string("content");
             $table->integer("top")->default(0)->comment("置顶");
 //            $table->string("location")->comment("地点");

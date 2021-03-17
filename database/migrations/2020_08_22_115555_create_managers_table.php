@@ -18,6 +18,7 @@ class CreateManagersTable extends Migration
             $table->string('name')->comment('姓名');
             $table->string('stu_id')->comment('学号');
             $table->string('password')->comment('密码');
+            $table->string('department')->comment('部门');
             $table->integer('level')->comment('管理员级别');
             $table->timestamps();
         });

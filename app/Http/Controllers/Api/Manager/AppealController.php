@@ -3,89 +3,89 @@
 namespace App\Http\Controllers\Api\Manager;
 
 use App\Http\Controllers\Controller;
-use App\Model\Manager\Appeal;
+use App\Model\Manager\EatestAppeal;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class AppealController extends Controller
 {
-    //
-    public function upload(Request $request){
-        //通过路由获取前端数据，并判断数据格式
-        $data = $this->data_handle($request);
-        if (!is_array($data)) {
-            return $data;
+    //添加申诉
+    public function addAppeal(Request $request)
+    {
+        //检查数据格式
+        $params = [
+            "eatestId" => ["integer"],
+            "userName" => ["string"],
+            "type" => ["string"],
+            "content" => ['string'],
+            "describe" => ["string"]
+        ];
+        $request = handleData($request, $params);
+        if (!is_object($request)) {
+            return $request;
         }
-        $appeal = new Appeal($data);
-        if ($appeal->save()){
-            return msg(0,__LINE__);
-        }else{
-            //未知错误
-            return msg(4, __LINE__);
+        //提取数据
+        $data = $request->all();
+        //添加申诉
+        $addAppeal = EatestAppeal::query()->create($data);
+        if ($addAppeal) {
+            return msg(0, __LINE__);
         }
+        //未知错误
+        return msg(4, __LINE__);
     }
 
-    //
-    public function get_list(Request $request){
-        //分页，每页10条
-        $offset = $request->route("page") * 10 - 10;
-        //获取session
-        $value = session('collect_count');
-        $appeal_list = Appeal::query()->limit(10)
-            ->offset($offset)->orderByDesc("created_at")
-            ->get([
-                'id','eatest_id', 'name','handle','remarks', 'stu_id', 'phone','content','status','created_at as time'
-            ])->toArray();
+    //查看所有申诉
+    public function showAppeal(Request $request)
+    {
+        //函数测试
+//        $date = date('Y-m-d h:i');
+//        $db = DB::table('eatest_appeals')
+//            ->whereTime('updated_at',$date)
+//            ->get('created_at')->first()->created_at->timestamp;
+//        $db = ->created_at;
+//        return $db;
 
-        $message = ['total' => count($appeal_list), 'list' => $appeal_list];
+        //分页，每页10条
+        $offset = $request->route("page") * 13 - 13;
+        $showAppeal = EatestAppeal::query()
+            ->limit(13)
+            ->offset($offset)
+            ->orderByDesc("created_at")
+            ->get();
+        if(!$showAppeal){
+            return msg(4,__LINE__);
+        }
+        $data = $showAppeal->toArray();
+        $message = ['total' => count($data), 'list' => $data];
         return msg(0, $message);
     }
 
-    public function update_status(Request $request){
-        //检查是否存在数据格式
-        $mod = [
-            "handle" => ["string"],
-            "remarks" => ["string"],
-        ];
 
-        if (!$request->has(array_keys($mod))) {
-            return msg(1, __LINE__);
+    //申诉处理
+    public function handleAppeal(Request $request)
+    {
+        //检查数据格式
+        $params = [
+            "handle" => ["string"],
+        ];
+        $request = handleData($request, $params);
+        if (!is_object($request)) {
+            return $request;
         }
-        //数据格式是否正确
-        $data = $request->only(array_keys($mod));
-        if (Validator::make($data, $mod)->fails()) {
-            return msg(3, '数据格式错误' . __LINE__);
-        };
-        $data = $data + ['status' => 1];
+        //提取数据
+        $appealResult = $request->input('handle');
+        $appealId = $request->route('appealId');
         //修改
-        $appeal = Appeal::query()->find($request->route('id'));
-        $appeal = $appeal->update($data);
+        $sqlData = ['appealResult' => $appealResult];
+        $appeal = EatestAppeal::query()->find($request->route('id'))->update($sqlData);
         if ($appeal) {
-            return msg(0, __LINE__);
+            $data = ['修改的申诉id' => $appealId];
+            return msg(0, $data);
         }
         return msg(4, __LINE__);
     }
 
-    //检查函数
-    private function data_handle(Request $request){
-        //声明理想数据格式
-        $mod = [
-            "eatest_id" => ["integer"],
-            "name" => ["string"],
-            "stu_id" => ["integer"],
-            "phone" => ['integer'],
-            "content" => ["string"],
-        ];
-        //是否缺失参数
-        if (!$request->has(array_keys($mod))){
-            return msg(1,__LINE__);
-        }
-        //提取数据
-        $data = $request->only(array_keys($mod));
-        //判断数据格式
-        if (Validator::make($data, $mod)->fails()) {
-            return msg(3, '数据格式错误' . __LINE__);
-        };
-        return $data;
-    }
 }
+

@@ -37,31 +37,51 @@ Route::namespace('Api')->group(function (){
     Route::get('/food', "Eatest\FoodController@get");
     //管理员登录验证区
     Route::group(['middleware' => 'manager.login.check'], function () {
-        /** Manager */
-        Route::post('/manager/update', "ManagerController@update");
-        Route::get('/manager/list', "ManagerController@get_list");
-        /** Tip */
-        Route::put('/tip/{id}',"Manager\TipController@update_status")->where(["id" => "[0-9]+"]);
-        Route::get('/tip/list/{page}', "Manager\TipController@get_list")->where(["page" => "[0-9]+"]);
-        /** Appeal */
-        Route::put('/manager/appeal/{id}',"Manager\AppealController@update_status")->where(["id" => "[0-9]+"]);
-        Route::get('/manager/appeal/list/{page}', "Manager\AppealController@get_list")->where(["page" => "[0-9]+"]);
-        /** Eatest */
-        Route::put('/manager/eatest/{id}/ban', "Eatest\EvaluationController@update_status")->where(["id" => "[0-9]+"]);
-
-        /** Upick  */
-        Route::group(['middleware' => 'food.exist.check'], function () {
-            Route::put('/upick/{id}', "Eatest\FoodController@update")->where(["id" => "[0-9]+"]);
-            Route::delete('/upick/{id}', "Eatest\FoodController@delete")->where(["id" => "[0-9]+"]);
-        });
-        // 超级管理员验证
+        //超级管理员验证
         Route::group(['middleware' => 'manager.super.check'], function () {
-            Route::post('/manager/add', "ManagerController@add");
+            /** manager */
+            Route::post('/manager', "ManagerController@add");
+            Route::put('/manager/{id}', "ManagerController@updateMsg")->where(["id" => "[0-9]+"]);
             Route::delete('/manager/{id}', "ManagerController@delete")->where(["id" => "[0-9]+"]);
+            Route::get('/manager/list', "ManagerController@getList");
+            /** user */
+            Route::get('/manager/user/list/{page}','Manager\UserController@showUser')->where(["page" => "[0-9]+"]);
+            Route::put('/manager/user/{id}/status','Manager\UserController@updateStatus')->where(["id" => "[0-9]+"]);
+            /** EatestReport */
+            Route::put('/manager/report/{reportId}',"Manager\ReportController@handleReport")->where(["reportId" => "[0-9]+"]);
+            Route::get('/manager/report/list/{page}', "Manager\ReportController@showReport")->where(["page" => "[0-9]+"]);
+            /** EatestAppeal */
+            Route::put('/manager/appeal/{appealId}',"Manager\AppealController@handleAppeal")->where(["appealId" => "[0-9]+"]);
+            Route::get('/manager/appeal/list/{page}', "Manager\AppealController@showAppeal")->where(["page" => "[0-9]+"]);
+            /** EatestTopic */
+            Route::post('/manager/topic','Manager\TopicController@addTopic');
+            Route::delete('manager/topic/{topicId}','Manager\TopicController@dropTopic')->where(["topicId" => "[0-9]+"]);
+            Route::put('manager/topic/{topicId}/topOrder','Manager\TopicController@topOrder')->where(["topicId" => "[0-9]+"]);;
+            /** EatestLabel */
+            Route::post('manager/label','Manager\LabelController@addLabel');
+            Route::delete('manager/label/{labelId}','Manager\LabelController@dropLabel')->where(["labelId" => "[0-9]+"]);;
+
+            /** Eatest */
+            Route::put('/manager/eatest/{id}/ban', "Eatest\EvaluationController@update_status")->where(["id" => "[0-9]+"]);
+
+            /** Upick  */
+            Route::group(['middleware' => 'food.exist.check'], function () {
+                Route::put('/upick/{id}', "Eatest\FoodController@update")->where(["id" => "[0-9]+"]);
+                Route::delete('/upick/{id}', "Eatest\FoodController@delete")->where(["id" => "[0-9]+"]);
+            });
+
+            // 美食库区域
+            Route::post('/upick', "Eatest\FoodController@publish");
         });
 
-        // 美食库区域
-        Route::post('/upick', "Eatest\FoodController@publish");
+
+        //专栏权限
+        Route::group(['middleware' => 'manager.special.check'],function (){
+            /** EatestSpecial */
+            Route::post('Manager/special',"Eatest\SpecialController@addSpecial");
+            Route::get('Manager/special/list/{page}','Eatest\SpecialController@showSpecial');
+//            Route::put('manager/special/{specialId}','Eatest\SpecialController@updateSpecial');
+        });
     });
 
 
@@ -179,4 +199,29 @@ Route::namespace('Api')->group(function (){
 
 
     });
+
+
+        //测试区
+    //添加话题
+    Route::post('manager/topic','Manager\TopicController@addTopic');
+    //删除话题
+    Route::delete('manager/topic/{topicId}','Manager\TopicController@dropTopic');
+    //话题置顶
+    Route::put('manager/topic/{topicId}/topOrder','Manager\TopicController@topOrder');
+    //查看话题
+    Route::get('manager/topic/list/{page}','Manager\TopicController@showTopic');
+
+    //添加标签
+    Route::post('manager/label','Manager\LabelController@addLabel');
+    //删除标签
+    Route::delete('manager/label/{labelId}','Manager\LabelController@dropLabel');
+    //查看标签
+    Route::get('manager/label/list/{page}','Manager\LabelController@showLabel');
+
+//    //举报
+//    Route::post('manager/report','Manager\ReportController@addReport');
+//    //查看举报
+//    Route::get('manager/report/list/{page}','Manager\ReportController@showReport');
+//    //处理举报
+//    Route::put('manager/report/{reportId}','Manager\ReportController@handleReport');
 });
