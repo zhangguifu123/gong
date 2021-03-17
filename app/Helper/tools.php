@@ -217,3 +217,25 @@ function msg($code, $msg) {
 
     return json_encode($result, JSON_UNESCAPED_UNICODE);
 }
+
+
+/**
+ * request数据检查
+ * @param $request
+ * @param $params
+ * @return string
+ */
+function handleData($request,$params)
+{
+    //检查参数
+    if(!$request->has(array_keys($params))){
+        return msg(1, '缺失参数');
+    }
+    //提取数据
+    $data = $request->only(array_keys($params));
+    //检查数据
+    if(Validator::make($data,$params)->fails()){
+        return msg(3, '非法参数');
+    }
+    return $request;
+}
