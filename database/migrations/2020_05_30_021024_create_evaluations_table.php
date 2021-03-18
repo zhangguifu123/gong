@@ -20,7 +20,7 @@ class CreateEvaluationsTable extends Migration
             $table->string("nickname")->comment("昵称");
             $table->string("title")->comment("标题");
             $table->json("label")->comment("标签");
-            $table->json("topic")->default([])->comment("话题");
+            $table->integer("topic")->nullable()->comment("参与话题id");
             $table->string("content");
             $table->integer("top")->default(0)->comment("置顶");
 //            $table->string("location")->comment("地点");
@@ -30,7 +30,7 @@ class CreateEvaluationsTable extends Migration
             $table->integer("collections")->default(0)->comment("被收藏次数");
             $table->integer("like")->default(0)->comment("赞数");
 //            $table->integer("unlike")->default(0)->comment("踩数");
-            $table->boolean("status")->default(1)->comment("0下架 1上架");
+            $table->integer("status")->default(0)->comment("0待审核 1上架 2下架");
             $table->json("img")->comment("数组");
         });
     }

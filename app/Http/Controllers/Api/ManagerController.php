@@ -39,11 +39,11 @@ class ManagerController extends Controller
         if (!$manager) {
             return msg(2, "管理员帐号密码错误" . __LINE__);
         } else {
-            if(in_array($manager->deparment,['产品经理组','产品运营部','技术开发部'])){
-                $level = 0;
-            }else if (in_array($manager->deparment,['新闻通讯社'])){
-                $level = 1;
-            }
+//            if(in_array($manager->deparment,['产品经理组','产品运营部','技术开发部'])){
+//                $level = 0;
+//            }else if (in_array($manager->deparment,['新闻通讯社'])){
+//                $level = 1;
+//            }
 
             if ($manager['password'] == 'never_login') { //用户从未登录
                 //利用三翼api确定用户账号密码是否正确
@@ -53,7 +53,7 @@ class ManagerController extends Controller
                         'name' => $output['data']['name'],
                         'password' => md5($data['password']),
                         'stu_id' => $data['stu_id'],
-                        'level' => $level
+//                        'level' => $level
                     ];
                     $result = $manager->update($data);
 
@@ -99,7 +99,8 @@ class ManagerController extends Controller
     {
         $mod = [
             "stu_id" => ["string", "regex:/^20[\d]{8,10}$/"],
-            "department" => ["string"]
+            "department" => ["string"],
+            "level" => ['integer']
         ];
         $request = handleData($request,$mod);
         if(!is_object($request)){
@@ -115,7 +116,6 @@ class ManagerController extends Controller
 
         $data = $data + [
                 "name" => "从未登录",
-                "level" => 1,
                 "password" => 'never_login'
             ];
 

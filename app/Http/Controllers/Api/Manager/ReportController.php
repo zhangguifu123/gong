@@ -10,22 +10,19 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
 
+
+/**
+ * Class ReportController
+ * @package App\Http\Controllers\Api\Manager
+ *
+ * $handle = [
+ *      0 => 等待处理
+ *      1 => 无效举报
+ *      2 => 内容下架
+ * ]
+ */
 class ReportController extends Controller
 {
-//    const ReportType = array(
-//        '0' => 'eatest内容举报',
-//        '1' => 'eatest评论举报'
-//    );
-//    const ReportReason = array(
-//        '0' => '发布不良信息',
-//        '1' => '虚假信息'
-//    );
-//    const ReportResult = array(
-//        '0' => '内容删除',
-//        '1' => '已下架',
-//        '2' => '无效举报'
-//    );
-
 
     //举报评测
     public function addReport(Request $request){
@@ -37,41 +34,14 @@ class ReportController extends Controller
                 'type' => ['string'],
                 'describe' => ['string'],
                 'reason' => ['string'],
-                'prove' => ['json']
+//                'prove' => ['json']
             ];
             $request = handleData($request,$params);
             if(!is_object($request)){
                 return $request;
             }
             //获取数据
-            $data = $request->all()->toArray();
-//            $eatestId = $request->input('eatestId');
-//            $reportType = $request->input('reportType');
-//            $reportDescribe = $request->input('reportDescribe');
-//            $reportReason = $request->input('reportReason');
-//            $reportProve = $request->input('reportProve');
-//            //参数二次检查
-//            if($reportType != 'eatest内容举报' && $reportType != 'eatest评论举报'){
-//                return msg(3,'非法参数' . __LINE__);
-//            }
-//            if($reportReason != '发布不良信息' && $reportReason != '虚假信息'){
-//                return msg(3,'非法参数' . __LINE__);
-//            }
-//            //获取用户名
-//            $userName = User::find($request->input('userId'))->nickname;
-//            $targetName = User::find($request->input('targetId'))->nickname;
-
-            //添加举报
-
-//            $data = [
-//                'eatestId' => $eatestId,
-//                'userName' => $userName,
-//                'targetName' => $targetName,
-//                'reportType' => $reportType,
-//                'reportDescribe' => $reportDescribe,
-//                'reportReason' => $reportReason,
-//                'reportProve' => $reportProve
-//            ];
+            $data = $request->only(array_keys($params));
             $addReport = EatestReports::query()->create($data);
             if($addReport){
                 return msg(0,__LINE__);
@@ -82,9 +52,32 @@ class ReportController extends Controller
 
     //查看举报(已处理/未处理/分页处理)
     public function showReport(Request $request){
+//        //测试
+//        $data = User::query()->whereIn('id',[20,21])->get()->toArray();
+//        return $data;
+
+
+//        //检查数据格式
+//        $params = [
+//            'reportResult' => ['integer']
+//        ];
+//        $request = handleData($request,$params);
+//        if(!is_object($request)){
+//            return $request;
+//        }
+        //提取数据
+//        $reportResult = $request->input('reportResult');
+        $reportResult = $request->route('status');
+        if($reportResult == 0){
+            $reportResult = [0];
+        }else{
+            $reportResult = [1,2];
+        }
         //查看举报
+
         $offset = $request->route('page') * 5 - 5;
         $showReports = EatestReports::query()
+            ->whereIn('reportResult',$reportResult)
             ->limit(5)
             ->offset($offset)
             ->orderByDesc('created_at')
@@ -100,9 +93,10 @@ class ReportController extends Controller
 
     //处理举报
     public function handleReport(Request $request){
-        //检查数据格式
+//        return $request;
+//        检查数据格式
         $params = [
-            'reportResult' => ['string']
+            'reportResult' => ['integer']
         ];
         $request = handleData($request,$params);
         if(!is_object($request)){
@@ -110,9 +104,8 @@ class ReportController extends Controller
         }
         //提取数据
         $reportId = $request->route('reportId');
-        var_dump($reportId);
-        return "0";
-        $sqlData = $request->all();
+        $sqlData = $request->only(array_keys($params));
+//        return $sqlData;
         //处理举报
         $handleData = EatestReports::query()->find($reportId)->update($sqlData);
         if($handleData){

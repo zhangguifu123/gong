@@ -8,6 +8,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
+
+/**
+ * Class AppealController
+ * @package App\Http\Controllers\Api\Manager
+ * $handle = [
+ *      0 => 等待处理
+ *      1 => 无效申诉
+ *      2 => 内容还原
+ * ]
+ */
 class AppealController extends Controller
 {
     //添加申诉
@@ -26,7 +36,7 @@ class AppealController extends Controller
             return $request;
         }
         //提取数据
-        $data = $request->all();
+        $data = $request->only(array_keys($params));
         //添加申诉
         $addAppeal = EatestAppeal::query()->create($data);
         if ($addAppeal) {
@@ -39,17 +49,26 @@ class AppealController extends Controller
     //查看所有申诉
     public function showAppeal(Request $request)
     {
-        //函数测试
-//        $date = date('Y-m-d h:i');
-//        $db = DB::table('eatest_appeals')
-//            ->whereTime('updated_at',$date)
-//            ->get('created_at')->first()->created_at->timestamp;
-//        $db = ->created_at;
-//        return $db;
-
+        //检查数据格式
+//        $params = [
+//            'appealResult' => ['integer']
+//        ];
+//        $request = handleData($request,$params);
+//        if(!is_object($request)){
+//            return $request;
+//        }
+        //提取数据
+//        $appealResult = $request->input('appealResult');
+        $appealResult = $request->route('status');
+        if($appealResult == 0){
+            $appealResult = [0];
+        }else{
+            $appealResult = [1,2];
+        }
         //分页，每页10条
         $offset = $request->route("page") * 13 - 13;
         $showAppeal = EatestAppeal::query()
+            ->whereIn('appealResult',$appealResult)
             ->limit(13)
             ->offset($offset)
             ->orderByDesc("created_at")
@@ -68,18 +87,18 @@ class AppealController extends Controller
     {
         //检查数据格式
         $params = [
-            "handle" => ["string"],
+            "appealResult" => ["integer"],
         ];
         $request = handleData($request, $params);
         if (!is_object($request)) {
             return $request;
         }
         //提取数据
-        $appealResult = $request->input('handle');
+        $appealResult = $request->input('appealResult');
         $appealId = $request->route('appealId');
         //修改
         $sqlData = ['appealResult' => $appealResult];
-        $appeal = EatestAppeal::query()->find($request->route('id'))->update($sqlData);
+        $appeal = EatestAppeal::query()->find($appealId)->update($sqlData);
         if ($appeal) {
             $data = ['修改的申诉id' => $appealId];
             return msg(0, $data);

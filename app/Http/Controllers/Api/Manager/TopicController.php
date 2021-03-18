@@ -92,17 +92,6 @@ class TopicController extends Controller
             return msg(4, __LINE__);
         }
         $data = $showTopics->toArray();
-//        foreach ($showTopics as $showTopic){
-////            return $showTopic->eatestSum;
-//            $data[] =  array(
-//                //存疑
-//                'topicId' => $showTopic->id,
-//                'topicName' => $showTopic->topicName,
-//                'eatestSum' => $showTopic->eatestSum
-//            );
-//        }
-//        return \GuzzleHttp\json_decode($data);
-//        return $data;
         $message = [ 'total' => count($data), 'list' => $data];
         return msg(0, $message);
     }

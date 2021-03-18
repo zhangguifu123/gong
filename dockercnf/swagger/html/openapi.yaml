@@ -114,6 +114,9 @@ paths:
                 department:
                   description: 部门
                   type: string
+                level:
+                  description: 管理员等级
+                  type: integer
       responses:
         '200':
             description: 成功
@@ -131,6 +134,7 @@ paths:
         - manager
       parameters:
         - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/status'
       responses:
         '200':
           description: 获取成功
@@ -139,46 +143,51 @@ paths:
               schema:
                 type: object
                 properties:
-                  page:
-                    description: 页码
-                    type: integer
-                  limit:
-                    description: 每页限制
-                    type: integer
-                  total:
-                    description: 总页数
+                  # page:
+                  #   description: 页码
+                  #   type: integer
+                  # limit:
+                  #   description: 每页限制
+                  #   type: integer
+                  code:
+                    description: 状态码
                     type: integer
                   data:
-                    description: 美食评测列表
+                    description: 返回数据
+                    type: array
+                  total:
+                    description: 申诉总数
+                    type: integer
+                  list:
+                    description: 申诉列表
                     type: array
                     items:
                       $ref: '#/components/schemas/AppealMessage'
               example:
-                page: 1
-                limit: 1
-                total: 2
+                code: 0
+                status: "成功"
                 data:
-                  - id: 1,
-                    eatest_id: 1
-                    name: "张桂福"
-                    uid: 201805710601
-                    phone: "16630603363"
-                    content: "我是良民，为什么封我"
-                    handle: "邮箱回执"
-                    remarks: "他就是坏的"
-                    status: 0
-                    time: "2020-11-07 14:10:59"
-                    
-                  - id: 2
-                    eatest_id: 1
-                    name: "张桂福"
-                    uid: 201805710601
-                    phone: "16630603363"
-                    content: "我是良民，为什么封我"
-                    handle: "邮箱回执"
-                    remarks: "他就是坏的"
-                    status: 1
-                    time: "2020-11-07 14:10:56"
+                  total: 2
+                  list:
+                    - id: 1,
+                      eatestId: 2
+                      userName: 啦啦啦
+                      type: eatest内容
+                      content: 金翰林螺蛳粉!!
+                      describe: 为什么禁言我
+                      appealResult: 0
+                      created_at: "2021-03-18T09:17:50.000000Z"
+                      updated_at: "2021-03-18T09:17:50.000000Z"
+                      
+                    - id: 2,
+                      eatestId: 3
+                      userName: 啦啦啦
+                      type: eatest内容
+                      content: 金翰林螺蛳粉!!
+                      describe: 为什么禁言我
+                      appealResult: 1
+                      created_at: "2021-03-18T09:17:50.000000Z"
+                      updated_at: "2021-03-18T09:17:50.000000Z"
         '403':
           $ref: '#/components/responses/InvalidProperties'
   /manager/report/list/{page}:
@@ -189,6 +198,7 @@ paths:
         - manager
       parameters:
         - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/status'
       responses:
         '200':
           description: 获取成功
@@ -197,58 +207,55 @@ paths:
               schema:
                 type: object
                 properties:
-                  page:
-                    description: 页码
-                    type: integer
-                  limit:
-                    description: 每页限制
-                    type: integer
-                  total:
-                    description: 总页数
+                  # page:
+                  #   description: 页码
+                  #   type: integer
+                  # limit:
+                  #   description: 每页限制
+                  #   type: integer
+                  code:
+                    description: 状态码
                     type: integer
                   data:
-                    description: 美食评测列表
+                    description: 返回数据
+                    type: array
+                  total:
+                    description: 管理员总数
+                    type: integer
+                  list:
+                    description: 管理员列表
                     type: array
                     items:
                       $ref: '#/components/schemas/ReportMessage'
               example:
-                page: 1
-                limit: 1
-                total: 2
+                code: 0
+                status: "成功"
                 data:
-                  - id: 1,
-                    eatest_id: 1
-                    reason: "涉嫌抄袭"
-                    uid: 201805710601
-                    phone: "166xxxx1133"
-                    content: "他不是良民，把他封了"
-                    img: 
-                      - 图片链接
-                      - 图片链接
-                      - 图片链接
-                    remarks:  阿吧啊吧啊吧
-                    status: 0
-                    fromId: 1
-                    toId: 2
-                    reporter: 张狗蛋
-                    time: "2020-11-07 14:10:59"
-                    
-                  - id: 2
-                    eatest_id: 1
-                    reason: "涉嫌抄袭"
-                    uid: 201805710601
-                    phone: "166xxxx1133"
-                    content: "他不是良民，把他封了"
-                    img: 
-                      - 图片链接
-                      - 图片链接
-                      - 图片链接
-                    remarks:  阿吧啊吧啊吧
-                    status: 0
-                    fromId: 1
-                    toId: 2
-                    reporter: 张狗蛋
-                    time: "2020-11-07 14:10:59"
+                  total: 2
+                  list:
+                    - id: 1,
+                      eatestId: 2
+                      userName: 啦啦啦
+                      targetName: 哈哈哈
+                      type: eatest内容举报
+                      describe: 他ghs
+                      reason: 发布不良信息
+                      prove: {'图片url'}
+                      reportResult: 1
+                      created_at: "2021-03-18T09:17:50.000000Z"
+                      updated_at: "2021-03-18T09:17:50.000000Z"
+                      
+                    - id: 2,
+                      eatestId: 3
+                      userName: 啦啦啦
+                      targetName: 哈哈哈
+                      type: eatest内容举报
+                      describe: 他ghs
+                      reason: 发布不良信息
+                      prove: {'图片url'}
+                      reportResult: 1
+                      created_at: "2021-03-18T09:17:50.000000Z"
+                      updated_at: "2021-03-18T09:17:50.000000Z"
         '403':
           $ref: '#/components/responses/InvalidProperties'
   /manager/list:
@@ -873,6 +880,121 @@ paths:
   #               $ref: '#/components/schemas/UserInfo'
   #       '403':
   #         $ref: '#/components/responses/NotAuthorization'
+  /topic/{page}:
+    get:
+      summary: 话题列表
+      operationId: TopicList
+      tags:
+        - user
+      parameters:
+        - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  # page:
+                  #   description: 页码
+                  #   type: integer
+                  # limit:
+                  #   description: 每页限制
+                  #   type: integer
+                  code:
+                    description: 状态码
+                    type: integer
+                  data:
+                    description: 返回数据
+                    type: array
+                  total:
+                    description: 当页话题总数
+                    type: integer
+                  list:
+                    description: 话题列表
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TopicMessage'
+              example:
+                code: 0
+                status: "成功"
+                data:
+                  total: 2
+                  list:
+                    - id: 1,
+                      created_at: "2021-03-18T09:17:50.000000Z"
+                      updated_at: "2021-03-18T09:17:50.000000Z"
+                      topicName: 金翰林螺蛳粉
+                      eatestSum: 3
+                      isTop: 0
+                      
+                    - id: 2,
+                      created_at: "2021-03-18T09:17:50.000000Z"
+                      updated_at: "2021-03-18T09:17:50.000000Z"
+                      topicName: 金翰林螺蛳粉
+                      eatestSum: 3
+                      isTop: 1
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
+  /label:
+    get:
+      summary: 标签列表
+      operationId: LabelList
+      tags:
+        - user
+      parameters:
+        - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  # page:
+                  #   description: 页码
+                  #   type: integer
+                  # limit:
+                  #   description: 每页限制
+                  #   type: integer
+                  code:
+                    description: 状态码
+                    type: integer
+                  data:
+                    description: 返回数据
+                    type: array
+                  total:
+                    description: 当页标签总数
+                    type: integer
+                  list:
+                    description: 标签列表
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LabelMessage'
+              example:
+                code: 0
+                status: "成功"
+                data:
+                  total: 2
+                  list:
+                    - id: 1,
+                      created_at: "2021-03-18T09:17:50.000000Z"
+                      updated_at: "2021-03-18T09:17:50.000000Z"
+                      labelName: 好吃的
+                      UsageTime: 标签使用次数 
+                      isTop: 0
+                      
+                    - id: 2,
+                      created_at: "2021-03-18T09:17:50.000000Z"
+                      updated_at: "2021-03-18T09:17:50.000000Z"
+                      labelName: 好玩的
+                      UsageTime: 标签使用次数 
+                      isTop: 1
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
+
   '/gulu/list/{page}':
     get:
       summary: 咕噜列表
@@ -4163,6 +4285,14 @@ components:
       schema:
         type: integer
         example: 1
+    status:
+      name: status
+      description: 状态
+      required: true
+      in: path
+      schema:
+        type: integer
+        example: 0
     order:
       name: order
       description: 数据排序依据
@@ -4634,6 +4764,68 @@ components:
             description: 发布时间
             type: string
             example: "020-08-24 18:48:16"
+    TopicMessage:
+      description: 话题列表
+      type: array
+      items:
+        description: 单条信息
+        type: object
+        properties:
+          id:
+            description: 话题id
+            type: integer
+            example: 1
+          topicName:
+            description: 话题名称
+            type: string
+            example: 金翰林螺蛳粉
+          eatestSum:
+            description: 话题发帖数
+            type: integer
+            example: 3
+          isTop:
+            description: 是否置顶
+            type: boolean
+            example: 0
+          created_at:
+            description: 话题创建时间
+            type: string
+            example: "2021-03-18T09:17:50.000000Z"
+          updated_at:
+            description: 话题修改时间
+            type: string
+            example: "2021-03-18T09:17:50.000000Z"
+    LabelMessage:
+      description: 标签列表
+      type: array
+      items:
+        description: 单条信息
+        type: object
+        properties:
+          id:
+            description: 标签id
+            type: integer
+            example: 1
+          labelName:
+            description: 标签名称
+            type: string
+            example: 好吃
+          UsageTime:
+            description: 标签使用次数
+            type: integer
+            example: 200
+          type:
+            description: 标签类型
+            type: string
+            example: 分类
+          created_at:
+            description: 标签创建时间
+            type: string
+            example: "2021-03-18T09:17:50.000000Z"
+          updated_at:
+            description: 标签修改时间
+            type: string
+            example: "2021-03-18T09:17:50.000000Z"
     AppealMessage:
       description: 申诉评测列表
       type: array
