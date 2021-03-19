@@ -8,7 +8,7 @@ class Manager extends Model
 {
     //
     protected $fillable = [
-        'name', 'stu_id', 'password', 'level'
+        'name', 'stu_id', 'password', 'department' , 'level'
     ];
     public function info()
     {
@@ -21,6 +21,7 @@ class Manager extends Model
             'id'     => $this->id,
             'name' => $this->nickname,
             'stu_id' => $this->stu_id,
+            'dapartment' => $this->department,
             'level' => $level[$this->level]
         ];
     }

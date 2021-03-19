@@ -47,12 +47,17 @@ Route::namespace('Api')->group(function (){
             /** user */
             Route::get('/manager/user/list/{page}','Manager\UserController@showUser')->where(["page" => "[0-9]+"]);
             Route::put('/manager/user/{id}/status','Manager\UserController@updateStatus')->where(["id" => "[0-9]+"]);
+            /** EatestReview */
+//            Route::get('manager/eatestReview/list/{page}/evaluation','Manager\ReviewController@getEvaluationList')->where(["page" => "[0-9]+"]);
+//            Route::get('manager/eatestReview/list/{page}/reply','Manager\ReviewController@getReplyList')->where(["page" => "[0-9]+"]);
+            Route::post('manager/eatestReview/{id}/evaluationStatus','Manager\ReviewController@updateEvaluationStatus')->where(["id" => "[0-9]+"]);
+            Route::post('manager/eatestReview/{id}/replyStatus','Manager\ReviewController@updateReplyStatus')->where(["id" => "[0-9]+"]);
             /** EatestReport */
             Route::put('/manager/report/{reportId}',"Manager\ReportController@handleReport")->where(["reportId" => "[0-9]+"]);
-            Route::get('/manager/report/list/{page}', "Manager\ReportController@showReport")->where(["page" => "[0-9]+"]);
+            Route::get('/manager/report/list/{page}/{status}', "Manager\ReportController@showReport")->where(["page" => "[0-9]+", "reportResult" => "[0-9+]"]);
             /** EatestAppeal */
             Route::put('/manager/appeal/{appealId}',"Manager\AppealController@handleAppeal")->where(["appealId" => "[0-9]+"]);
-            Route::get('/manager/appeal/list/{page}', "Manager\AppealController@showAppeal")->where(["page" => "[0-9]+"]);
+            Route::get('/manager/appeal/list/{page}/{status}', "Manager\AppealController@showAppeal")->where(["page" => "[0-9]+"]);
             /** EatestTopic */
             Route::post('/manager/topic','Manager\TopicController@addTopic');
             Route::delete('manager/topic/{topicId}','Manager\TopicController@dropTopic')->where(["topicId" => "[0-9]+"]);
@@ -61,8 +66,8 @@ Route::namespace('Api')->group(function (){
             Route::post('manager/label','Manager\LabelController@addLabel');
             Route::delete('manager/label/{labelId}','Manager\LabelController@dropLabel')->where(["labelId" => "[0-9]+"]);;
 
-            /** Eatest */
-            Route::put('/manager/eatest/{id}/ban', "Eatest\EvaluationController@update_status")->where(["id" => "[0-9]+"]);
+//            /** Eatest */
+//            Route::put('/manager/eatest/{id}/ban', "Eatest\EvaluationController@updateStatus")->where(["id" => "[0-9]+"]);
 
             /** Upick  */
             Route::group(['middleware' => 'food.exist.check'], function () {
@@ -78,8 +83,8 @@ Route::namespace('Api')->group(function (){
         //专栏权限
         Route::group(['middleware' => 'manager.special.check'],function (){
             /** EatestSpecial */
-            Route::post('Manager/special',"Eatest\SpecialController@addSpecial");
-            Route::get('Manager/special/list/{page}','Eatest\SpecialController@showSpecial');
+            Route::post('manager/special',"Eatest\SpecialController@addSpecial");
+            Route::get('manager/special/list/{page}','Eatest\SpecialController@showSpecial');
 //            Route::put('manager/special/{specialId}','Eatest\SpecialController@updateSpecial');
         });
     });
@@ -97,11 +102,21 @@ Route::namespace('Api')->group(function (){
         Route::get('focus/{uid}',"Eatest\FocusController@get_user_focus_list");
         /** 推送 */
         Route::post('push/toSingle',"PushSdk\ToSingleController@pushMessage");
-        /** Tip */
-        Route::post('/tip',"Manager\TipController@upload");
+//        /** Tip */
+//        Route::post('/tip',"Manager\TipController@upload");
+//
+//        /** Appeal */
+//        Route::post('/appeal',"Manager\AppealController@upload");
 
+        /** Report */
+        Route::post('/report',"Manager\ReportController@addReport");
         /** Appeal */
-        Route::post('/appeal',"Manager\AppealController@upload");
+        Route::post('/appeal',"Manager\AppealController@addAppeal");
+
+        /** EatestLabel */
+        Route::get('/label',"Manager\LabelController@showLabel");
+        /** EatestTopic */
+        Route::get('/topic/{page}',"Manager\TopicController@showTopic");
 
         /** Ecard*/
         Route::post('/ecard/binding',"Ecard\ConsumeController@binding");
@@ -201,22 +216,22 @@ Route::namespace('Api')->group(function (){
     });
 
 
-        //测试区
-    //添加话题
-    Route::post('manager/topic','Manager\TopicController@addTopic');
-    //删除话题
-    Route::delete('manager/topic/{topicId}','Manager\TopicController@dropTopic');
-    //话题置顶
-    Route::put('manager/topic/{topicId}/topOrder','Manager\TopicController@topOrder');
-    //查看话题
-    Route::get('manager/topic/list/{page}','Manager\TopicController@showTopic');
-
-    //添加标签
-    Route::post('manager/label','Manager\LabelController@addLabel');
-    //删除标签
-    Route::delete('manager/label/{labelId}','Manager\LabelController@dropLabel');
-    //查看标签
-    Route::get('manager/label/list/{page}','Manager\LabelController@showLabel');
+//        //测试区
+//    //添加话题
+//    Route::post('manager/topic','Manager\TopicController@addTopic');
+//    //删除话题
+//    Route::delete('manager/topic/{topicId}','Manager\TopicController@dropTopic');
+//    //话题置顶
+//    Route::put('manager/topic/{topicId}/topOrder','Manager\TopicController@topOrder');
+//    //查看话题
+//    Route::get('manager/topic/list/{page}','Manager\TopicController@showTopic');
+//
+//    //添加标签
+//    Route::post('manager/label','Manager\LabelController@addLabel');
+//    //删除标签
+//    Route::delete('manager/label/{labelId}','Manager\LabelController@dropLabel');
+//    //查看标签
+//    Route::get('manager/label/list/{page}','Manager\LabelController@showLabel');
 
 //    //举报
 //    Route::post('manager/report','Manager\ReportController@addReport');

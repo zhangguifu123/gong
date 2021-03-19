@@ -91,19 +91,17 @@ class EvaluationController extends Controller
         return msg(4, __LINE__);
     }
 
-    //下架
-    public function update_status(Request $request)
+    //上架/下架
+    public function updateStatus(Request $request)
     {
         //检查是否存在数据格式
         $mod = ["status" => ["boolean"]];
-        if (!$request->has(array_keys($mod))) {
-            return msg(1, __LINE__);
+        $request = handleData($request,$mod);
+        if(!is_object($request)){
+            return $request;
         }
-        //数据格式是否正确
+        //提取数据
         $data = $request->only(array_keys($mod));
-        if (Validator::make($data, $mod)->fails()) {
-            return msg(3, '数据格式错误' . __LINE__);
-        };
         //修改
         $evaluation = Evaluation::query()->find($request->route('id'));
         $evaluation = $evaluation->update($data);
@@ -145,7 +143,7 @@ class EvaluationController extends Controller
         $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$eatest)
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
-                "evaluations.id", "users.nickname as publisher_name", "label", "views","evaluations.like",
+                "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
                 "collections", "top", "img", "title", "evaluations.created_at as time"
             ])->toArray();
 
@@ -159,7 +157,7 @@ class EvaluationController extends Controller
         $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$like)
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
-                "evaluations.id", "users.nickname as publisher_name", "label", "views","evaluations.like",
+                "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
                 "collections", "top", "img", "title", "evaluations.created_at as time"
             ])->toArray();
 
@@ -173,7 +171,7 @@ class EvaluationController extends Controller
         $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$collection)
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
-            "evaluations.id", "users.nickname as publisher_name", "label", "views","evaluations.like",
+            "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
             "collections", "top", "img", "title", "evaluations.created_at as time"
         ])->toArray();
 
@@ -199,7 +197,7 @@ class EvaluationController extends Controller
             ->where('evaluations.status','=','1')
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
-                "evaluations.id", "users.nickname as publisher_name", "label", "views","evaluations.like",
+                "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
                 "collections", "top", "img", "title", "users.avatar","evaluations.created_at as time"
             ])->toArray();
 
@@ -246,7 +244,7 @@ class EvaluationController extends Controller
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->where('evaluations.status','=','1')
             ->get([
-                "evaluations.id", "users.nickname as publisher_name", "label", "views","evaluations.like",
+                "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
                 "collections", "top", "img", "title", "users.avatar","evaluations.created_at as time"
             ])
             ->toArray();
