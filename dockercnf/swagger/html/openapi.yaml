@@ -126,7 +126,61 @@ paths:
                   $ref: '#/components/schemas/Success'
         '403':
           $ref: '#/components/responses/InvalidProperties'
-  /manager/appeal/list/{page}:
+  /manager/label:
+    post:
+      summary: 标签添加
+      # operationId: addManager
+      tags:
+        - manager
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                labelName:
+                  description: 标签名
+                  type: string
+                type:
+                  description: 标签类型
+                  type: string
+      responses:
+        '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Success'
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
+  /manager/topic:
+    post:
+      summary: 话题添加
+      # operationId: addManager
+      tags:
+        - manager
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                topicName:
+                  description: 话题名
+                  type: string
+                isTop:
+                  description: 是否置顶
+                  type: boolean
+      responses:
+        '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Success'
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
+  /manager/appeal/list/{page}/{status}:
     get:
       summary: 申诉列表
       operationId: AppealList
@@ -190,7 +244,7 @@ paths:
                       updated_at: "2021-03-18T09:17:50.000000Z"
         '403':
           $ref: '#/components/responses/InvalidProperties'
-  /manager/report/list/{page}:
+  /manager/report/list/{page}/{status}:
     get:
       summary: 举报列表
       operationId: ReportList
@@ -388,7 +442,7 @@ paths:
               type: object
               properties:
                 status:
-                  description: 用户状态
+                  description: 用户状态 0待审核 1上架 2下架
                   type: integer
                   example: 0
       responses:
@@ -398,34 +452,82 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/Success'
-  /manager/appeal/{id}:
+  /manager/appeal/{appealId}:
     put:
       parameters:
-        - name: id
+        - name: appealId
           description: 申诉id
           in: path
           required: true
           schema:
-            type: string
+            type: integer
       tags:
         - manager
       summary: 处理申诉
-      description: 三翼通行证登录
-      security: []
+      # description: 三翼通行证登录
+      # security: []
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                handle:
-                  description: 处理方式
-                  type: string
-                  example: 邮箱回执
-                remarks:
-                  description: 备注
-                  type: string
-                  example: 确实错误，必须下架
+                appealResult:
+                  description: 处理结果
+                  type: integer
+                  example: 1
+      responses:
+        '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Success'
+  /manager/report/{reportId}:
+    put:
+      parameters:
+        - name: reportiId
+          description: 举报id
+          in: path
+          required: true
+          schema:
+            type: integer
+      tags:
+        - manager
+      summary: 处理举报
+      # description: 三翼通行证登录
+      # security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reportResult:
+                  description: 举报结果
+                  type: integer
+                  example: 1
+      responses:
+        '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Success'
+  /manager/topic/{topicId}/topOrder:
+    put:
+      parameters:
+        - name: topicId
+          description: 话题id
+          in: path
+          required: true
+          schema:
+            type: integer
+      tags:
+        - manager
+      summary: 话题置顶
+      # description: 三翼通行证登录
+      # security: []
       responses:
         '200':
             description: 成功
@@ -471,6 +573,50 @@ paths:
       tags:
         - manager
       summary: 管理员删除
+      responses:
+        '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Success'
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
+  /manager/label/{labelId}:
+    parameters:
+    - name: labelId
+      description: 标签id
+      in: path
+      required: true
+      schema:
+        type: integer
+      example: 1
+    delete:
+      tags:
+        - manager
+      summary: 标签删除
+      responses:
+        '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Success'
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
+  /manager/topic/{topicId}:
+    parameters:
+    - name: topicId
+      description: 话题id
+      in: path
+      required: true
+      schema:
+        type: integer
+      example: 1
+    delete:
+      tags:
+        - manager
+      summary: 话题删除
       responses:
         '200':
             description: 成功
@@ -633,39 +779,29 @@ paths:
                   description: 评测id
                   type: integer
                   example: 1
-                reason:
-                  description: 原因
+                userName:
+                  description: 举报者用户名
                   type: string
-                  example: 涉嫌抄袭
+                  example: 啦啦啦
+                targetName:
+                  description: 被举报者用户名
+                  type: string
+                  example: 哈哈哈
+                type:
+                  description: 举报类型
+                  type: string
+                  example: eatest评论举报
                 content:
-                  description: 举报内容
+                  description: 举报描述/内容
                   type: string
-                  example: "他不是良民，必须要禁它？？"
-                img:
-                  description: 图片
-                  type: array
-                  example:
-                    - 这是图片链接
-                    - 这是图片链接
-                    - 这是图片链接
-                  items:
-                    type: string
-                fromId:
-                  description: 举报人id
-                  type: integer
-                  example: 2
-                toId:
-                  description: 被举报人id
-                  type: integer
-                  example: 1
-                reporter:
-                  description: 举报人姓名
+                  example: "他不是良民，必须要禁它"
+                reason:
+                  description: 举报理由
                   type: string
-                  example: 张三
-                
+                  example: 发布不良信息             
       responses:
         '200':
-            description: 成功
+            description: 举报成功
             content:
               application/json:
                 schema:
@@ -704,35 +840,86 @@ paths:
                   example: "我是良民，为什么禁我？？"
       responses:
         '200':
-          description: 登录成功
+          description: 申诉成功
           content:
             application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    description: 状态码
-                    type: integer
-                  status:
-                    description: 状态
-                    type: string
-                    example: 成功
-                  data:
-                    description: 返回数据
-                    type: string
-                    example:  "http://zgf.jsky31.cn/storage/avatar/1bc5b36f5bd71e32c89fb7b48063b06c.jpg"
-          links:
-            me:
-              operationId: 获取用户信息
-              parameters:
-                Authentication: '$response.body#/token'
-        '403':
-          description: 登录失败
+                schema:
+                  $ref: '#/components/schemas/Success'
+  /CourseGroup/{id}:
+    post:
+      tags:
+        - user
+      summary: 创建小组
+      description: 创建小组
+      parameters:
+        - name: id
+          description: 创建人id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          form-data:
+            schema:
+              type: object
+              properties:
+                Founder:
+                  description: 创建人姓名
+                  type: string
+                  example: 啦啦啦
+                groupName:
+                  description: 小组名称
+                  type: string
+                  example: 技术开发部
+                sharingCode:
+                  description: 分享码
+                  type: string
+                  example: SKY21235
+      responses:
+        '200':
+          description: 创建成功
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    
+                schema:
+                  $ref: '#/components/schemas/Success'
+    delete:
+      tags:
+        - user
+      summary: 删除小组
+      description: 删除小组
+      parameters:
+        - name: id
+          description: 小组id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          form-data:
+            schema:
+              type: object
+              properties:
+                Founder:
+                  description: 创建人姓名
+                  type: string
+                  example: 啦啦啦
+                groupName:
+                  description: 小组名称
+                  type: string
+                  example: 技术开发部
+                sharingCode:
+                  description: 分享码
+                  type: string
+                  example: SKY21235
+      responses:
+        '200':
+          description: 删除成功
+          content:
+            application/json:
+                schema:
+                  $ref: '#/components/schemas/Success'
   /nickname:
     put:
       tags:
@@ -749,6 +936,74 @@ paths:
                   description: 昵称
                   type: string
                   example: 我是你的小甜甜
+      responses:
+        '200':
+          description: 登录成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+  /CourseGroup/{sharingCode}/member/{id}:
+    post:
+      tags:
+        - user
+      summary: 加入小组
+      description: 加入小组
+      parameters:
+         - name: sharingCode
+           description: 小组分享码
+           in: path
+           required: true
+           schema:
+            type: string
+         - name: id
+           description: 成员id
+           in: path
+           required: true
+           schema:
+            type: integer
+      responses:
+        '200':
+          description: 登录成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+  /CourseGroup/{groupId}/member/{memberId}:
+    delete:
+      tags:
+        - user
+      summary: 移除小组成员
+      description: 移除小组成员
+      parameters:
+         - name: groupId
+           description: 小组id
+           in: path
+           required: true
+           schema:
+            type: integer
+         - name: memberId
+           description: 成员id
+           in: path
+           required: true
+           schema:
+            type: string
       responses:
         '200':
           description: 登录成功
@@ -992,6 +1247,181 @@ paths:
                       labelName: 好玩的
                       UsageTime: 标签使用次数 
                       isTop: 1
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
+  /CourseGroup/list/{id}/created:
+    get:
+      summary: 我创建的小组
+      operationId: createdGroupList
+      tags:
+        - user
+      parameters:
+        - name: id
+          description: 创建人id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  # page:
+                  #   description: 页码
+                  #   type: integer
+                  # limit:
+                  #   description: 每页限制
+                  #   type: integer
+                  code:
+                    description: 状态码
+                    type: integer
+                  data:
+                    description: 返回数据
+                    type: array
+                  total:
+                    description: 小组总数
+                    type: integer
+                  list:
+                    description: 小组列表
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CourseGroupMessage'
+              example:
+                code: 0
+                status: "成功"
+                data:
+                  total: 2
+                  list:
+                    - id: 1,
+                      created_at: "2021-03-18T09:17:50.000000Z"
+                      updated_at: "2021-03-18T09:17:50.000000Z"
+                      groupName: 技术开发部
+                      memberSum: 2
+                      member: 
+                        - 1
+                        - 2
+                      Founder: 啦啦啦
+                      sharingCode: SKY21235
+                      
+                    - id: 2,
+                      created_at: "2021-03-18T09:17:50.000000Z"
+                      updated_at: "2021-03-18T09:17:50.000000Z"
+                      groupName: 技术开发部
+                      memberSum: 2
+                      member: 
+                        - 1
+                        - 2
+                      Founder: 啦啦啦
+                      sharingCode: SKY21235
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
+  /CourseGroup/list/{id}/joined:
+    get:
+      summary: 我加入的小组
+      operationId: joinedGroupList
+      tags:
+        - user
+      parameters:
+        - name: id
+          description: 成员id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  # page:
+                  #   description: 页码
+                  #   type: integer
+                  # limit:
+                  #   description: 每页限制
+                  #   type: integer
+                  code:
+                    description: 状态码
+                    type: integer
+                  data:
+                    description: 返回数据
+                    type: array
+                  total:
+                    description: 小组总数
+                    type: integer
+                  list:
+                    description: 小组列表
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CourseGroupMessage'
+              example:
+                code: 0
+                status: "成功"
+                data:
+                  total: 2
+                  list:
+                    - id: 1,
+                      created_at: "2021-03-18T09:17:50.000000Z"
+                      updated_at: "2021-03-18T09:17:50.000000Z"
+                      groupName: 技术开发部
+                      memberSum: 2
+                      member: 
+                        - 1
+                        - 2
+                      Founder: 啦啦啦
+                      sharingCode: SKY21235
+                      
+                    - id: 2,
+                      created_at: "2021-03-18T09:17:50.000000Z"
+                      updated_at: "2021-03-18T09:17:50.000000Z"
+                      groupName: 技术开发部
+                      memberSum: 2
+                      member: 
+                        - 1
+                        - 2
+                      Founder: 啦啦啦
+                      sharingCode: SKY21235
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
+  /CourseGroup/sharingCode:
+    get:
+      summary: 获取分享码
+      operationId: sharingCode
+      tags:
+        - user
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  # page:
+                  #   description: 页码
+                  #   type: integer
+                  # limit:
+                  #   description: 每页限制
+                  #   type: integer
+                  code:
+                    description: 状态码
+                    type: integer
+                  data:
+                    description: 返回数据
+                    type: array
+              example:
+                code: 0
+                status: "成功"
+                data:
+                  total: 2
+                  list:
+                    - sharingCode: SKY21235
         '403':
           $ref: '#/components/responses/InvalidProperties'
 
@@ -4795,6 +5225,39 @@ components:
             description: 话题修改时间
             type: string
             example: "2021-03-18T09:17:50.000000Z"
+    CourseGroupMessage:
+      description: 小组列表
+      type: array
+      items:
+        description: 单条信息
+        type: object
+        properties:
+          id:
+            description: 小组id
+            type: integer
+            example: 1
+          groupName:
+            description: 小组名称
+            type: string
+            example: 技术开发部
+          memberSum:
+            description: 小组成员数
+            type: integer
+            example: 3
+          member:
+            description: 小组成员id
+            type: array
+            example: 
+              - 1
+              - 2
+          created_at:
+            description: 小组创建时间
+            type: string
+            example: "2021-03-18T09:17:50.000000Z"
+          updated_at:
+            description: 小组修改时间
+            type: string
+            example: "2021-03-18T09:17:50.000000Z"
     LabelMessage:
       description: 标签列表
       type: array
@@ -4827,48 +5290,40 @@ components:
             type: string
             example: "2021-03-18T09:17:50.000000Z"
     AppealMessage:
-      description: 申诉评测列表
+      description: 申诉列表
       type: array
       items:
         description: 单条信息
         type: object
         properties:
           id:
-            description: 编号
-            type: string
+            description: 申诉id
+            type: integer
             example: 1
-          name:
-            description: 姓名
+          eatest_id:
+            description: 评测id
             type: string
-            example: 张三
-          uid:
-            description: 学号
-            type: integer
-            example: 201805710601
-          phone:
-            description: 电话
-            type: integer
-            example: xxx
+            example: integer
+          userName:
+            description: 申诉者用户名
+            type: string
+            example: 啦啦啦
+          type:
+            description: 申诉类型
+            type: string
+            example: eatest评论申诉
           content:
-            description: 申诉理由
+            description: 申诉内容/详情
             type: string
-            example: 我是良民，为什么封我
-          handle:
-            description: 处理方式
+            example: 金翰林螺蛳粉!!
+          describe:
+            description: 申诉描述
             type: string
-            example: 邮箱回执
-          remarks: 
-            description: 备注
-            type: string
-            example: 阿吧阿吧啊吧
-          status:
-            description: 0未处理 1已处理
-            type: boolean
-            example: 0
-          time:
-            description: 发布时间
-            type: string
-            example: "020-08-24 18:48:16"
+            example: 为什么封我
+          reportResult:
+            description: 处理结果 0未处理 1已处理
+            type: integer
+            example: 0   
     ReportMessage:
       description: 举报评测列表
       type: array
@@ -4877,53 +5332,43 @@ components:
         type: object
         properties:
           id:
-            description: 编号
-            type: string
+            description: 举报id
+            type: integer
             example: 1
           eatest_id:
             description: 评测id
             type: string
             example: integer
+          userName:
+            description: 举报者用户名
+            type: string
+            example: 啦啦啦
+          targetName:
+            description: 被举报者用户名
+            type: string
+            example: 哈哈哈
+          type:
+            description: 举报类型
+            type: string
+            example: eatest评论举报
+          describe:
+            description: 举报描述/评论
+            type: string
+            example: ghs,封他!
           reason:
-            description: 举报原因
+            description: 举报理由
             type: string
-            example: 涉嫌抄袭
-          img:
-            description: 图片链接 
+            example: 虚假信息
+          prove:
+            description: 举报证明
             type: array
-            example: 
-              - 图片链接
-              - 图片链接
-            items:
-              type: string 
-          status:
-            description: 0未处理 1已处理
-            type: boolean
-            example: 1
-          content:
-            description: 申诉理由
-            type: string
-            example: 我是良民，为什么封我
-          fromId:
-            description: 举报人
+            example:
+              - http://test.gong.com/stroage/images/768eaa0d061ec924f2e8b03bab598240.jpg
+              - http://test.gong.com/stroage/images/546bsa0dsadec9dsr238b03jsi523413.jpg
+          reportResult:
+            description: 处理结果 0未处理 1已处理
             type: integer
-            example: 2
-          toId:
-            description: 被举报人
-            type: integer
-            example: 3
-          reporter:
-            description: 举报人姓名
-            type: string
-            example: 张三
-          remarks: 
-            description: 备注
-            type: string
-            example: 阿吧阿吧啊吧
-          time:
-            description: 发布时间
-            type: string
-            example: "020-08-24 18:48:16"        
+            example: 0      
     ManagerMessage:
       description: 管理员列表
       type: array

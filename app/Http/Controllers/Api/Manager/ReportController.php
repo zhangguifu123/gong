@@ -70,7 +70,7 @@ class ReportController extends Controller
         $reportResult = $request->route('status');
         if($reportResult == 0){
             $reportResult = [0];
-        }else{
+        }else if($reportResult == 1){
             $reportResult = [1,2];
         }
         //查看举报
