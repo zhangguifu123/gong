@@ -64,7 +64,8 @@ Route::namespace('Api')->group(function (){
             Route::put('manager/topic/{topicId}/topOrder','Manager\TopicController@topOrder')->where(["topicId" => "[0-9]+"]);;
             /** EatestLabel */
             Route::post('manager/label','Manager\LabelController@addLabel');
-            Route::delete('manager/label/{labelId}','Manager\LabelController@dropLabel')->where(["labelId" => "[0-9]+"]);;
+            Route::delete('manager/label/{labelId}','Manager\LabelController@dropLabel')->where(["labelId" => "[0-9]+"]);
+
 
 //            /** Eatest */
 //            Route::put('/manager/eatest/{id}/ban', "Eatest\EvaluationController@updateStatus")->where(["id" => "[0-9]+"]);
@@ -82,10 +83,11 @@ Route::namespace('Api')->group(function (){
 
         //专栏权限
         Route::group(['middleware' => 'manager.special.check'],function (){
-            /** EatestSpecial */
-            Route::post('manager/special',"Eatest\SpecialController@addSpecial");
-            Route::get('manager/special/list/{page}','Eatest\SpecialController@showSpecial');
-//            Route::put('manager/special/{specialId}','Eatest\SpecialController@updateSpecial');
+            /** EatestSpecialColumn */
+            Route::post('manager/specialColumn','Manager\SpecialColumnController@add');
+            Route::get('manager/specialColumn','Manager\SpecialColumnController@getList');
+            Route::get('manager/specialColumn/{id}','Manager\SpecialColumnController@getListOne')->where(["id" => "[0-9]+"]);
+            Route::delete('manager/specialColumn{id}','Manager\SpecialColumnController@delete')->where(["id" => "[0-9]+"]);
         });
     });
 
@@ -94,7 +96,7 @@ Route::namespace('Api')->group(function (){
     Route::post('push/send',"PushSdk\ToSingleController@send");
 
     /** 用户区 */
-    Route::group(['middleware' => 'login.check'], function () {
+//    Route::group(['middleware' => 'login.check'], function () {
         /** 关注 */
 
         Route::post('focus',"Eatest\FocusController@focus")->middleware(['focus.exist.check']);
@@ -107,6 +109,17 @@ Route::namespace('Api')->group(function (){
 //
 //        /** Appeal */
 //        Route::post('/appeal',"Manager\AppealController@upload");
+
+        /** 多人空课表 */
+        Route::post('/CourseGroup/{id}','jwxt\CourseGroupController@addGroup')->where(['id' => '[0-9]+']);
+//        Route::get('/CourseGroup/list/{Founder}/created','jwxt\CourseGroupController@getCreatedGroupList')->where(['Founder' => '[0-9]+']);
+        Route::get('/CourseGroup/list/{id}/created','jwxt\CourseGroupController@getCreatedGroupList')->where(['id' => '[0-9]+']);
+        Route::get('/CourseGroup/list/{id}/joined','jwxt\CourseGroupController@getJoinedGroupList')->where(['id' => '[0-9]+']);
+        Route::delete('/CourseGroup/{id}','jwxt\CourseGroupController@deleteGroup')->where(['id' => '[0-9]+']);
+        Route::post('/CourseGroup/{sharingCode}/member/{id}','jwxt\CourseGroupController@joinGroup')->where(['sharingCode' => '[A-Z0-9]+','memberId' => '[0-9]+']);      //
+        Route::delete('/CourseGroup/{groupId}/member/{memberId}','jwxt\CourseGroupController@deleteGroupMember')->where(['groupId' => '[0-9]+' , 'memberId' => '[0-9]+']);
+        Route::get('CourseGroup/sharingCode','jwxt\CourseGroupController@createSharingCode');
+        Route::get('CourseGroup/member/{id}','jwxt\CourseGroupController@getMemberList');
 
         /** Report */
         Route::post('/report',"Manager\ReportController@addReport");
@@ -213,7 +226,7 @@ Route::namespace('Api')->group(function (){
 
 
 
-    });
+//    });
 
 
 //        //测试区
