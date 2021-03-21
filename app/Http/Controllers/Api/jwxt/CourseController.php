@@ -75,7 +75,7 @@ class CourseController extends Controller
         $mod = [
             "course"      => ["string"],
             "location"    => ["string", "max:50"],
-            "teache"  => ["string", "max:50"],
+            "teacher"  => ["string", "max:50"],
             "week_string"  => ["string", "max:50"],
             "week"  => ["json"],
             "section_length"  => ["string"],
