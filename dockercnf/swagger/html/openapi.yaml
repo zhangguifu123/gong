@@ -2322,36 +2322,36 @@ paths:
                 code: 0
                 status: 成功
                 data:
-                  - id: 1
-                    course: 高等代数
-                    location: 逸夫楼211
-                    teacher: 谢勇
-                    week: [1,2,3]
-                    week_string: 第1-3周
-                    section_length: 2
-                    section_start: 1
-                    end_start: 2
-                    day: 1
-                  - id: 2
-                    course: 高等代数
-                    location: 逸夫楼211
-                    teacher: 谢勇
-                    week: [5,6,7,8,9]
-                    week_string: 第5-9周
-                    section_length: 2
-                    section_start: 1
-                    end_start: 2
-                    day: 1
-                  - id: 3
-                    course: 计算机网络
-                    location: 逸夫楼210
-                    teacher: 谢勇
-                    week: [5,6,7]
-                    week_string: 第5-7周
-                    section_length: 4
-                    section_start: 5
-                    end_start: 8
-                    day: 3
+                  1:
+                    1:
+                      - id: 1
+                        course: 高等代数
+                        location: 逸夫楼211
+                        teacher: 谢勇
+                        week: [1,2,3]
+                        week_string: 第1-3周
+                        section_start: 1
+                        end_start: 2
+                    3:
+                      - id: 3
+                        course: 计算机网络
+                        location: 逸夫楼210
+                        teacher: 谢勇
+                        week: [5,6,7]
+                        week_string: 第5-7周
+                        section_start: 5
+                        end_start: 6
+                  2:
+                    5:
+                      - id: 2
+                        course: 高等代数
+                        location: 逸夫楼211
+                        teacher: 谢勇
+                        week: [5,6,7,8,9]
+                        week_string: 第5-9周
+                        section_start: 7
+                        end_start: 9
+
         '401':
           $ref: '#/components/responses/NotAuthorization'
         '403':
@@ -2371,7 +2371,8 @@ paths:
           schema:
             type: string
       requestBody:
-        $ref: '#/components/requestBodies/UpdateCourseBody'
+        $ref: '#/components/requestBodies/CourseBody'
+        # $ref: '#/components/requestBodies/UpdateCourseBody'
       responses:
         '200':
           description: 成功
@@ -4264,17 +4265,9 @@ components:
                 description: 老师
                 example: 谢勇
               week:
-                type: string
+                type: array
                 description: 周次（详）
                 example: [1,2,3,4]
-              week_string:
-                type: string
-                description: 周次（详）
-                example: 第1-10周
-              section_length:
-                type: string
-                description: 课时长度
-                example: 2
               section_start:
                 type: string
                 description: 开始小节

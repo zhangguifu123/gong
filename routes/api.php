@@ -60,11 +60,11 @@ Route::namespace('Api')->group(function (){
             Route::get('/manager/appeal/list/{page}/{status}', "Manager\AppealController@showAppeal")->where(["page" => "[0-9]+"]);
             /** EatestTopic */
             Route::post('/manager/topic','Manager\TopicController@addTopic');
-            Route::delete('manager/topic/{topicId}','Manager\TopicController@dropTopic')->where(["topicId" => "[0-9]+"]);
-            Route::put('manager/topic/{topicId}/topOrder','Manager\TopicController@topOrder')->where(["topicId" => "[0-9]+"]);;
+            Route::delete('manager/topic/{id}','Manager\TopicController@dropTopic')->where(["id" => "[0-9]+"]);
+            Route::put('manager/topic/{id}/topOrder','Manager\TopicController@topOrder')->where(["id" => "[0-9]+"]);;
             /** EatestLabel */
             Route::post('manager/label','Manager\LabelController@addLabel');
-            Route::delete('manager/label/{labelId}','Manager\LabelController@dropLabel')->where(["labelId" => "[0-9]+"]);
+            Route::delete('manager/label/{id}','Manager\LabelController@dropLabel')->where(["id" => "[0-9]+"]);
 
 
 //            /** Eatest */
@@ -119,7 +119,7 @@ Route::namespace('Api')->group(function (){
         Route::post('/CourseGroup/{sharingCode}/member/{id}','jwxt\CourseGroupController@joinGroup')->where(['sharingCode' => '[A-Z0-9]+','memberId' => '[0-9]+']);      //
         Route::delete('/CourseGroup/{groupId}/member/{memberId}','jwxt\CourseGroupController@deleteGroupMember')->where(['groupId' => '[0-9]+' , 'memberId' => '[0-9]+']);
         Route::get('CourseGroup/sharingCode','jwxt\CourseGroupController@createSharingCode');
-        Route::get('CourseGroup/member/{id}','jwxt\CourseGroupController@getMemberList');
+        Route::get('CourseGroup/member/list/{id}','jwxt\CourseGroupController@getMemberList');
 
         /** Report */
         Route::post('/report',"Manager\ReportController@addReport");
@@ -127,9 +127,9 @@ Route::namespace('Api')->group(function (){
         Route::post('/appeal',"Manager\AppealController@addAppeal");
 
         /** EatestLabel */
-        Route::get('/label',"Manager\LabelController@showLabel");
+        Route::get('/label/list',"Manager\LabelController@showLabel");
         /** EatestTopic */
-        Route::get('/topic/{page}',"Manager\TopicController@showTopic");
+        Route::get('/topic/list/{page}',"Manager\TopicController@showTopic");
 
         /** Ecard*/
         Route::post('/ecard/binding',"Ecard\ConsumeController@binding");
@@ -227,7 +227,7 @@ Route::namespace('Api')->group(function (){
 
 
 //    });
-
+//
 
 //        //测试区
 //    //添加话题
