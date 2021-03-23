@@ -46,7 +46,7 @@ class TopicController extends Controller
         //检查数据格式
 
         //提取数据
-        $topicId = $request->route('topicId');
+        $topicId = $request->route('id');
         //删除
         $dropTopic = EatestTopics::destroy($topicId);
         if($dropTopic){
@@ -62,7 +62,7 @@ class TopicController extends Controller
         //检查数据格式
 
         //提取数据
-        $topicId = $request->route('topicId');
+        $topicId = $request->route('id');
         //置顶
         $isTop = (EatestTopics::query()->max('isTop')) + 1;
         if ($isTop){
@@ -86,8 +86,9 @@ class TopicController extends Controller
         $showTopics = EatestTopics::query()
             ->limit(9)
             ->offset($offset)
+            ->orderByDesc('isTop')
             ->orderByDesc('created_at')
-            ->get();
+            ->get('id','topicName','eatestSum');
         if(!$showTopics){
             return msg(4, __LINE__);
         }

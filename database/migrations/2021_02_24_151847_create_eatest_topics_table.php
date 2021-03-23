@@ -17,8 +17,8 @@ class CreateEatestTopicsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string("topicName",40)->comment("话题名称");
-            $table->integer("eatestSum")->comment("话题发帖数");
-            $table->integer("isTop")->comment("是否置顶")->default(0);
+            $table->integer("eatestSum")->default(0)->comment("话题发帖数");
+            $table->integer("isTop")->default(0)->comment("是否置顶");
         });
     }
 

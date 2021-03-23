@@ -17,7 +17,7 @@ class CreateEatestLabelsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string("labelName",20)->comment("标签名称");
-            $table->integer("UsageTime")->comment("标签使用次数");
+            $table->integer("UsageTime")->default(0)->comment("标签使用次数");
             $table->integer("type")->comment("标签类型");
         });
     }

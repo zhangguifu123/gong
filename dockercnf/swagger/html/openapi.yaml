@@ -141,9 +141,11 @@ paths:
                 labelName:
                   description: 标签名
                   type: string
+                  example: 好吃的
                 type:
                   description: 标签类型
-                  type: string
+                  type: integer
+                  example: 0
       responses:
         '200':
             description: 成功
@@ -514,10 +516,10 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/Success'
-  /manager/topic/{topicId}/topOrder:
+  /manager/topic/{id}/topOrder:
     put:
       parameters:
-        - name: topicId
+        - name: id
           description: 话题id
           in: path
           required: true
@@ -582,9 +584,9 @@ paths:
                   $ref: '#/components/schemas/Success'
         '403':
           $ref: '#/components/responses/InvalidProperties'
-  /manager/label/{labelId}:
+  /manager/label/{id}:
     parameters:
-    - name: labelId
+    - name: id
       description: 标签id
       in: path
       required: true
@@ -604,9 +606,9 @@ paths:
                   $ref: '#/components/schemas/Success'
         '403':
           $ref: '#/components/responses/InvalidProperties'
-  /manager/topic/{topicId}:
+  /manager/topic/{id}:
     parameters:
-    - name: topicId
+    - name: id
       description: 话题id
       in: path
       required: true
@@ -1135,7 +1137,7 @@ paths:
   #               $ref: '#/components/schemas/UserInfo'
   #       '403':
   #         $ref: '#/components/responses/NotAuthorization'
-  /topic/{page}:
+  /topic/list/{page}:
     get:
       summary: 话题列表
       operationId: TopicList
@@ -1178,28 +1180,22 @@ paths:
                   total: 2
                   list:
                     - id: 1,
-                      created_at: "2021-03-18T09:17:50.000000Z"
-                      updated_at: "2021-03-18T09:17:50.000000Z"
                       topicName: 金翰林螺蛳粉
                       eatestSum: 3
-                      isTop: 0
                       
                     - id: 2,
-                      created_at: "2021-03-18T09:17:50.000000Z"
-                      updated_at: "2021-03-18T09:17:50.000000Z"
                       topicName: 金翰林螺蛳粉
                       eatestSum: 3
-                      isTop: 1
         '403':
           $ref: '#/components/responses/InvalidProperties'
-  /label:
+  /label/list:
     get:
       summary: 标签列表
       operationId: LabelList
       tags:
         - user
-      parameters:
-        - $ref: '#/components/parameters/page'
+      # parameters:
+      #   - $ref: '#/components/parameters/page'
       responses:
         '200':
           description: 获取成功
@@ -1221,7 +1217,7 @@ paths:
                     description: 返回数据
                     type: array
                   total:
-                    description: 当页标签总数
+                    description: 标签总数
                     type: integer
                   list:
                     description: 标签列表
@@ -1235,18 +1231,14 @@ paths:
                   total: 2
                   list:
                     - id: 1,
-                      created_at: "2021-03-18T09:17:50.000000Z"
-                      updated_at: "2021-03-18T09:17:50.000000Z"
                       labelName: 好吃的
-                      UsageTime: 标签使用次数 
-                      isTop: 0
+                      UsageTime: 0 
+                      type: 0
                       
                     - id: 2,
-                      created_at: "2021-03-18T09:17:50.000000Z"
-                      updated_at: "2021-03-18T09:17:50.000000Z"
                       labelName: 好玩的
-                      UsageTime: 标签使用次数 
-                      isTop: 1
+                      UsageTime: 1 
+                      type: 1
         '403':
           $ref: '#/components/responses/InvalidProperties'
   /CourseGroup/list/{id}/created:
@@ -5214,17 +5206,9 @@ components:
             type: integer
             example: 3
           isTop:
-            description: 是否置顶
+            description: 是否置顶 0未置顶 1已置顶
             type: boolean
             example: 0
-          created_at:
-            description: 话题创建时间
-            type: string
-            example: "2021-03-18T09:17:50.000000Z"
-          updated_at:
-            description: 话题修改时间
-            type: string
-            example: "2021-03-18T09:17:50.000000Z"
     CourseGroupMessage:
       description: 小组列表
       type: array
@@ -5272,23 +5256,15 @@ components:
           labelName:
             description: 标签名称
             type: string
-            example: 好吃
+            example: 好吃的
           UsageTime:
             description: 标签使用次数
             type: integer
             example: 200
           type:
-            description: 标签类型
-            type: string
-            example: 分类
-          created_at:
-            description: 标签创建时间
-            type: string
-            example: "2021-03-18T09:17:50.000000Z"
-          updated_at:
-            description: 标签修改时间
-            type: string
-            example: "2021-03-18T09:17:50.000000Z"
+            description: 标签类型 0分类 1地点 2场景
+            type: integer
+            example: 2
     AppealMessage:
       description: 申诉列表
       type: array
@@ -5377,13 +5353,13 @@ components:
         type: object
         properties:
           id:
-            description: 编号
+            description: 管理员id
             type: integer
             example: 1
           name:
             description: 管理员姓名
             type: string
-            example: '敢敢'
+            example: 敢敢
           stu_id:
             description: 学号
             type: string
@@ -5391,9 +5367,9 @@ components:
           department:
             description: 部门
             type: string
-            example: '技术开发部'
+            example: 技术开发部
           level:
-            description: 管理员等级
+            description: 管理员等级 0超级管理员,拥有所有后台权限 1编辑专栏权限
             type: integer
             example: 0  
     UserMessage:
