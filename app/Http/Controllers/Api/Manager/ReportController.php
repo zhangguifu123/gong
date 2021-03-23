@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
  * Class ReportController
  * @package App\Http\Controllers\Api\Manager
  *
- * $handle = [
+ * $status = [
  *      0 => 等待处理
  *      1 => 无效举报
  *      2 => 内容下架
@@ -24,7 +24,7 @@ use Illuminate\Http\Request;
 class ReportController extends Controller
 {
 
-    //举报评测
+    //举报评测/评论/评论回复
     public function addReport(Request $request){
             //检查数据类型
             $params = [
@@ -52,32 +52,18 @@ class ReportController extends Controller
 
     //查看举报(已处理/未处理/分页处理)
     public function showReport(Request $request){
-//        //测试
-//        $data = User::query()->whereIn('id',[20,21])->get()->toArray();
-//        return $data;
-
-
-//        //检查数据格式
-//        $params = [
-//            'reportResult' => ['integer']
-//        ];
-//        $request = handleData($request,$params);
-//        if(!is_object($request)){
-//            return $request;
-//        }
         //提取数据
-//        $reportResult = $request->input('reportResult');
-        $reportResult = $request->route('status');
-        if($reportResult == 0){
-            $reportResult = [0];
-        }else if($reportResult == 1){
-            $reportResult = [1,2];
+        $status = $request->route('status');
+        if($status == 0){
+            $status = [0];
+        }else if($status == 1){
+            $status = [1,2];
         }
         //查看举报
 
         $offset = $request->route('page') * 5 - 5;
         $showReports = EatestReports::query()
-            ->whereIn('reportResult',$reportResult)
+            ->whereIn('status',$status)
             ->limit(5)
             ->offset($offset)
             ->orderByDesc('created_at')
@@ -96,14 +82,14 @@ class ReportController extends Controller
 //        return $request;
 //        检查数据格式
         $params = [
-            'reportResult' => ['integer']
+            'status' => ['integer']
         ];
         $request = handleData($request,$params);
         if(!is_object($request)){
             return $request;
         }
         //提取数据
-        $reportId = $request->route('reportId');
+        $reportId = $request->route('id');
         $sqlData = $request->only(array_keys($params));
 //        return $sqlData;
         //处理举报

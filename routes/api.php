@@ -53,11 +53,11 @@ Route::namespace('Api')->group(function (){
             Route::post('manager/eatestReview/{id}/evaluationStatus','Manager\ReviewController@updateEvaluationStatus')->where(["id" => "[0-9]+"]);
             Route::post('manager/eatestReview/{id}/replyStatus','Manager\ReviewController@updateReplyStatus')->where(["id" => "[0-9]+"]);
             /** EatestReport */
-            Route::put('/manager/report/{reportId}',"Manager\ReportController@handleReport")->where(["reportId" => "[0-9]+"]);
-            Route::get('/manager/report/list/{page}/{status}', "Manager\ReportController@showReport")->where(["page" => "[0-9]+", "reportResult" => "[0-9+]"]);
+            Route::put('/manager/report/{id}/status',"Manager\ReportController@handleReport")->where(["id" => "[0-9]+"]);
+            Route::get('/manager/report/list/{page}/{status}', "Manager\ReportController@showReport")->where(["page" => "[0-9]+", "status" => "[0-9]+"]);
             /** EatestAppeal */
-            Route::put('/manager/appeal/{appealId}',"Manager\AppealController@handleAppeal")->where(["appealId" => "[0-9]+"]);
-            Route::get('/manager/appeal/list/{page}/{status}', "Manager\AppealController@showAppeal")->where(["page" => "[0-9]+"]);
+            Route::put('/manager/appeal/{id}/status',"Manager\AppealController@handleAppeal")->where(["id" => "[0-9]+"]);
+            Route::get('/manager/appeal/list/{page}/{status}', "Manager\AppealController@showAppeal")->where(["page" => "[0-9]+", "status" => "[0-9]+"]);
             /** EatestTopic */
             Route::post('/manager/topic','Manager\TopicController@addTopic');
             Route::delete('manager/topic/{id}','Manager\TopicController@dropTopic')->where(["id" => "[0-9]+"]);

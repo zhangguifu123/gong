@@ -24,7 +24,7 @@ class CreateEatestReportsTable extends Migration
 //            $table->string("reportTime")->comment("举报时间");
             $table->string("reason")->comment("举报理由");
             $table->json("prove")->comment("证明")->nullable();
-            $table->integer("reportResult")->default(0)->comment('0 待处理,1 无效举报,2 内容下架');
+            $table->integer("status")->default(0)->comment('0 待处理,1 无效举报,2 内容下架');
         });
     }
 
