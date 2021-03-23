@@ -15,20 +15,33 @@ class CourseController extends Controller
 {
     //发布
     public function publish(Request $request){
-        //通过路由获取前端数据，并判断数据格式
-        $data = $this->data_handle($request);
-        if (!is_array($data)) {
-            return $data;
+        //检查数据格式
+        $params = [
+            "course"      => ["string"],
+            "location"    => ["string", "max:50","nullable"],
+            "teacher"  => ["string", "max:50","nullable"],
+            "week"  => ["json"],
+            "section_start"  => ["string"],
+            "end_start"  => ["string"],
+            "day"  => ["string"],
+        ];
+        $request = handleData($request,$params);
+        if(!is_object($request)){
+            return $request;
         }
-        //声明理想数据格式
+        //提取数据
+        $data = $request->only(array_keys($params));
+        $week = json_decode(json_encode([1,2,3]));
+        $week_string = '第' . $week[0] . '-' . end($week) . '周';
+        //获取学号
         $uid = handleUid($request);
 
         //加上额外必要数据
-        $data = $data + ['uid' => $uid];
+        $data = $data + ['uid' => $uid,'week_string' => $week_string];
         $course = new Course($data);
 
         if ($course->save()) {
-            return msg(0, ["id" => $course->id]);
+            return msg(0,__LINE__);
         }
         //未知错误
         return msg(4, __LINE__);
@@ -37,29 +50,45 @@ class CourseController extends Controller
     //删除
     public function delete(Request $request)
     {
-        $course = Course::query()->find($request->route('id'));
-        $course->delete();
-
+        //提取数据
+        $id = $request->route('id');
+        //
+        $course = Course::destroy($id);
+        if(!$course){
+            return msg(4,__LINE__);
+        }
         return msg(0, __LINE__);
     }
-    //获取
+    //获取课表
     public function get_list(Request $request){
         $course_list = Course::query()->where('uid',$request->route('uid'))
-            ->get(['id','course', 'location','teacher','week','week_string','section_length','section_start','end_start','day'])
+            ->get(['id','course', 'location','teacher','week','week_string','section_start','end_start','day'])
             ->toArray();
-
+        if(!$course_list){
+            return msg(4,__LINE__);
+        }
         $message = ['total' => count($course_list), 'list' => $course_list];
         return msg(0, $message);
     }
     //修改
     public function update(Request $request)
     {
-        //通过路由获取前端数据，并判断数据格式
-        $data = $this->data_handle($request);
-        //如果$data非函数说明有错误，直接返回
-        if (!is_array($data)) {
-            return $data;
+        //检查数据格式
+        $params = [
+            "course"      => ["string"],
+            "location"    => ["string", "max:50","nullable"],
+            "teacher"  => ["string", "max:50","nullable"],
+            "week"  => ["json"],
+            "section_start"  => ["string"],
+            "end_start"  => ["string"],
+            "day"  => ["string"],
+        ];
+        $request = handleData($request,$params);
+        if(!is_object($request)){
+            return $request;
         }
+        //提取数据
+        $data = $request->only(array_keys($params));
         //修改
         $course = Course::query()->find($request->route('id'));
         $course = $course->update($data);
@@ -67,34 +96,6 @@ class CourseController extends Controller
             return msg(0, __LINE__);
         }
         return msg(4, __LINE__);
-    }
-
-//检查函数
-    private function data_handle(Request $request = null){
-        //声明理想数据格式
-        $mod = [
-            "course"      => ["string"],
-            "location"    => ["string", "max:50"],
-            "teacher"  => ["string", "max:50"],
-            "week_string"  => ["string", "max:50"],
-            "week"  => ["json"],
-            "section_length"  => ["string"],
-            "section_start"  => ["string"],
-            "end_start"  => ["string"],
-            "day"  => ["string"],
-        ];
-        //是否缺失参数
-        if (!$request->has(array_keys($mod))){
-            return msg(1,__LINE__);
-        }
-        //提取数据
-        $data = $request->only(array_keys($mod));
-
-        //判断数据格式
-        if (Validator::make($data, $mod)->fails()) {
-            return msg(3, '数据格式错误' . __LINE__);
-        };
-        return $data;
     }
 
 
