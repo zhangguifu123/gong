@@ -24,7 +24,7 @@ class LabelController extends Controller
         //检查数据格式
         $params = [
             'labelName' => ['string'],
-            'type' => ['string']
+            'type' => ['integer']
         ];
         $request = handleData($request,$params);
         if(!is_object($request)){
@@ -60,11 +60,11 @@ class LabelController extends Controller
     public function showLabel(Request $request)
     {
         //提取数据
-        $type = $request->route('type');
+//        $type = $request->route('type');
         //查看标签
         $showLabels = EatestLabels::query()
-            ->where('type',$type)
-            ->get();
+//            ->where('type',$type)
+            ->get('id','labelName','UsageTime','type');
         if(!$showLabels){
             return msg(4, __LINE__);
         }
