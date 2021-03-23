@@ -190,7 +190,13 @@ paths:
         - manager
       parameters:
         - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/status'
+        - name: status
+          description: 申诉状态 0等待处理 1无效申诉 2内容还原
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 0
       responses:
         '200':
           description: 获取成功
@@ -231,9 +237,7 @@ paths:
                       type: eatest内容
                       content: 金翰林螺蛳粉!!
                       describe: 为什么禁言我
-                      appealResult: 0
-                      created_at: "2021-03-18T09:17:50.000000Z"
-                      updated_at: "2021-03-18T09:17:50.000000Z"
+                      status: 0
                       
                     - id: 2,
                       eatestId: 3
@@ -241,9 +245,7 @@ paths:
                       type: eatest内容
                       content: 金翰林螺蛳粉!!
                       describe: 为什么禁言我
-                      appealResult: 1
-                      created_at: "2021-03-18T09:17:50.000000Z"
-                      updated_at: "2021-03-18T09:17:50.000000Z"
+                      status: 1
         '403':
           $ref: '#/components/responses/InvalidProperties'
   /manager/report/list/{page}/{status}:
@@ -254,7 +256,13 @@ paths:
         - manager
       parameters:
         - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/status'
+        - name: status
+          description: 举报状态 0等待处理 1无效举报 2内容下架
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 0
       responses:
         '200':
           description: 获取成功
@@ -296,8 +304,10 @@ paths:
                       type: eatest内容举报
                       describe: 他ghs
                       reason: 发布不良信息
-                      prove: {'图片url'}
-                      reportResult: 1
+                      prove:
+                        - http://test.gong.com/stroage/images/768eaa0d061ec924f2e8b03bab598240.jpg
+                        - http://test.gong.com/stroage/images/546bsa0dsadec9dsr238b03jsi523413.jpg
+                      status: 1
                       created_at: "2021-03-18T09:17:50.000000Z"
                       updated_at: "2021-03-18T09:17:50.000000Z"
                       
@@ -308,8 +318,10 @@ paths:
                       type: eatest内容举报
                       describe: 他ghs
                       reason: 发布不良信息
-                      prove: {'图片url'}
-                      reportResult: 1
+                      prove:
+                        - http://test.gong.com/stroage/images/768eaa0d061ec924f2e8b03bab598240.jpg
+                        - http://test.gong.com/stroage/images/546bsa0dsadec9dsr238b03jsi523413.jpg
+                      status: 1
                       created_at: "2021-03-18T09:17:50.000000Z"
                       updated_at: "2021-03-18T09:17:50.000000Z"
         '403':
@@ -454,10 +466,10 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/Success'
-  /manager/appeal/{appealId}:
+  /manager/appeal/{id}/status:
     put:
       parameters:
-        - name: appealId
+        - name: id
           description: 申诉id
           in: path
           required: true
@@ -470,11 +482,11 @@ paths:
       # security: []
       requestBody:
         content:
-          application/json:
+          multipart/x-www-form-urlencoded:
             schema:
               type: object
               properties:
-                appealResult:
+                status:
                   description: 处理结果
                   type: integer
                   example: 1
@@ -485,10 +497,10 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/Success'
-  /manager/report/{reportId}:
+  /manager/report/{id}/status:
     put:
       parameters:
-        - name: reportiId
+        - name: id
           description: 举报id
           in: path
           required: true
@@ -501,11 +513,11 @@ paths:
       # security: []
       requestBody:
         content:
-          application/json:
+          multipart/x-www-form-urlencoded:
             schema:
               type: object
               properties:
-                reportResult:
+                status:
                   description: 举报结果
                   type: integer
                   example: 1
@@ -772,35 +784,7 @@ paths:
       tags:
         - user
       requestBody:
-        content:
-          form-data:
-            schema:
-              type: object
-              properties:
-                eatest_id:
-                  description: 评测id
-                  type: integer
-                  example: 1
-                userName:
-                  description: 举报者用户名
-                  type: string
-                  example: 啦啦啦
-                targetName:
-                  description: 被举报者用户名
-                  type: string
-                  example: 哈哈哈
-                type:
-                  description: 举报类型
-                  type: string
-                  example: eatest评论举报
-                content:
-                  description: 举报描述/内容
-                  type: string
-                  example: "他不是良民，必须要禁它"
-                reason:
-                  description: 举报理由
-                  type: string
-                  example: 发布不良信息             
+        $ref: '#/components/requestBodies/ReportBody'             
       responses:
         '200':
             description: 举报成功
@@ -815,31 +799,7 @@ paths:
       summary: 提出申诉
       description: 提出申诉
       requestBody:
-        content:
-          form-data:
-            schema:
-              type: object
-              properties:
-                eatest_id:
-                  description: 评测id
-                  type: integer
-                  example: 1
-                name:
-                  description: 姓名
-                  type: string
-                  example: 张三
-                stu_id:
-                  description: 学号
-                  type: integer
-                  example: 201805710601
-                phone:
-                  description: 电话
-                  type: integer
-                  example: 12345678900
-                content:
-                  description: 申诉理由
-                  type: string
-                  example: "我是良民，为什么禁我？？"
+        $ref: '#/components/requestBodies/AppealBody'  
       responses:
         '200':
           description: 申诉成功
@@ -2666,6 +2626,7 @@ paths:
                     label: 
                      - 好吃
                        贼好吃
+                    topic: 螺蛳粉
                     views: 0
                     like: 12
                     collections: 43
@@ -2683,6 +2644,7 @@ paths:
                     label: 
                      - 难吃
                        贼难吃
+                    topic: 螺蛳粉
                     views: 66
                     like: 12
                     collections: 54
@@ -2981,6 +2943,7 @@ paths:
                     label: 
                      - 好吃
                        贼好吃
+                    topic: 螺蛳粉
                     views: 0
                     like: 12
                     collections: 43
@@ -3092,6 +3055,7 @@ paths:
                     label: 
                      - 好吃
                        贼好吃
+                    topic: 螺蛳粉
                     views: 0
                     like: 12
                     collections: 43
@@ -3109,6 +3073,7 @@ paths:
                     label: 
                      - 难吃
                        贼难吃
+                    topic: 螺蛳粉
                     views: 66
                     like: 12
                     collections: 54
@@ -3166,6 +3131,7 @@ paths:
                     label: 
                      - 好吃
                        贼好吃
+                    topic: 螺蛳粉
                     views: 0
                     like: 12
                     collections: 43
@@ -3183,6 +3149,7 @@ paths:
                     label: 
                      - 难吃
                        贼难吃
+                    topic: 螺蛳粉
                     views: 66
                     like: 12
                     collections: 54
@@ -3240,6 +3207,7 @@ paths:
                     label: 
                      - 好吃
                        贼好吃
+                    topic: 螺蛳粉
                     views: 0
                     like: 12
                     collections: 43
@@ -3257,6 +3225,7 @@ paths:
                     label: 
                      - 难吃
                        贼难吃
+                    topic: 螺蛳粉
                     views: 66
                     like: 12
                     collections: 54
@@ -4280,6 +4249,68 @@ components:
                 type: string
                 description: 周几
                 example: 2
+
+    ReportBody:
+      description: 举报信息
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              eatestId:
+                description: 评测id
+                type: integer
+                example: 1
+              userName:
+                description: 举报者用户名
+                type: string
+                example: 啦啦啦
+              targetName:
+                description: 被举报者用户名
+                type: string
+                example: 哈哈哈
+              type:
+                description: 举报类型 (前端自行判断)
+                type: string
+                example: eatest评论举报
+              describe: 
+                description: 举报描述/内容 (用户自填)
+                type: string
+                example: "他不是良民，必须要禁它"
+              reason:
+                description: 举报理由 (单选)
+                type: string
+                example: 发布不良信息  
+    AppealBody:
+      description: 申诉信息
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              eatestId:
+                description: 评测id
+                type: integer
+                example: 1
+              userName:
+                description: 申诉人姓名
+                type: string
+                example: 张三
+              type:
+                description: 申诉类型 (前端自行判断)
+                type: string
+                example: eatest内容
+              content:
+                description: 申诉内容/详情 
+                type: string
+                example: 金翰林螺蛳粉!!
+              describe:
+                description: 申诉描述 (用户自填)
+                type: string
+                example: "我是良民，为什么禁我？？"
+
     AssocationBody:
       description: 关联码
       required: true
@@ -4569,6 +4600,10 @@ components:
                   - 甜甜
                 items:
                   type: string
+              topic:
+                type: string
+                description: 话题
+                example: 螺蛳粉
               content:
                 type: string
                 description: 评测内容
@@ -4700,14 +4735,14 @@ components:
       schema:
         type: integer
         example: 1
-    status:
-      name: status
-      description: 状态
-      required: true
-      in: path
-      schema:
-        type: integer
-        example: 0
+    # status:
+    #   name: status
+    #   description: 状态
+    #   required: true
+    #   in: path
+    #   schema:
+    #     type: integer
+    #     example: 0等待处理 1无效申诉/举报 2内容下架/上线
     order:
       name: order
       description: 数据排序依据
@@ -5149,6 +5184,10 @@ components:
               - 贼tm好吃
             items:
               type: string
+          topic:
+            description: 话题
+            type: string
+            example: 螺蛳粉
           view:
             description: 访问量
             type: string
@@ -5269,7 +5308,7 @@ components:
             description: 申诉id
             type: integer
             example: 1
-          eatest_id:
+          eatestId:
             description: 评测id
             type: string
             example: integer
@@ -5289,7 +5328,7 @@ components:
             description: 申诉描述
             type: string
             example: 为什么封我
-          reportResult:
+          status:
             description: 处理结果 0未处理 1已处理
             type: integer
             example: 0   
@@ -5304,7 +5343,7 @@ components:
             description: 举报id
             type: integer
             example: 1
-          eatest_id:
+          eatestId:
             description: 评测id
             type: string
             example: integer
@@ -5334,10 +5373,18 @@ components:
             example:
               - http://test.gong.com/stroage/images/768eaa0d061ec924f2e8b03bab598240.jpg
               - http://test.gong.com/stroage/images/546bsa0dsadec9dsr238b03jsi523413.jpg
-          reportResult:
+          status:
             description: 处理结果 0未处理 1已处理
             type: integer
-            example: 0      
+            example: 0     
+          created_at:
+            description: 举报时间
+            type: string
+            example: '2021-03-18T09:17:50.000000Z'
+          updated_at:
+            description: 处理时间
+            type: string
+            example: '2021-03-18T09:17:50.000000Z'
     ManagerMessage:
       description: 管理员列表
       type: array

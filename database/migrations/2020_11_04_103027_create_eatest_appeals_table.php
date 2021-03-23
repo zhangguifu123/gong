@@ -20,7 +20,7 @@ class CreateEatestAppealsTable extends Migration
             $table->string('type')->comment('申诉类型');
             $table->string('content')->comment('申诉内容');
             $table->string('describe')->comment('申诉描述');
-            $table->integer('appealResult')->default(0)->comment('0 待处理,1 无效申诉,2 内容下架');
+            $table->integer('status')->default(0)->comment('0 待处理,1 无效申诉,2 内容还原');
             $table->timestamps();
         });
     }

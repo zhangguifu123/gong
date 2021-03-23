@@ -17,6 +17,11 @@ use Illuminate\Support\Facades\Validator;
  *      1 => 无效申诉
  *      2 => 内容还原
  * ]
+ * $type = [
+ *      0 => eatest内容举报
+ *      1 => eatest评论举报
+ * ]
+ *
  */
 class AppealController extends Controller
 {
@@ -49,26 +54,17 @@ class AppealController extends Controller
     //查看所有申诉
     public function showAppeal(Request $request)
     {
-        //检查数据格式
-//        $params = [
-//            'appealResult' => ['integer']
-//        ];
-//        $request = handleData($request,$params);
-//        if(!is_object($request)){
-//            return $request;
-//        }
         //提取数据
-//        $appealResult = $request->input('appealResult');
-        $appealResult = $request->route('status');
-        if($appealResult == 0){
-            $appealResult = [0];
+        $status = $request->route('status');
+        if($status == 0){
+            $status = [0];
         }else{
-            $appealResult = [1,2];
+            $status = [1,2];
         }
         //分页，每页10条
         $offset = $request->route("page") * 13 - 13;
         $showAppeal = EatestAppeal::query()
-            ->whereIn('appealResult',$appealResult)
+            ->whereIn('status',$status)
             ->limit(13)
             ->offset($offset)
             ->orderByDesc("created_at")
@@ -87,17 +83,17 @@ class AppealController extends Controller
     {
         //检查数据格式
         $params = [
-            "appealResult" => ["integer"],
+            "status" => ["integer"],
         ];
         $request = handleData($request, $params);
         if (!is_object($request)) {
             return $request;
         }
         //提取数据
-        $appealResult = $request->input('appealResult');
-        $appealId = $request->route('appealId');
+        $status = $request->input('status');
+        $appealId = $request->route('id');
         //修改
-        $sqlData = ['appealResult' => $appealResult];
+        $sqlData = ['status' => $status];
         $appeal = EatestAppeal::query()->find($appealId)->update($sqlData);
         if ($appeal) {
             $data = ['修改的申诉id' => $appealId];
