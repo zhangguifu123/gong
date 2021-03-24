@@ -48,10 +48,10 @@ Route::namespace('Api')->group(function (){
             Route::get('/manager/user/list/{page}','Manager\UserController@showUser')->where(["page" => "[0-9]+"]);
             Route::put('/manager/user/{id}/status','Manager\UserController@updateStatus')->where(["id" => "[0-9]+"]);
             /** EatestReview */
-//            Route::get('manager/eatestReview/list/{page}/evaluation','Manager\ReviewController@getEvaluationList')->where(["page" => "[0-9]+"]);
-//            Route::get('manager/eatestReview/list/{page}/reply','Manager\ReviewController@getReplyList')->where(["page" => "[0-9]+"]);
-            Route::post('manager/eatestReview/{id}/evaluationStatus','Manager\ReviewController@updateEvaluationStatus')->where(["id" => "[0-9]+"]);
-            Route::post('manager/eatestReview/{id}/replyStatus','Manager\ReviewController@updateReplyStatus')->where(["id" => "[0-9]+"]);
+            Route::get('manager/eatestReview/list/{page}/evaluation','Manager\ReviewController@getEvaluationList')->where(["page" => "[0-9]+"]);
+            Route::get('manager/eatestReview/list/{page}/comment','Manager\ReviewController@getCommentList')->where(["page" => "[0-9]+"]);
+            Route::put('manager/eatestReview/{id}/evaluationStatus','Manager\ReviewController@updateEvaluationStatus')->where(["id" => "[0-9]+"]);
+            Route::put('manager/eatestReview/{id}/commentStatus','Manager\ReviewController@updateCommentStatus')->where(["id" => "[0-9]+"]);
             /** EatestReport */
             Route::put('/manager/report/{id}/status',"Manager\ReportController@handleReport")->where(["id" => "[0-9]+"]);
             Route::get('/manager/report/list/{page}/{status}', "Manager\ReportController@showReport")->where(["page" => "[0-9]+", "status" => "[0-9]+"]);
@@ -96,7 +96,7 @@ Route::namespace('Api')->group(function (){
     Route::post('push/send',"PushSdk\ToSingleController@send");
 
     /** 用户区 */
-//    Route::group(['middleware' => 'login.check'], function () {
+    Route::group(['middleware' => 'login.check'], function () {
         /** 关注 */
 
         Route::post('focus',"Eatest\FocusController@focus")->middleware(['focus.exist.check']);
@@ -226,7 +226,7 @@ Route::namespace('Api')->group(function (){
 
 
 
-//    });
+    });
 //
 
 //        //测试区

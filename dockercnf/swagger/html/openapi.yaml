@@ -55,7 +55,7 @@ paths:
       security: []
       requestBody:
         content:
-          application/json:
+          multipart/application/json:
             schema:
               type: object
               properties:
@@ -104,7 +104,7 @@ paths:
         - manager
       requestBody:
         content:
-          application/json:
+          multipart/application/json:
             schema:
               type: object
               properties:
@@ -134,7 +134,7 @@ paths:
         - manager
       requestBody:
         content:
-          application/json:
+          multipart/application/json:
             schema:
               type: object
               properties:
@@ -163,7 +163,7 @@ paths:
         - manager
       requestBody:
         content:
-          application/json:
+          multipart/application/json:
             schema:
               type: object
               properties:
@@ -451,7 +451,7 @@ paths:
       summary: 用户禁言状态修改
       requestBody:
         content:
-          application/json:
+          multipart/application/json:
             schema:
               type: object
               properties:
@@ -564,7 +564,7 @@ paths:
       summary: 管理员信息修改
       requestBody:
         content:
-          application/json:
+          multipart/application/json:
             schema:
               type: object
               properties:
@@ -596,6 +596,67 @@ paths:
                   $ref: '#/components/schemas/Success'
         '403':
           $ref: '#/components/responses/InvalidProperties'
+  /manager/eatestReview/{id}/evaluationStatus:
+    parameters:
+    - name: id
+      description: 评测id
+      in: path
+      required: true
+      schema:
+        type: integer
+      example: 1
+    put:
+      tags:
+        - manager
+      summary: 评测上架/下架
+      requestBody:
+        content:
+          multipart/application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  description: 评测状态 1上架 2下架
+                  type: integer
+                  example: 1
+      responses:
+        '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Success'
+  /manager/eatestReview/{id}/commentStatus:
+    parameters:
+    - name: id
+      description: 评论id
+      in: path
+      required: true
+      schema:
+        type: integer
+      example: 1
+    put:
+      tags:
+        - manager
+      summary: 评论上架/下架
+      requestBody:
+        content:
+          multipart/application/json:
+            schema:
+              type: object
+              properties:
+                handleStatus:
+                  description: 评论状态 1上架 2下架
+                  type: integer
+                  example: 1
+      responses:
+        '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Success'
+
   /manager/label/{id}:
     parameters:
     - name: id
@@ -822,7 +883,7 @@ paths:
             type: integer
       requestBody:
         content:
-          form-data:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -859,7 +920,7 @@ paths:
             type: integer
       requestBody:
         content:
-          form-data:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -1037,7 +1098,7 @@ paths:
       security: []
       requestBody:
         content:
-          application/json:
+          multipart/application/json:
             schema:
               type: object
               properties:

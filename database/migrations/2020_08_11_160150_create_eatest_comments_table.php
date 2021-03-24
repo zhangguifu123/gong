@@ -23,6 +23,7 @@ class CreateEatestCommentsTable extends Migration
             $table->string('fromAvatar')->comment('评论者头像');
             $table->string("content")->comment("留言内容");
             $table->integer("like")->default(0)->comment("赞数");
+            $table->integer('handleStatus')->default(0)->comment('0未处理 1上架 2下架');
             $table->timestamps();
         });
     }
