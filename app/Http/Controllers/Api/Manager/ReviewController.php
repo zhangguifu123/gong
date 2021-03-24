@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Manager;
 
 use App\Http\Controllers\Controller;
+use App\Model\Eatest\EatestComments;
 use App\Model\Eatest\EatestReplies;
 use App\Model\Eatest\Evaluation;
 use Illuminate\Http\Request;
@@ -49,12 +50,12 @@ class ReviewController extends Controller
 
 
     //查看待审核评论
-    public function getReplyList(Request $request){
+    public function getCommentList(Request $request){
         //提取数据
         $page = $request->route('page');
         //查看评论
         $offset = $page * 13 -13;
-        $list = EatestReplies::query()
+        $list = EatestComments::query()
             ->where('status',0)
             ->limit(13)
             ->offset($offset)
@@ -90,10 +91,10 @@ class ReviewController extends Controller
 
 
     //评论上架/下架
-    public function updateReplyStatus(Request $request)
+    public function updateCommentStatus(Request $request)
     {
         //检查是否存在数据格式
-        $mod = ["status" => ["integer"]];
+        $mod = ["handleStatus" => ["integer"]];
         $request = handleData($request,$mod);
         if(!is_object($request)){
             return $request;
@@ -101,7 +102,7 @@ class ReviewController extends Controller
         //提取数据
         $data = $request->only(array_keys($mod));
         //修改
-        $evaluation = EatestReplies::query()->find($request->route('id'));
+        $evaluation = EatestComments::query()->find($request->route('id'));
         $evaluation = $evaluation->update($data);
         if ($evaluation) {
             return msg(0, __LINE__);

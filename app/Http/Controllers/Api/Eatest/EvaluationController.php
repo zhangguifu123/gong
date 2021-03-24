@@ -272,7 +272,7 @@ class EvaluationController extends Controller
                 "title"    => ["string", "max:50"],
                 "content"  => ["string", "max:400"],
                 "label"    => ["json"],
-                "topic"    => ["string"],
+                "topic"    => ["string", "nullable"],
                 "nickname" => ["string", "max:10"]
             ];
         //是否缺失参数
