@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api\jwxt;
 
 use App\Http\Controllers\Controller;
+use App\Model\jwxt\Course;
 use App\Model\jwxt\CourseGroup;
+use App\StudentInfo;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Psy\Util\Str;
 
 class CourseGroupController extends Controller
@@ -16,7 +19,7 @@ class CourseGroupController extends Controller
         //检查数据结构
         $params = [
             'Founder' => ['string'],
-            'FounderId' => ['integer'],
+            'FounderUid' => ['integer'],
             'groupName' => ['string'],
             'sharingCode' => ['string']
         ];
@@ -25,9 +28,9 @@ class CourseGroupController extends Controller
             return $request;
         }
         //提取数据
-        $id = $request->route('id');       //创建人id
+        $uid = $request->route('uid');       //创建人学号
         $data = $request->only(array_keys($params));
-        $member[$id] = 1;
+        $member[$uid] = 1;
         $data = $data + ['memberSum' => 1, 'member' => json_encode($member)];
         //创建小组
         $addGroup = CourseGroup::query()->create($data);
@@ -43,9 +46,12 @@ class CourseGroupController extends Controller
     public function getCreatedGroupList(Request $request)
     {
         //提取数据
-        $FounderId = $request->route('id');
+        $FounderUid = $request->route('uid');
         //查看创建的小组
-        $getList = CourseGroup::query()->where('FounderId',$FounderId)->get();
+        $getList = CourseGroup::query()
+            ->where('FounderUid',$FounderUid)
+            ->orderByDesc('created_at')
+            ->get();
         if(!$getList){
             return msg(4,__LINE__);
         }
@@ -58,11 +64,13 @@ class CourseGroupController extends Controller
     public function getJoinedGroupList(Request $request)
     {
         //提取数据
-        $id = $request->route('id');
+        $uid = $request->route('uid');
         //查看加入的小组
-        $getList = CourseGroup::query()->get();
+        $getList = CourseGroup::query()
+            ->orderByDesc('created_at')
+            ->get();
         foreach ($getList as $list){
-            if(key_exists($id,json_decode($list->member,true))){
+            if(key_exists($uid,json_decode($list->member,true))){
                 $data[] = $list;
             }
         }
@@ -75,7 +83,7 @@ class CourseGroupController extends Controller
     public function deleteGroup(Request $request)
     {
         //提取数据
-        $id = $request->route('id');
+        $id = $request->route('$id');
         //删除小组
         $delete = CourseGroup::destroy($id);
         if($delete){
@@ -89,7 +97,7 @@ class CourseGroupController extends Controller
     public function joinGroup(Request $request)
     {
         //提取数据
-        $memberId = $request->route('id');
+        $memberUid = $request->route('uid');
         $sharingCode = $request->route('sharingCode');
         $courseGroup = CourseGroup::query()->where('sharingCode',$sharingCode);
         if(!$courseGroup){
@@ -100,7 +108,9 @@ class CourseGroupController extends Controller
         //加入新成员
 //        $member[] = $memberId;
         $member = json_decode($record->member,true);
-        $member[$memberId] = 1;
+//        $member[$memberUid] = 1;
+        $member[] = $memberUid;
+//        return $member;
         $data = ['member' => json_encode($member)];
 //        return $data;
         $join = $courseGroup->update($data);
@@ -115,8 +125,8 @@ class CourseGroupController extends Controller
     public function deleteGroupMember(Request $request)
     {
         //提取数据
-        $groupId = $request->route('groupId');
-        $memberId = $request->route('memberId');           //数组
+        $groupId = $request->route('id');
+        $memberUid = $request->route('uid');           //数组
 //        return $memberId;
 
         //删除小组成员
@@ -127,7 +137,9 @@ class CourseGroupController extends Controller
         $record = $courseGroup->get('member')->first();
         //移除成员
         $member = json_decode($record->member,true);
-        unset($member[$memberId]);
+//        unset($member[$memberUid]);
+        $member = array_values(array_diff($member,[$memberUid]));
+//        return $member;
         $data = ['member' => $member];
         $deleteMember = CourseGroup::query()->update($data);
         if(!$deleteMember){
@@ -137,17 +149,68 @@ class CourseGroupController extends Controller
     }
 
 
-    //获取成员信息
+    //获取小组详细信息
     public function getMemberList(Request $request)
     {
         //提取数据
-        $id = $request->route('id');       //数组
-        return $id;
+        $id = $request->route('id');
         //获取成员信息
-        $memberList = User::query()->whereIn('id',$id)->orderByDesc('created_at')->get('id','name');
-//        if(){
-//
-//        }
+        $courseGroup = CourseGroup::query()->find($id)->get(['id','groupName','memberSum','member','Founder','FounderUid','sharingCode'])->toArray();
+        if(!$courseGroup){
+            msg(4,__LINE__);
+        }
+        $FounderUid = $courseGroup[0]['Founder'];
+        $memberUid = array_values(array_diff(json_decode($courseGroup[0]['member'],true),[$FounderUid]));
+        //获取创建人信息
+        $FounderName = DB::table('info')->where('sid',$FounderUid)->get(['sid','name','college'])->toArray();
+        if(!$FounderName){
+            msg(4,__LINE__);
+        }
+        //获取成员信息
+        $memberName = DB::table('info')->whereIn('sid',$memberUid)->get(['sid as uid','name','college'])->toArray();
+        if(!$memberName){
+            msg(4,__LINE__);
+        }
+        $courseGroup[0]['member'] = $FounderName + $memberName;
+        $data = $courseGroup;
+        return msg(0,$data);
+    }
+
+
+    //生成空课表
+    public function createEmptyCourse(Request $request){
+        //提取数据
+        $id = $request->route('id');        //小组id
+        $uids = json_decode($request->route('uid'));      //数组
+        //生成课表
+        //获取小组成员
+        $GroupMember = CourseGroup::query()->find($id)->get('member')->toArray();
+        $member = json_decode($GroupMember[0]['member'],true);
+        //获取成员总课表
+        $course_list = Course::query()->whereIn('uid',$uids)
+            ->get(['id', 'uid' ,'week','week_string','section_start','end_start','day']);
+        foreach ($course_list as $course_item){
+            $i = $course_item->day;     //周几
+            $j = ($course_item->section_start + 1) / 2;
+            $data[$i][$j][] = $course_item->uid;        //有课成员
+        }
+        //获取成员空课表
+        foreach ($data as $key1=>$val){
+            foreach ($val as $key2=>$value){
+                $memberUid = array_values(array_diff($member,$value));
+                $groupMemberName = DB::table('info')->whereIn('sid',$memberUid)->get()->toArray();
+                if(!$groupMemberName){
+                    msg(4,__LINE__);
+                }
+                //成员学号由姓名替换
+                foreach ($groupMemberName as $name){
+                    $memberName[] = $name->name;
+                }
+                $data[$key1][$key2] = $memberName;
+                $memberName = [];
+            }
+        }
+        return msg(0,$data);
     }
 
 

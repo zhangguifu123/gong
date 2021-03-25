@@ -868,15 +868,15 @@ paths:
             application/json:
                 schema:
                   $ref: '#/components/schemas/Success'
-  /CourseGroup/{id}:
+  /CourseGroup/{uid}:
     post:
       tags:
         - user
       summary: 创建小组
       description: 创建小组
       parameters:
-        - name: id
-          description: 创建人id
+        - name: uid
+          description: 创建人学号
           in: path
           required: true
           schema:
@@ -974,7 +974,7 @@ paths:
                     description: 状态
                     type: string
                     example: 成功
-  /CourseGroup/{sharingCode}/member/{id}:
+  /CourseGroup/{sharingCode}/member/{uid}:
     post:
       tags:
         - user
@@ -987,12 +987,12 @@ paths:
            required: true
            schema:
             type: string
-         - name: id
-           description: 成员id
+         - name: uid
+           description: 成员学号
            in: path
            required: true
            schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: 登录成功
@@ -1008,21 +1008,21 @@ paths:
                     description: 状态
                     type: string
                     example: 成功
-  /CourseGroup/{groupId}/member/{memberId}:
+  /CourseGroup/{id}/member/{uid}:
     delete:
       tags:
         - user
       summary: 移除小组成员
       description: 移除小组成员
       parameters:
-         - name: groupId
+         - name: id
            description: 小组id
            in: path
            required: true
            schema:
             type: integer
-         - name: memberId
-           description: 成员id
+         - name: uid
+           description: 成员学号
            in: path
            required: true
            schema:
@@ -1262,15 +1262,15 @@ paths:
                       type: 1
         '403':
           $ref: '#/components/responses/InvalidProperties'
-  /CourseGroup/list/{id}/created:
+  /CourseGroup/list/{uid}/created:
     get:
       summary: 我创建的小组
       operationId: createdGroupList
       tags:
         - user
       parameters:
-        - name: id
-          description: 创建人id
+        - name: uid
+          description: 创建人学号
           in: path
           required: true
           schema:
@@ -1332,15 +1332,15 @@ paths:
                       sharingCode: SKY21235
         '403':
           $ref: '#/components/responses/InvalidProperties'
-  /CourseGroup/list/{id}/joined:
+  /CourseGroup/list/{uid}/joined:
     get:
       summary: 我加入的小组
       operationId: joinedGroupList
       tags:
         - user
       parameters:
-        - name: id
-          description: 成员id
+        - name: uid
+          description: 成员学号
           in: path
           required: true
           schema:
@@ -1435,6 +1435,141 @@ paths:
                   total: 2
                   list:
                     - sharingCode: SKY21235
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
+  /CourseGroup/{id}/member/list:
+    get:
+      summary: 小组详情
+      operationId: CourseGroupMemberList
+      tags:
+        - user
+      parameters:
+        - name: id
+          description: 小组id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  # page:
+                  #   description: 页码
+                  #   type: integer
+                  # limit:
+                  #   description: 每页限制
+                  #   type: integer
+                  code:
+                    description: 状态码
+                    type: integer
+                  data:
+                    description: 返回数据
+                    type: array
+                    items: 
+                      $ref: '#/components/schemas/CourseGroupMessage'
+              example:
+                code: 0
+                status: "成功"
+                data:
+                  - id: 1,
+                    groupName: 技术开发部
+                    memberSum: 3
+                    member: 
+                      - uid: 201905190401
+                        name: 张贵妇
+                        college: 公共管理学院
+                      - uid: 201905190402
+                        name: 周舟洲
+                        college: 公共管理学院
+                      - uid: 201905190403
+                        name: 李以为
+                        college: 公共管理学院
+                    Founder: 张贵妇
+                    FounderUid: 201905190401
+                    sharingCode: SKY21235
+                    
+                  - id: 2,
+                    created_at: "2021-03-18T09:17:50.000000Z"
+                    updated_at: "2021-03-18T09:17:50.000000Z"
+                    groupName: 行政人事部
+                    memberSum: 3
+                    member: 
+                      - uid: 201905190401
+                        name: 张贵妇
+                        college: 公共管理学院
+                      - uid: 201905190402
+                        name: 周舟洲
+                        college: 公共管理学院
+                      - uid: 201905190403
+                        name: 李以为
+                        college: 公共管理学院
+                    Founder: 张贵妇
+                    FounderUid: 201905190401
+                    sharingCode: SKY21235
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
+  /CourseGroup/{id}/emptyCourse/{uid}:
+    get:
+      summary: 获取空课表
+      operationId: EmptyCourse
+      tags:
+        - user
+      parameters:
+        - name: id
+          description: 小组id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: uid
+          description: 成员学号
+          in: path
+          required: true
+          schema:
+            type: string
+            example: '[1,2,3]'
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  # page:
+                  #   description: 页码
+                  #   type: integer
+                  # limit:
+                  #   description: 每页限制
+                  #   type: integer
+                  code:
+                    description: 状态码
+                    type: integer
+                  data:
+                    description: 返回数据
+                    type: array
+                    items: 
+                      $ref: '#/components/schemas/EmptyCourse'
+              example:
+                code: 0
+                status: 成功
+                data:
+                  1:
+                    1:
+                      - 周舟洲
+                      - 李以为
+                    3:
+                      - 周舟洲
+                      - 李以为
+                  2:
+                    5:
+                      - 张贵妇
+                      - 李以为
         '403':
           $ref: '#/components/responses/InvalidProperties'
 
@@ -5322,7 +5457,7 @@ components:
             type: integer
             example: 3
           member:
-            description: 小组成员id
+            description: 小组成员学号
             type: array
             example: 
               - 1
@@ -5593,49 +5728,32 @@ components:
             type: object
             properties:
               '1':
-                 description: 第一节课 
-                 type: boolean
+                 description: 第1-2课 
+                 type: object
                  example: 1
+                 properties:
+                    '周舟洲':
+                      description: 成员姓名
+                      type: string
+                    '李以为':
+                      description: 成员姓名
+                      type: string
               '2':
-                 description: 第二节课 
+                 description: 第3-4课 
                  type: boolean
                  example: 1
               '3':
-                 description: 第三节课 
+                 description: 第5-6课 
                  type: boolean
                  example: 1
               '4':
-                 description: 第四节课 
+                 description: 第7-8课 
                  type: boolean
                  example: 1
               '5':
-                 description: 第五节课 
+                 description: 第9-11课 
                  type: boolean
-                 example: 1   
-              '6':
-                 description: 第六节课 
-                 type: boolean
-                 example: 1
-              '7':
-                 description: 第七节课 
-                 type: boolean
-                 example: 0   
-              '8':
-                 description: 第八节课 
-                 type: boolean
-                 example: 0   
-              '9':
-                 description: 第九节课 
-                 type: boolean
-                 example: 1   
-              '10':
-                 description: 第十节课 
-                 type: boolean
-                 example: 1   
-              '11':
-                 description: 第十一节课 
-                 type: boolean
-                 example: 1   
+                 example: 1     
               
         
     Info:

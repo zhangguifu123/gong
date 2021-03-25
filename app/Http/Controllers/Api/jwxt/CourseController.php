@@ -21,9 +21,9 @@ class CourseController extends Controller
             "location"    => ["string", "max:50","nullable"],
             "teacher"  => ["string", "max:50","nullable"],
             "week"  => ["json"],
-            "section_start"  => ["string"],
-            "end_start"  => ["string"],
-            "day"  => ["string"],
+            "section_start"  => ["integer"],
+            "end_start"  => ["integer"],
+            "day"  => ["integer"],
         ];
         $request = handleData($request,$params);
         if(!is_object($request)){
@@ -61,14 +61,22 @@ class CourseController extends Controller
     }
     //获取课表
     public function get_list(Request $request){
+
         $course_list = Course::query()->where('uid',$request->route('uid'))
-            ->get(['id','course', 'location','teacher','week','week_string','section_start','end_start','day'])
-            ->toArray();
+            ->get(['id','course', 'location','teacher','week','week_string','section_start','end_start','day']);
+//            ->toArray();
         if(!$course_list){
             return msg(4,__LINE__);
         }
-        $message = ['total' => count($course_list), 'list' => $course_list];
-        return msg(0, $message);
+        foreach ($course_list as $course_item){
+            $course_item->week = json_decode($course_item->week,true);
+            $i = $course_item->day;     //周几
+            $j = ($course_item->section_start + 1) / 2;
+            $data[$i][$j] = $course_item;
+        }
+//        return $data;
+//        $message = ['total' => count($course_list), 'list' => $data];
+        return msg(0, $data);
     }
     //修改
     public function update(Request $request)
@@ -79,9 +87,9 @@ class CourseController extends Controller
             "location"    => ["string", "max:50","nullable"],
             "teacher"  => ["string", "max:50","nullable"],
             "week"  => ["json"],
-            "section_start"  => ["string"],
-            "end_start"  => ["string"],
-            "day"  => ["string"],
+            "section_start"  => ["integer"],
+            "end_start"  => ["integer"],
+            "day"  => ["integer"],
         ];
         $request = handleData($request,$params);
         if(!is_object($request)){
