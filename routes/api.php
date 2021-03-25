@@ -96,7 +96,7 @@ Route::namespace('Api')->group(function (){
     Route::post('push/send',"PushSdk\ToSingleController@send");
 
     /** 用户区 */
-    Route::group(['middleware' => 'login.check'], function () {
+//    Route::group(['middleware' => 'login.check'], function () {
         /** 关注 */
 
         Route::post('focus',"Eatest\FocusController@focus")->middleware(['focus.exist.check']);
@@ -111,15 +111,16 @@ Route::namespace('Api')->group(function (){
 //        Route::post('/appeal',"Manager\AppealController@upload");
 
         /** 多人空课表 */
-        Route::post('/CourseGroup/{id}','jwxt\CourseGroupController@addGroup')->where(['id' => '[0-9]+']);
+        Route::post('/CourseGroup/{uid}','jwxt\CourseGroupController@addGroup')->where(['uid' => '[0-9]+']);
 //        Route::get('/CourseGroup/list/{Founder}/created','jwxt\CourseGroupController@getCreatedGroupList')->where(['Founder' => '[0-9]+']);
-        Route::get('/CourseGroup/list/{id}/created','jwxt\CourseGroupController@getCreatedGroupList')->where(['id' => '[0-9]+']);
-        Route::get('/CourseGroup/list/{id}/joined','jwxt\CourseGroupController@getJoinedGroupList')->where(['id' => '[0-9]+']);
-        Route::delete('/CourseGroup/{id}','jwxt\CourseGroupController@deleteGroup')->where(['id' => '[0-9]+']);
-        Route::post('/CourseGroup/{sharingCode}/member/{id}','jwxt\CourseGroupController@joinGroup')->where(['sharingCode' => '[A-Z0-9]+','memberId' => '[0-9]+']);      //
-        Route::delete('/CourseGroup/{groupId}/member/{memberId}','jwxt\CourseGroupController@deleteGroupMember')->where(['groupId' => '[0-9]+' , 'memberId' => '[0-9]+']);
-        Route::get('CourseGroup/sharingCode','jwxt\CourseGroupController@createSharingCode');
-        Route::get('CourseGroup/member/list/{id}','jwxt\CourseGroupController@getMemberList');
+        Route::get('/CourseGroup/list/{uid}/created','jwxt\CourseGroupController@getCreatedGroupList')->where(['id' => '[0-9]+']);
+        Route::get('/CourseGroup/list/{uid}/joined','jwxt\CourseGroupController@getJoinedGroupList')->where(['uid' => '[0-9]+']);
+        Route::delete('/CourseGroup/{id}','jwxt\CourseGroupController@deleteGroup')->where(['uid' => '[0-9]+']);
+        Route::post('/CourseGroup/{sharingCode}/member/{uid}','jwxt\CourseGroupController@joinGroup')->where(['sharingCode' => '[A-Z0-9]+','uid' => '[0-9]+']);      //
+        Route::delete('/CourseGroup/{id}/member/{uid}','jwxt\CourseGroupController@deleteGroupMember')->where(['id' => '[0-9]+' , 'uid' => '[0-9]+']);
+        Route::get('/CourseGroup/sharingCode','jwxt\CourseGroupController@createSharingCode');
+        Route::get('/CourseGroup/{id}/member/list','jwxt\CourseGroupController@getMemberList')->where(['id' => '[0-9]+']);
+        Route::get('/CourseGroup/{id}/emptyCourse/{uid}','jwxt\CourseGroupController@createEmptyCourse')->where(['id' => '[0-9]+']);
 
         /** Report */
         Route::post('/report',"Manager\ReportController@addReport");
@@ -154,7 +155,8 @@ Route::namespace('Api')->group(function (){
         /** Course*/
         Route::post('/course/extra',"jwxt\CourseController@publish");
         //测评所有者和管理员均可操作
-        Route::get('/course/extra/{uid}',"jwxt\CourseController@get_list")->middleware("owner.check");
+//        Route::get('/course/extra/{uid}',"jwxt\CourseController@get_list")->middleware("owner.check");
+        Route::get('/course/extra/{uid}',"jwxt\CourseController@get_list");
         Route::group(["middleware" => ["course.exist.check",'owner.course.check']], function (){
             Route::put('/course/extra/{id}',"jwxt\CourseController@update");
             Route::delete('/course/extra/{id}',"jwxt\CourseController@delete");
@@ -226,7 +228,7 @@ Route::namespace('Api')->group(function (){
 
 
 
-    });
+//    });
 //
 
 //        //测试区

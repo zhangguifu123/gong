@@ -20,7 +20,7 @@ class CreateCourseGroupsTable extends Migration
             $table->integer('memberSum')->comment('成员数');
             $table->json('member')->comment('小组成员');
             $table->string('Founder')->comment('创建人姓名');
-            $table->string('FounderId')->comment('创建人id');
+            $table->string('FounderUid')->comment('创建人学号');
             $table->string('sharingCode')->comment('分享码');
         });
     }
