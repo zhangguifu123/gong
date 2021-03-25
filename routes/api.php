@@ -96,7 +96,7 @@ Route::namespace('Api')->group(function (){
     Route::post('push/send',"PushSdk\ToSingleController@send");
 
     /** 用户区 */
-//    Route::group(['middleware' => 'login.check'], function () {
+    Route::group(['middleware' => 'login.check'], function () {
         /** 关注 */
 
         Route::post('focus',"Eatest\FocusController@focus")->middleware(['focus.exist.check']);
@@ -228,7 +228,7 @@ Route::namespace('Api')->group(function (){
 
 
 
-//    });
+    });
 //
 
 //        //测试区
