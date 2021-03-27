@@ -198,7 +198,7 @@ class EvaluationController extends Controller
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
-                "collections", "top", "img", "title", "users.avatar","evaluations.created_at as time"
+                "collections", "top", "img", "title", "users.avatar","evaluations.created_at as time","users.avatar as fromAvatar"
             ])->toArray();
 
         //判断若拉取首页，将推荐美文和正常拉取合并

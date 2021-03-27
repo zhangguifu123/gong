@@ -8,9 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Evaluation extends Model
 {
-    protected $fillable = [
-        "publisher", "label", "views", "collections", "like","img", "title", "content", "nickname", "top",'status'
-    ];
+//    protected $fillable = [
+//        "publisher", "label", "views", "collections", "like","img", "title", "content", "nickname", "top",'status'
+//    ];
+    protected $guarded = ['id','created_at','updated_at'];
 
 
     public function info()
@@ -30,6 +31,7 @@ class Evaluation extends Model
             "publisher" => $this->publisher,
             "publisher_name" => $publisher_name,
             "label" => $this->label,
+            "topic" => $this->topic,
             "views" => $this->views,
             "like" => $this->like,
             "collections" => $this->collections,

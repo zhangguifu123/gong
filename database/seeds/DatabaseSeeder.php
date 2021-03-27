@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->insert([            //用户
             'nickname' => '啦啦啦',
             'name' => '张贵妇',
-            'stu_id' => 'Sky31',
+            'stu_id' => '201905194444',
             'password' => md5('Sky31666'),
             'collection' => '{"1":1}',
             'like' => '{"1":1}',

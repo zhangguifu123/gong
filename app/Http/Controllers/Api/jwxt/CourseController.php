@@ -21,9 +21,9 @@ class CourseController extends Controller
             "location"    => ["string", "max:50","nullable"],
             "teacher"  => ["string", "max:50","nullable"],
             "week"  => ["json"],
-            "section_start"  => ["integer"],
-            "end_start"  => ["integer"],
-            "day"  => ["integer"],
+            "section_start"  => ["string"],
+            "end_start"  => ["string"],
+            "day"  => ["string"],
         ];
         $request = handleData($request,$params);
         if(!is_object($request)){
@@ -31,11 +31,14 @@ class CourseController extends Controller
         }
         //提取数据
         $data = $request->only(array_keys($params));
-        $week = json_decode(json_encode([1,2,3]));
+        $week = json_decode($request->input('week'));
         $week_string = '第' . $week[0] . '-' . end($week) . '周';
         //获取学号
-        $uid = handleUid($request);
-
+        //用户id
+        $id = handleUid($request);
+        //学号
+        $uid = DB::table('users')->where('id',$id)->get(['stu_id'])->toArray();
+        $uid = $uid[0]->stu_id;
         //加上额外必要数据
         $data = $data + ['uid' => $uid,'week_string' => $week_string];
         $course = new Course($data);
@@ -68,12 +71,16 @@ class CourseController extends Controller
         if(!$course_list){
             return msg(4,__LINE__);
         }
+        $data = array();
         foreach ($course_list as $course_item){
             $course_item->week = json_decode($course_item->week,true);
             $i = $course_item->day;     //周几
             $j = ($course_item->section_start + 1) / 2;
             $data[$i][$j] = $course_item;
         }
+
+        $response = Http::get('https://campus_data.acver.xyz/api/student/'.$uid.'/course');
+        return $response;
 //        return $data;
 //        $message = ['total' => count($course_list), 'list' => $data];
         return msg(0, $data);
@@ -107,7 +114,8 @@ class CourseController extends Controller
     }
 
 
-    public function associate_course(Request $request){
+    public function associate_course(Request $request)
+    {
         $week_course =[];
         $schedule = [];
         //声明理想数据格式
