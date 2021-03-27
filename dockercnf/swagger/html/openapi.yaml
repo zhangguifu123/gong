@@ -2488,6 +2488,7 @@ paths:
                         week_string: 第1-3周
                         section_start: 1
                         end_start: 2
+                        section_length: 2
                     3:
                       - id: 3
                         course: 计算机网络
@@ -2497,6 +2498,7 @@ paths:
                         week_string: 第5-7周
                         section_start: 5
                         end_start: 6
+                        section_length: 2
                   2:
                     5:
                       - id: 2
@@ -2507,6 +2509,7 @@ paths:
                         week_string: 第5-9周
                         section_start: 7
                         end_start: 9
+                        section_length: 3
 
         '401':
           $ref: '#/components/responses/NotAuthorization'
@@ -4441,6 +4444,10 @@ components:
                 type: string
                 description: 结束小节
                 example: 6
+              section_length:
+                type: integer
+                description: 课时长度
+                example: 5
               day:
                 type: string
                 description: 周几
