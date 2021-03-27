@@ -77,6 +77,7 @@ class DatabaseSeeder extends Seeder
                 'week_string' => '1-3周',
                 'section_start' => 1,
                 'end_start' => 2,
+                'section_length' => 2,
                 'day' => 1,
             ],
             [
@@ -88,6 +89,7 @@ class DatabaseSeeder extends Seeder
                 'week_string' => '1-3周',
                 'section_start' => 3,
                 'end_start' => 4,
+                'section_length' => 2,
                 'day' => 1,
             ],
             [
@@ -99,6 +101,7 @@ class DatabaseSeeder extends Seeder
                 'week_string' => '1-3周',
                 'section_start' => 5,
                 'end_start' => 6,
+                'section_length' => 2,
                 'day' => 1,
             ],
             [
@@ -110,6 +113,7 @@ class DatabaseSeeder extends Seeder
                 'week_string' => '1-3周',
                 'section_start' => 9,
                 'end_start' => 11,
+                'section_length' => 2,
                 'day' => 1,
             ]
         ]);
