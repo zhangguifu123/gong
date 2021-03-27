@@ -21,7 +21,7 @@ class CreateCoursesTable extends Migration
             $table->string('teacher')->nullable()->comment('老师');
             $table->json('week')->comment('周次(详)');
             $table->string('week_string')->comment('周次');
-//            $table->string('section_length')->comment('课时长度');
+            $table->integer('section_length')->comment('课时长度');
             $table->integer('section_start')->comment('开始小节');
             $table->integer('end_start')->comment('结束小节');
             $table->integer('day')->comment('周几');

@@ -7,5 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Course extends Model
 {
     //
-    protected $fillable = ['uid','course', 'location','teacher','week','week_string','section_length','section_start','end_start','day'];
+//    protected $fillable = ['uid','course', 'location','teacher','week','week_string','section_length','section_start','end_start','day'];
+    protected $guarded = ['id','created_at','updated_at'];
 }

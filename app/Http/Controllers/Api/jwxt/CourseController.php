@@ -21,9 +21,10 @@ class CourseController extends Controller
             "location"    => ["string", "max:50","nullable"],
             "teacher"  => ["string", "max:50","nullable"],
             "week"  => ["json"],
-            "section_start"  => ["string"],
-            "end_start"  => ["string"],
-            "day"  => ["string"],
+            "section_start"  => ["integer"],
+            "end_start"  => ["integer"],
+            "section_length" => ['integer'],
+            "day"  => ["integer"],
         ];
         $request = handleData($request,$params);
         if(!is_object($request)){
@@ -66,7 +67,7 @@ class CourseController extends Controller
     public function get_list(Request $request){
         $uid = $request->route('uid');
         $course_list = Course::query()->where('uid',$uid)
-            ->get(['id','course', 'location','teacher','week','week_string','section_start','end_start','day']);
+            ->get(['id','course', 'location','teacher','week','week_string','section_start','end_start','section_length','day']);
 //            ->toArray();
         if(!$course_list){
             return msg(4,__LINE__);
@@ -94,6 +95,7 @@ class CourseController extends Controller
             "week"  => ["json"],
             "section_start"  => ["integer"],
             "end_start"  => ["integer"],
+            "section_length" => ['integer'],
             "day"  => ["integer"],
         ];
         $request = handleData($request,$params);
