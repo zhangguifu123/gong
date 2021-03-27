@@ -248,7 +248,7 @@ class EvaluationController extends Controller
                 "collections", "top", "img", "title", "users.avatar","evaluations.created_at as time"
             ])
             ->toArray();
-        if(count($list == 0)){
+        if(count($list) == 0){
             $new_list = [];
             return $new_list;
         }
