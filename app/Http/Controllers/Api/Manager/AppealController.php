@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Manager;
 
 use App\Http\Controllers\Controller;
 use App\Model\Manager\EatestAppeal;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -31,7 +32,7 @@ class AppealController extends Controller
         //检查数据格式
         $params = [
             "eatestId" => ["integer"],
-            "userName" => ["string"],
+            "userId" => ["integer"],
             "type" => ["string"],
             "content" => ['string'],
             "describe" => ["string"]
@@ -63,16 +64,19 @@ class AppealController extends Controller
         }
         //分页，每页10条
         $offset = $request->route("page") * 13 - 13;
-        $showAppeal = EatestAppeal::query()
+        $showAppeals = EatestAppeal::query()
             ->whereIn('status',$status)
             ->limit(13)
             ->offset($offset)
             ->orderByDesc("created_at")
             ->get();
-        if(!$showAppeal){
+        if(!$showAppeals){
             return msg(4,__LINE__);
         }
-        $data = $showAppeal->toArray();
+        foreach ($showAppeals as $showAppeal){
+            $showAppeal->userName = (User::query()->find($showAppeal->userId)->get('nickname')->toArray())[0]['nickname'];
+        }
+        $data = $showAppeals->toArray();
         $message = ['total' => count($data), 'list' => $data];
         return msg(0, $message);
     }

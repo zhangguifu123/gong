@@ -28,6 +28,11 @@ Route::namespace('Api')->group(function (){
     Route::post('/image','ImageController@upload');
     Route::get('/eatest/list/{page}', "Eatest\EvaluationController@get_list")->where(["page" => "[0-9]+"]);
     Route::post('/eatest/image/delete','ImageController@delete');
+    //模糊搜索
+    Route::get('eatest/fuzzySearch/{index}','Eatest\searchEatestController@search');
+//        ->where(['index' => '[0-9A-Za-z]+']);
+    //添加标签
+    Route::post('manager/label','Manager\LabelController@addLabel');
     //Eatest拉取单页详情
     Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware(['eatest.exist.check']);
     //测试
@@ -63,7 +68,7 @@ Route::namespace('Api')->group(function (){
             Route::delete('manager/topic/{id}','Manager\TopicController@dropTopic')->where(["id" => "[0-9]+"]);
             Route::put('manager/topic/{id}/topOrder','Manager\TopicController@topOrder')->where(["id" => "[0-9]+"]);;
             /** EatestLabel */
-            Route::post('manager/label','Manager\LabelController@addLabel');
+//            Route::post('manager/label','Manager\LabelController@addLabel');
             Route::delete('manager/label/{id}','Manager\LabelController@dropLabel')->where(["id" => "[0-9]+"]);
 
 
@@ -96,7 +101,7 @@ Route::namespace('Api')->group(function (){
     Route::post('push/send',"PushSdk\ToSingleController@send");
 
     /** 用户区 */
-    Route::group(['middleware' => 'login.check'], function () {
+//    Route::group(['middleware' => 'login.check'], function () {
         /** 关注 */
 
         Route::post('focus',"Eatest\FocusController@focus")->middleware(['focus.exist.check']);
@@ -165,11 +170,11 @@ Route::namespace('Api')->group(function (){
         Route::post('/test','Eatest\EvaluationController@test');
         //Eatest增删改查
         Route::post('/eatest','Eatest\EvaluationController@publish');
-        Route::group(["middleware" => 'owner.check'], function (){
+//        Route::group(["middleware" => 'owner.check'], function (){
             Route::get('/eatest/me/{uid}','Eatest\EvaluationController@get_me_list');
             Route::get('/eatest/like/{uid}','Eatest\EvaluationController@get_like_list');
             Route::get('/eatest/collection/{uid}','Eatest\EvaluationController@get_collection_list');
-        });
+//        });
             // 测评所有者和管理员均可操作
         Route::group(["middleware" => ["eatest.exist.check",'owner.eatest.check']], function () {
 
@@ -228,7 +233,7 @@ Route::namespace('Api')->group(function (){
 
 
 
-    });
+//    });
 //
 
 //        //测试区
