@@ -158,7 +158,7 @@ Route::namespace('Api')->group(function (){
         Route::get('/countdown/{uid}', 'jwxt\CountDownController@query')->where(["uid" => "[0-9]+"])->middleware("owner.check");
 
         /** Course*/
-        Route::post('/course/extra',"jwxt\CourseController@publish");
+        Route::post('/course/extra/{uid}',"jwxt\CourseController@publish")->where(["uid" => "[0-9]+"]);
         //测评所有者和管理员均可操作
 //        Route::get('/course/extra/{uid}',"jwxt\CourseController@get_list")->middleware("owner.check");
         Route::get('/course/extra/{uid}',"jwxt\CourseController@get_list");
@@ -235,7 +235,7 @@ Route::namespace('Api')->group(function (){
 
     });
 //
-
+Route::get('/user/msg/{id}','StudentLoginController@userMsg');
 //        //测试区
 //    //添加话题
 //    Route::post('manager/topic','Manager\TopicController@addTopic');
