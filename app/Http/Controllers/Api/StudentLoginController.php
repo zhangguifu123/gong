@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Model\Eatest\EatestComments;
+use App\Model\Eatest\Evaluation;
 use App\Model\User\Ecard;
 use App\User;
 use Illuminate\Http\Request;
@@ -124,5 +126,18 @@ class StudentLoginController extends Controller
             ->count();
         $message = ['total'=>$list_count,'list'=>$publish_list];
         return msg(0, $message);
+    }
+
+    //用户个人信息
+    public function userMsg(Request $request){
+        //提取数据(用户id)
+        $id = $request->route('id');
+        //拉取个人信息
+        $list = User::query()->find($id)->get();
+        foreach ($list as $item){
+            $item->eatestSum = Evaluation::query()->where('publisher',$item->id)->count();
+            $item->commentSum = EatestComments::query()->where('fromId',$item->id)->count();
+        }
+        return $list;
     }
 }
