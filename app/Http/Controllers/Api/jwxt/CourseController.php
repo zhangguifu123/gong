@@ -41,7 +41,8 @@ class CourseController extends Controller
         $week_string = '第' . $week[0] . '-' . end($week) . '周';
         //获取学号
         //用户id
-        $id = handleUid($request);
+//        $id = handleUid($request);
+        $id = $request->route('uid');
         //学号
         $uid = DB::table('users')->where('id',$id)->get(['stu_id'])->toArray();
         $uid = $uid[0]->stu_id;

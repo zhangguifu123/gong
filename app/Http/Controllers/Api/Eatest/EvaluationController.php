@@ -146,19 +146,13 @@ class EvaluationController extends Controller
         //
         $uid = $request->route('uid'); //学生id
         $eatest = User::query()->find($uid)->eatest;
-//        return $eatest;
-//        var_dump($eatest);
         $eatest = array_keys(json_decode($eatest,true));
-//        $eatest = 1;
-//        return $eatest;
         $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$eatest)
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
                 "collections", "top", "img", "title", "evaluations.created_at as time,","users.avatar as fromAvatar"
             ]);
-//        ->get();
-//        return $evaluation_list;
         foreach ($evaluation_list as $item){
             $item->commentSum = EatestComments::query()->where('eatest_id',$item->id)->count();
         }
@@ -204,14 +198,11 @@ class EvaluationController extends Controller
         //分页，每页10条
         $offset = $request->route("page") * 10 - 10;
         //获取session
-//        session(['collect_count' => [1,2,3]]);
-//        var_dump(session('collect_count'));
         if (!$request->session()->has('collect_count')) {
             $value = session('collect_count');
         } else {
             $value = [];
         }
-//        return "chenggong";
         //若与前面的推荐美文重复，将其剔除 whereNotIn()
         $evaluation_list = Evaluation::query()->limit(10)
             ->offset($offset)->orderByDesc("evaluations.created_at")
