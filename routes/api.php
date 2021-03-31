@@ -101,7 +101,7 @@ Route::namespace('Api')->group(function (){
     Route::post('push/send',"PushSdk\ToSingleController@send");
 
     /** 用户区 */
-//    Route::group(['middleware' => 'login.check'], function () {
+    Route::group(['middleware' => 'login.check'], function () {
         /** 关注 */
 
         Route::post('focus',"Eatest\FocusController@focus")->middleware(['focus.exist.check']);
@@ -170,11 +170,11 @@ Route::namespace('Api')->group(function (){
         Route::post('/test','Eatest\EvaluationController@test');
         //Eatest增删改查
         Route::post('/eatest','Eatest\EvaluationController@publish');
-//        Route::group(["middleware" => 'owner.check'], function (){
+        Route::group(["middleware" => 'owner.check'], function (){
             Route::get('/eatest/me/{uid}','Eatest\EvaluationController@get_me_list');
             Route::get('/eatest/like/{uid}','Eatest\EvaluationController@get_like_list');
             Route::get('/eatest/collection/{uid}','Eatest\EvaluationController@get_collection_list');
-//        });
+        });
             // 测评所有者和管理员均可操作
         Route::group(["middleware" => ["eatest.exist.check",'owner.eatest.check']], function () {
 
@@ -233,7 +233,7 @@ Route::namespace('Api')->group(function (){
 
 
 
-//    });
+    });
 //
 
 //        //测试区
