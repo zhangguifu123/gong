@@ -10,35 +10,52 @@ use Illuminate\Http\Request;
 class searchEatestController extends Controller
 {
     //模糊搜索
-    public function fuzzySearch(Request $request)
+    public function search(Request $request)
     {
         //检查数据格式
-        $params = [
-            'index' => ['string']
-        ];
-//        $request = handleData($request,$params);
-        if(!is_object($request)){
-            return $request;
-        }
+//        $params = [
+//            'index' => ['string']
+//        ];
+////        $request = handleData($request,$params);
+//        if(!is_object($request)){
+//            return $request;
+//        }
         //获取数据
-        $index = $request->input('index');
+        $index = $request->route('index');
+//        var_dump($index);
         //拉取所有符合条件的评测
         $list = Evaluation::query()
-            ->where('title','like','%' . $index . '%')
-            ->orWhere('content','like','%' . $index . '%')
-            ->orWhere('label','like','%' . $index . '%')
-            ->orWhere('topic', 'like','%' . $index . '%')
+            ->where('title','like','%' . $index . '%')      //标题
+            ->where('content','like','%' . $index . '%')      //内容
+//            ->orWhere('label','like','%' . $index . '%')
+            ->orWhere('topic', 'like','%' . $index . '%')       //话题
             ->get()->toArray();
         if(!$list){
             return msg(4,__LINE__);
         }
         return $list;
         //排序
-        if(标题中含有){                 //搜索标题
+        /**
+         * 标题、内容、标签、话题
+         * 标题、内容、标签
+         * 标题、内容
+         * 标题
+         *
+         * 内容、标签、话题
+         * 内容、标签
+         * 内容
+         *
+         * 标签、话题
+         * 标签
+         *
+         * 话题
+         */
+
+        if('标题中含有'){                 //搜索标题
             $this->titleSearch();
-        }else if(标签和内容中含有){     //搜索标签和内容
+        }else if('标题中不含,标签和内容中含有'){     //搜索标签和内容
             $this->LocSearch();
-        }else if(话题中含有){                       //搜索话题
+        }else if('标题、标签、内容中不含，话题中含有'){                       //搜索话题
             $this->topicSearch();
         }else{
             return msg(11, __LINE__);

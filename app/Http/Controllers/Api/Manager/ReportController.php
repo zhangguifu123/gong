@@ -8,6 +8,7 @@ use App\Model\Eatest\Evaluation;
 use App\Model\Manager\EatestReports;
 use App\Http\Controllers\Controller;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 
@@ -29,8 +30,8 @@ class ReportController extends Controller
             //检查数据类型
             $params = [
                 'eatestId' => ['integer'],
-                'userName' => ['string'],
-                'targetName' => ['string'],
+                'userId' => ['integer'],
+                'targetId' => ['integer'],
                 'type' => ['string'],
                 'describe' => ['string'],
                 'reason' => ['string'],
@@ -70,6 +71,14 @@ class ReportController extends Controller
             ->get();
         if(!$showReports){
             return msg(4,__LINE__);
+        }
+//        return $showReports;
+        //转换时间格式
+        foreach ($showReports as $showReport){
+            $showReport->userName = (User::query()->find($showReport->userId)->get('nickname')->toArray())[0]['nickname'];
+            $showReport->targetName = (User::query()->find($showReport->targetId)->get('nickname')->toArray())[0]['nickname'];
+//            return $showReport->userName;
+            $showReport->time = $showReport->created_at->format('Y-m-d');
         }
         $data = $showReports->toArray();
         $message = ['total' => count($data), 'list' => $data];

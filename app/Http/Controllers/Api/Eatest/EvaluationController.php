@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Api\Eatest;
 
+use App\Model\Eatest\EatestComments;
+use App\Model\Eatest\EatestLabels;
+use App\Model\Eatest\EatestTopics;
 use Illuminate\Support\Facades\Storage;
 use \Redis;
 use App\Http\Controllers\Controller;
@@ -21,6 +24,8 @@ class EvaluationController extends Controller
         if (!is_array($data)) {
             return $data;
         }
+//        var_dump(json_decode($data['label']),true);
+//        return "0";
         //声明理想数据格式
         $uid = handleUid($request);
 
@@ -40,10 +45,11 @@ class EvaluationController extends Controller
         foreach ($imgs as $i) {
             $redis->hDel('images', $i);
         }
-        //发布，同时将评测加入我的发布
+        //发布，同时将评测加入我的发布，话题发帖数加一
         if ($evaluation->save()) {
             User::query()->find($uid)->add_eatest($evaluation->id);
-
+            EatestTopics::query()->find($data['topic'])->increment('eatestSum');
+            EatestLabels::query()->find(json_decode($data['label']))->increment('UsageTime');
             return msg(0, ["id" => $evaluation->id]);
         }
         //未知错误
@@ -137,16 +143,25 @@ class EvaluationController extends Controller
     }
     //拉取我的列表
     public function get_me_list(Request $request){
-        $uid = $request->route('uid');
+        //
+        $uid = $request->route('uid'); //学生id
         $eatest = User::query()->find($uid)->eatest;
+//        return $eatest;
+//        var_dump($eatest);
         $eatest = array_keys(json_decode($eatest,true));
+//        $eatest = 1;
+//        return $eatest;
         $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$eatest)
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
-                "collections", "top", "img", "title", "evaluations.created_at as time"
-            ])->toArray();
-
+                "collections", "top", "img", "title", "evaluations.created_at as time,","users.avatar as fromAvatar"
+            ]);
+//        ->get();
+//        return $evaluation_list;
+        foreach ($evaluation_list as $item){
+            $item->commentSum = EatestComments::query()->where('eatest_id',$item->id)->count();
+        }
         return msg(0,$evaluation_list);
     }
     //拉取我的喜欢
@@ -189,12 +204,19 @@ class EvaluationController extends Controller
         //分页，每页10条
         $offset = $request->route("page") * 10 - 10;
         //获取session
-        $value = session('collect_count');
+//        session(['collect_count' => [1,2,3]]);
+//        var_dump(session('collect_count'));
+        if (!$request->session()->has('collect_count')) {
+            $value = session('collect_count');
+        } else {
+            $value = [];
+        }
+//        return "chenggong";
         //若与前面的推荐美文重复，将其剔除 whereNotIn()
         $evaluation_list = Evaluation::query()->limit(10)
             ->offset($offset)->orderByDesc("evaluations.created_at")
             ->whereNotIn('evaluations.id',$value)
-            ->where('evaluations.status','=','1')
+            ->whereIn('evaluations.status',[0,1])
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
@@ -204,9 +226,9 @@ class EvaluationController extends Controller
         //判断若拉取首页，将推荐美文和正常拉取合并
         if ($request->route("page") == 1) {
             $evaluation_list = array_merge($new_list, $evaluation_list);
-            for ($i = 0;$i<3;$i++){
-                $new_list_count[] = $new_list[$i]['id'];
-            }
+//            for ($i = 0;$i<3;$i++){
+//                $new_list_count[] = $new_list[$i]['id'];
+//            }
         }
 
         $message = ['total' => count($evaluation_list), 'list' => $evaluation_list];
@@ -242,7 +264,7 @@ class EvaluationController extends Controller
         $list = Evaluation::query()->limit(20)->orderByDesc("score")
             ->where("top", "=", "0")
             ->leftJoin('users','evaluations.publisher','=','users.id')
-            ->where('evaluations.status','=','1')
+            ->whereIn('evaluations.status',[0,1])
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
                 "collections", "top", "img", "title", "users.avatar","evaluations.created_at as time"
@@ -250,6 +272,8 @@ class EvaluationController extends Controller
             ->toArray();
         if(count($list) == 0){
             $new_list = [];
+            $new_list_count = [];
+            session(['collect_count' => $new_list_count]);
             return $new_list;
         }
 
@@ -276,7 +300,7 @@ class EvaluationController extends Controller
                 "title"    => ["string", "max:50"],
                 "content"  => ["string", "max:400"],
                 "label"    => ["json"],
-                "topic"    => ["string", "nullable"],
+                "topic"    => ["integer", "nullable"],
                 "nickname" => ["string", "max:10"]
             ];
         //是否缺失参数

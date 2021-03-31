@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * Class CourseController
+ * @package App\Http\Controllers\Api\jwxt
+ *
+ */
 class CourseController extends Controller
 {
     //发布
@@ -40,12 +45,14 @@ class CourseController extends Controller
         //学号
         $uid = DB::table('users')->where('id',$id)->get(['stu_id'])->toArray();
         $uid = $uid[0]->stu_id;
+//        $uid = 201905190401;
         //加上额外必要数据
         $data = $data + ['uid' => $uid,'week_string' => $week_string];
-        $course = new Course($data);
-
-        if ($course->save()) {
-            return msg(0,__LINE__);
+//        $course = new Course($data);
+        $course = Course::query()->insertGetId($data);
+        if ($course) {
+            $msg = ['添加的课程id' => $course];
+            return msg(0,$msg);
         }
         //未知错误
         return msg(4, __LINE__);
