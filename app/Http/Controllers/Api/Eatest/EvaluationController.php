@@ -14,6 +14,14 @@ use App\User;
 use App\Lib\WeChat;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * focusStatus = [
+ *      0 => '已关注',
+ *      1 => '未关注'
+ * ]
+ * Class EvaluationController
+ * @package App\Http\Controllers\Api\Eatest
+ */
 class EvaluationController extends Controller
 {
 
@@ -137,17 +145,31 @@ class EvaluationController extends Controller
         $nickname = User::query()->find($uid)->nickname;
         $evaluation_list['nickname'] = $nickname;
         $avatar = User::query()->find($uid)->avatar;
+        //是否关注
+//        $id = handleUid($request);
+//        $focus =
+//        if($id == null){
+//            $focusStatus = 1;
+//        }else if(){
+//
+//        }
         $evaluation_list = $evaluation_list + ['avatar' => $avatar];
 
         return msg(0, $evaluation_list);
     }
     //拉取我的列表
     public function get_me_list(Request $request){
-        //
+        //提取数据
         $uid = $request->route('uid'); //学生id
+        $page = $request->route('page');
+        $offset = $page * 5 - 5;
+        //拉取我的列表
         $eatest = User::query()->find($uid)->eatest;
         $eatest = array_keys(json_decode($eatest,true));
         $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$eatest)
+            ->limit(5)
+            ->offset($offset)
+            ->orderByDesc('evaluations.created_at')
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
@@ -156,7 +178,8 @@ class EvaluationController extends Controller
         foreach ($evaluation_list as $item){
             $item->commentSum = EatestComments::query()->where('eatest_id',$item->id)->count();
         }
-        return msg(0,$evaluation_list);
+        $msg = ['total' => count($evaluation_list), 'msg' => $evaluation_list];
+        return msg(0,$msg);
     }
     //拉取我的喜欢
     public function get_like_list(Request $request){
