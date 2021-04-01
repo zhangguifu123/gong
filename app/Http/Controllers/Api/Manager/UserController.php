@@ -36,8 +36,8 @@ class UserController extends Controller
         }
         $datas = $showUser->get(['id','nickname','stu_id','status'])->toArray();
         foreach ($datas as $dat){
-            $eatestTotal = Evaluation::query()->where('publisher',$dat['id'])->count();
-            $dat['eatestTotal'] = $eatestTotal;
+            $eatestSum = Evaluation::query()->where('publisher',$dat['id'])->count();
+            $dat['eatestSum'] = $eatestSum;
             $data[] = $dat;
         }
         $message = ['total' => count($data),'list' => $data];
