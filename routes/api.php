@@ -75,6 +75,7 @@ Route::namespace('Api')->group(function (){
 
 
 //            /** Eatest */
+            Route::get('/eatest/user/{uid}/{page}','Eatest\EvaluationController@get_me_list')->where(["uid" => "[0-9]+", "page" => "[0-9]+"]);
 //            Route::put('/manager/eatest/{id}/ban', "Eatest\EvaluationController@updateStatus")->where(["id" => "[0-9]+"]);
 
             /** Upick  */
@@ -236,6 +237,5 @@ Route::namespace('Api')->group(function (){
 
 
     });
-
 
 });

@@ -146,7 +146,7 @@ class CourseController extends Controller
         $uid = $uid[0]->uid;
 
         //http请求
-        $response = Http::get('https://campus_data.acver.xyz/api/student/'.$uid.'/course');
+        $response = Http::get('http://159.75.6.240:8080/api/student/'.$uid.'/course');
         return $response->body();
 
     }
