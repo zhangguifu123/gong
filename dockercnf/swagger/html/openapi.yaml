@@ -308,8 +308,7 @@ paths:
                         - http://test.gong.com/stroage/images/768eaa0d061ec924f2e8b03bab598240.jpg
                         - http://test.gong.com/stroage/images/546bsa0dsadec9dsr238b03jsi523413.jpg
                       status: 1
-                      created_at: "2021-03-18T09:17:50.000000Z"
-                      updated_at: "2021-03-18T09:17:50.000000Z"
+                      time: "2021-03-30"
                       
                     - id: 2,
                       eatestId: 3
@@ -322,8 +321,7 @@ paths:
                         - http://test.gong.com/stroage/images/768eaa0d061ec924f2e8b03bab598240.jpg
                         - http://test.gong.com/stroage/images/546bsa0dsadec9dsr238b03jsi523413.jpg
                       status: 1
-                      created_at: "2021-03-18T09:17:50.000000Z"
-                      updated_at: "2021-03-18T09:17:50.000000Z"
+                      time: "2021-03-30"
         '403':
           $ref: '#/components/responses/InvalidProperties'
   /manager/list:
@@ -426,13 +424,13 @@ paths:
                     - id: 1,
                       nickname: '敢敢' 
                       stu_id: 201805710601
-                      eatestTotal: 3 
+                      eatestSum: 3 
                       status: 0
                       
                     - id: 1,
                       nickname: '憨憨' 
                       stu_id: 201805710601
-                      eatestTotal: 3
+                      eatestSum: 3
                       status: 1
         '403':
           $ref: '#/components/responses/InvalidProperties'
@@ -1142,6 +1140,107 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /user/{id}:
+    get:
+      summary: 用户个人信息
+      operationId: UserMessage
+      tags:
+        - user
+      # parameters:
+      #   - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  # page:
+                  #   description: 页码
+                  #   type: integer
+                  # limit:
+                  #   description: 每页限制
+                  #   type: integer
+                  code:
+                    description: 状态码
+                    type: integer
+                  data:
+                    description: 用户信息
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserMessage'
+              example:
+                code: 0
+                status: "成功"
+                data:
+                  - id: 1
+                    nickName: 啦啦啦
+                    name: 张贵妃 
+                    stu_id: 201905190444
+                    collection: 
+                      - 1
+                      - 2
+                      - 3
+                    like: 
+                      - 1
+                      - 2
+                      - 3
+                    eatest: 
+                      - 1
+                      - 2
+                      - 3
+                    status: 1
+                    countdown: 
+                      - 1
+                      - 2
+                      - 3
+                    foused: 1
+                    fouse: 1
+                    avatar: 
+                      - 1
+                      - 2
+                      - 3
+                    remeber: hahaha
+                    likedSum: 8
+                    collectedSum: 9
+                    eatestSum: 3
+                    commentSum: 1
+
+                  - id: 2
+                    nickName: 啦啦啦
+                    name: 张贵妃 
+                    stu_id: 201905190444
+                    collection: 
+                      - 1
+                      - 2
+                      - 3
+                    like: 
+                      - 1
+                      - 2
+                      - 3
+                    eatest: 
+                      - 1
+                      - 2
+                      - 3
+                    status: 1
+                    countdown: 
+                      - 1
+                      - 2
+                      - 3
+                    foused: 1
+                    fouse: 1
+                    avatar: 
+                      - 1
+                      - 2
+                      - 3
+                    remeber: hahaha
+                    likedSum: 8
+                    collectedSum: 9
+                    eatestSum: 3
+                    commentSum: 1
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
   # /users/me:
   #   get:
   #     summary: 获取用户信息
@@ -3266,6 +3365,7 @@ paths:
                     location: 联建
                     shop_name: 小可爱的店铺
                     time: 2020-08-24 18:48:16
+                    commentSum: 2
                     
                   - id: 2
                     publisher_name: 我是你的大可爱吗
@@ -3284,6 +3384,7 @@ paths:
                     location: 联建
                     shop_name: 小可爱的店铺
                     time: 2020-08-24 19:48:16
+                    commentSum: 2
         '403':
           $ref: '#/components/responses/InvalidProperties'
   /eatest/collection/{uid}:
@@ -5421,6 +5522,10 @@ components:
             description: 发布时间
             type: string
             example: "020-08-24 18:48:16"
+          commentSum:
+            description: 评论量
+            type: integer
+            example: 5
     TopicMessage:
       description: 话题列表
       type: array
@@ -5580,14 +5685,10 @@ components:
             description: 处理结果 0未处理 1已处理
             type: integer
             example: 0     
-          created_at:
+          time:
             description: 举报时间
             type: string
-            example: '2021-03-18T09:17:50.000000Z'
-          updated_at:
-            description: 处理时间
-            type: string
-            example: '2021-03-18T09:17:50.000000Z'
+            example: '2021-03-18'
     ManagerMessage:
       description: 管理员列表
       type: array
@@ -5634,14 +5735,70 @@ components:
             description: 学号
             type: string
             example: 201805710601
-          eatestTotal:
+          collection:
+            description: 我的收藏
+            type: array
+            example: 
+              - 1
+              - 2
+              - 3
+          like: 
+            description: 我的喜欢
+            type: array
+            example: 
+              - 1
+              - 2
+              - 3
+          eatest: 
+            description: 我的发布
+            type: array
+            example: 
+              - 1
+              - 2
+              - 3
+          status:
+            description: 申诉状态 0正常 1禁言一天 2禁言三天 3永久禁言
+            type: integer
+            example: 1  
+          countdown: 
+            description: 倒计时
+            type: array
+            example: 
+              - 1
+              - 2
+              - 3
+          foused:
+            description: 粉丝数
+            type: integer
+            example: 1 
+          fouse:
+            description: 关注数
+            type: integer
+            example: 1 
+          avatar: 
+            description: 头像
+            type: array
+            example: 
+              - 1
+              - 2
+              - 3
+          eatestSum:
             description: 发帖数
             type: integer
             example: 1 
-          status:
-            description: 申诉状态
+          commentSum:
+            description: 评论数
             type: integer
-            example: 1      
+            example: 1 
+          likedSum:
+            description: 被点赞数
+            type: integer
+            example: 1 
+          collectedSum:
+            description: 被收藏数
+            type: integer
+            example: 1 
+    
     GuideMessage:
       description: 地点信息
       type: object

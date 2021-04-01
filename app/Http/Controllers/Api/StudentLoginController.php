@@ -135,9 +135,19 @@ class StudentLoginController extends Controller
         //拉取个人信息
         $list = User::query()->find($id)->get();
         foreach ($list as $item){
-            $item->eatestSum = Evaluation::query()->where('publisher',$item->id)->count();
+            $evaluations = Evaluation::query()->where('publisher',$item->id)->get();
+//            return $evaluations;
+            $item->likedSum = 0;
+            $item->collectedSum = 0;
+            foreach ($evaluations as $evaluation) {
+//                return $evaluation->collections;
+                $item->likedSum += $evaluation->like;
+                $item->collectedSum += $evaluation->collections;
+
+            }
+            $item->eatestSum = $evaluations->count();
             $item->commentSum = EatestComments::query()->where('fromId',$item->id)->count();
         }
-        return $list;
+        return msg(0,$list);
     }
 }
