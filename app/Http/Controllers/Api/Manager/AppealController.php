@@ -19,8 +19,9 @@ use Illuminate\Support\Facades\Validator;
  *      2 => 内容还原
  * ]
  * $type = [
- *      0 => eatest内容举报
- *      1 => eatest评论举报
+ *      0 => eatest内容申诉
+ *      1 => eatest评论申诉
+ *      2 => eatest评论回复申诉
  * ]
  *
  */
@@ -33,7 +34,7 @@ class AppealController extends Controller
         $params = [
             "eatestId" => ["integer"],
             "userId" => ["integer"],
-            "type" => ["string"],
+            "type" => ["integer"],
             "content" => ['string'],
             "describe" => ["string"]
         ];

@@ -15,8 +15,13 @@ use Illuminate\Http\Request;
 /**
  * Class ReportController
  * @package App\Http\Controllers\Api\Manager
+ * $type = [        //举报类型
+ *      0 => eatest内容举报
+ *      1 => eatest评论举报
+ *      2 => eatest评论回复举报
+ * ]
  *
- * $status = [
+ * $status = [      //处理状态
  *      0 => 等待处理
  *      1 => 无效举报
  *      2 => 内容下架
@@ -32,7 +37,7 @@ class ReportController extends Controller
                 'eatestId' => ['integer'],
                 'userId' => ['integer'],
                 'targetId' => ['integer'],
-                'type' => ['string'],
+                'type' => ['integer'],
                 'describe' => ['string'],
                 'reason' => ['string'],
 //                'prove' => ['json']

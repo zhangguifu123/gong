@@ -234,7 +234,7 @@ paths:
                     - id: 1,
                       eatestId: 2
                       userName: 啦啦啦
-                      type: eatest内容
+                      type: 0
                       content: 金翰林螺蛳粉!!
                       describe: 为什么禁言我
                       status: 0
@@ -242,7 +242,7 @@ paths:
                     - id: 2,
                       eatestId: 3
                       userName: 啦啦啦
-                      type: eatest内容
+                      type: 1
                       content: 金翰林螺蛳粉!!
                       describe: 为什么禁言我
                       status: 1
@@ -301,7 +301,7 @@ paths:
                       eatestId: 2
                       userName: 啦啦啦
                       targetName: 哈哈哈
-                      type: eatest内容举报
+                      type: 0
                       describe: 他ghs
                       reason: 发布不良信息
                       prove:
@@ -314,7 +314,7 @@ paths:
                       eatestId: 3
                       userName: 啦啦啦
                       targetName: 哈哈哈
-                      type: eatest内容举报
+                      type: 1
                       describe: 他ghs
                       reason: 发布不良信息
                       prove:
@@ -434,7 +434,7 @@ paths:
                       status: 1
         '403':
           $ref: '#/components/responses/InvalidProperties'
-  /eatest/user/{uid}/{page}:
+  /eatest/{uid}/{page}:
     get:
       summary: 指定用户评测
       tags:
@@ -3336,6 +3336,7 @@ paths:
                     is_like: false
                     is_collection: false
                     time: '2020-08-24 18:48:16'
+                    isFocus: false
 
         '403':
           $ref: '#/components/responses/InvalidProperties'
@@ -4648,18 +4649,18 @@ components:
                 description: 评测id
                 type: integer
                 example: 1
-              userName:
-                description: 举报者用户名
-                type: string
-                example: 啦啦啦
-              targetName:
-                description: 被举报者用户名
-                type: string
-                example: 哈哈哈
+              userId:
+                description: 举报者id
+                type: integer
+                example: 1
+              targetId:
+                description: 被举报者id
+                type: integer
+                example: 2
               type:
-                description: 举报类型 (前端自行判断)
-                type: string
-                example: eatest评论举报
+                description: 举报类型 (前端自行判断 0评测举报 1评论举报 2评论回复举报)
+                type: integer
+                example: 2
               describe: 
                 description: 举报描述/内容 (用户自填)
                 type: string
@@ -4680,14 +4681,14 @@ components:
                 description: 评测id
                 type: integer
                 example: 1
-              userName:
-                description: 申诉人姓名
-                type: string
-                example: 张三
+              userId:
+                description: 申诉人id
+                type: integer
+                example: 2
               type:
-                description: 申诉类型 (前端自行判断)
-                type: string
-                example: eatest内容
+                description: 申诉类型 (前端自行判断 0评测申诉 1评论申诉 2评论回复申诉)
+                type: integer
+                example: 1
               content:
                 description: 申诉内容/详情 
                 type: string
@@ -5608,6 +5609,10 @@ components:
             description: 评论量
             type: integer
             example: 5
+          isFocus: 
+            description: 是否关注
+            type: boolean
+            example: true
     TopicMessage:
       description: 话题列表
       type: array
@@ -5707,9 +5712,9 @@ components:
             type: string
             example: 啦啦啦
           type:
-            description: 申诉类型
-            type: string
-            example: eatest评论申诉
+            description: 申诉类型 0评测申诉 1评论申诉 2评论回复申诉(根据type调用不同类型的上架/下架接口)
+            type: integer
+            example: 0
           content:
             description: 申诉内容/详情
             type: string
@@ -5746,9 +5751,9 @@ components:
             type: string
             example: 哈哈哈
           type:
-            description: 举报类型
-            type: string
-            example: eatest评论举报
+            description: 申诉类型 0举报申诉 1举报申诉 2举报回复申诉(根据type调用不同类型的上架/下架接口)
+            type: integer
+            example: 0
           describe:
             description: 举报描述/评论
             type: string

@@ -1,20 +1,22 @@
 <?php
+namespace App\Http\Controllers;
+
 class DfaCheck {
- 
+
     private static $instance = null;
- 
+
     /**
      * 替换符号
      * @var string
      */
     private static $replaceSymbol = "*";
- 
+
     /**
      * 敏感词树
      * @var array
      */
     private static $sensitiveWordTree = [];
- 
+
     /**
      * 获取实例
      */
@@ -58,7 +60,7 @@ class DfaCheck {
             }
         }
     }
- 
+
     /**
      * 执行过滤
      * @param string $txt
@@ -70,7 +72,7 @@ class DfaCheck {
             return $txt;
         return strtr($txt, $wordList);
     }
- 
+
     /**
      * 搜索敏感词
      * @param string $txt
@@ -95,7 +97,7 @@ class DfaCheck {
         }
         return $wordList;
     }
- 
+
     /**
      * 检查敏感词树是否合法
      * @param string $txt 检查文本
@@ -125,7 +127,7 @@ class DfaCheck {
         $flag ?: $wordLength = 0;
         return $wordLengthArray;
     }
- 
+
     /**
      * 读取文件内容
      * @param string $file_path
@@ -138,19 +140,19 @@ class DfaCheck {
         }
         fclose($handle);
     }
- 
+
     private function __clone() {
         throw new \Exception("clone instance failed!");
     }
- 
+
     private function __wakeup() {
         throw new \Exception("unserialize instance failed!");
     }
- 
+
 }
- 
- 
-$dfa = new DfaCheck();
- 
-$txt = "我操你妈的王八蛋龟儿子";
-echo $dfa->execFilter($txt);
+
+
+//$dfa = new DfaCheck();
+//
+//$txt = "我操你妈的王八蛋龟儿子";
+//echo $dfa->execFilter($txt);
