@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Eatest;
 use App\Model\Eatest\EatestComments;
 use App\Model\Eatest\EatestLabels;
 use App\Model\Eatest\EatestTopics;
+use App\Model\Eatest\FocusOn;
 use Illuminate\Support\Facades\Storage;
 use \Redis;
 use App\Http\Controllers\Controller;
@@ -146,19 +147,52 @@ class EvaluationController extends Controller
         $evaluation_list['nickname'] = $nickname;
         $avatar = User::query()->find($uid)->avatar;
         //是否关注
-//        $id = handleUid($request);
-//        $focus =
-//        if($id == null){
-//            $focusStatus = 1;
-//        }else if(){
-//
-//        }
-        $evaluation_list = $evaluation_list + ['avatar' => $avatar];
+        $fromId = handleUid($request);
+        $isFocus = FocusOn::query()
+            ->find($fromId)
+            ->where([
+                ['follow_uid',201905190444],
+                ['status', '!=', '-1']
+            ])->first();
+        if($uid == null){
+            $focusStatus = false;
+        }else if($isFocus == null){
+            $focusStatus = false;
+        }else{
+            $focusStatus = true;
+        }
+        $evaluation_list = $evaluation_list + ['avatar' => $avatar, 'isFocus' => $focusStatus];
 
         return msg(0, $evaluation_list);
     }
+
     //拉取我的列表
     public function get_me_list(Request $request){
+        //提取数据
+        $uid = $request->route('uid'); //学生id
+//        $page = $request->route('page');
+//        $offset = $page * 5 - 5;
+        //拉取我的列表
+        $eatest = User::query()->find($uid)->eatest;
+        $eatest = array_keys(json_decode($eatest,true));
+        $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$eatest)
+//            ->limit(5)
+//            ->offset($offset)
+            ->orderByDesc('evaluations.created_at')
+            ->leftJoin('users','evaluations.publisher','=','users.id')
+            ->get([
+                "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
+                "collections", "top", "img", "title", "evaluations.created_at as time,","users.avatar as fromAvatar"
+            ]);
+        foreach ($evaluation_list as $item){
+            $item->commentSum = EatestComments::query()->where('eatest_id',$item->id)->count();
+        }
+//        $msg = ['total' => count($evaluation_list), 'msg' => $evaluation_list];
+        return msg(0,$evaluation_list);
+    }
+
+    //拉取指定用户发布
+    public function getOneList(Request $request){
         //提取数据
         $uid = $request->route('uid'); //学生id
         $page = $request->route('page');
@@ -181,6 +215,7 @@ class EvaluationController extends Controller
         $msg = ['total' => count($evaluation_list), 'msg' => $evaluation_list];
         return msg(0,$msg);
     }
+
     //拉取我的喜欢
     public function get_like_list(Request $request){
         $uid = $request->route('uid');
@@ -212,6 +247,7 @@ class EvaluationController extends Controller
         //拉取列表信息
     public function get_list(Request $request)
     {
+
         //判断若拉取首页，则获取推荐美文
         if ($request->route("page") == 1) {
             //获取推荐美文，创建collect_count

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\Manager;
 
 use App\Http\Controllers\Controller;
+//use App\Http\Controllers\DfaCheck;
+use App\Http\Controllers\DfaCheck;
 use App\Model\Eatest\EatestComments;
 use App\Model\Eatest\EatestReplies;
 use App\Model\Eatest\Evaluation;
@@ -19,6 +21,37 @@ use Illuminate\Http\Request;
  */
 class ReviewController extends Controller
 {
+
+    //敏感词过滤
+    public function sensitiveFilter(Request $request)
+    {
+        //检查数据格式
+//        $params = [
+//            'content' => ['string']
+//        ];
+//        $request = handleData($request,$params);
+//        if(!is_object($request)){
+//            return $request;
+//        }
+        //提取数据
+        $content = $request->input('content');
+//        return $content;
+        //敏感词过滤
+        $replace = DfaCheck::execFilter($content);
+        return $replace;
+        $replace = new DfaCheck();
+        $replaced = $replace->execFilter($content);
+        return $replace;
+        if($replace !== $content){
+            return msg(4,__LINE__);
+        }
+        //可疑内容提取
+
+    }
+
+    //eatest可疑内容提取
+
+
     //查看待审核评测
     public function getEvaluationList(Request $request)
     {
@@ -103,6 +136,27 @@ class ReviewController extends Controller
         $data = $request->only(array_keys($mod));
         //修改
         $evaluation = EatestComments::query()->find($request->route('id'));
+        $evaluation = $evaluation->update($data);
+        if ($evaluation) {
+            return msg(0, __LINE__);
+        }
+        return msg(4, __LINE__);
+    }
+
+
+    //评论回复上架/下架
+    public function updateReplyStatus(Request $request)
+    {
+        //检查是否存在数据格式
+        $mod = ["handleStatus" => ["integer"]];
+        $request = handleData($request,$mod);
+        if(!is_object($request)){
+            return $request;
+        }
+        //提取数据
+        $data = $request->only(array_keys($mod));
+        //修改
+        $evaluation = EatestReplies::query()->find($request->route('id'));
         $evaluation = $evaluation->update($data);
         if ($evaluation) {
             return msg(0, __LINE__);

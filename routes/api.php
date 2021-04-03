@@ -37,6 +37,8 @@ Route::namespace('Api')->group(function (){
     Route::post('manager/label','Manager\LabelController@addLabel');
     //Eatest拉取单页详情
     Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware(['eatest.exist.check']);
+    //审核
+    Route::post('/review',"Manager\ReviewController@sensitiveFilter");
     //测试
     Route::get('/image', "ImageController@get");
     /**管理员*/
@@ -75,7 +77,9 @@ Route::namespace('Api')->group(function (){
 
 
 //            /** Eatest */
-            Route::get('/eatest/user/{uid}/{page}','Eatest\EvaluationController@get_me_list')->where(["uid" => "[0-9]+", "page" => "[0-9]+"]);
+            Route::get('/eatest/{uid}/{page}','Eatest\EvaluationController@getOneList')->where(["uid" => "[0-9]+", "page" => "[0-9]+"]);
+            Route::get('/eatest/comment/{uid}/{page}','Eatest\CommentController@getOneList')->where(["uid" => "[0-9]+", "page" => "[0-9]+"]);
+            Route::get('/eatest/reply/{uid}/{page}','Eatest\ReplyController@getOneList')->where(["uid" => "[0-9]+", "page" => "[0-9]+"]);
 //            Route::put('/manager/eatest/{id}/ban', "Eatest\EvaluationController@updateStatus")->where(["id" => "[0-9]+"]);
 
             /** Upick  */
@@ -237,5 +241,9 @@ Route::namespace('Api')->group(function (){
 
 
     });
+
+    //审核测试
+//    Route::get('filtter','');
+
 
 });

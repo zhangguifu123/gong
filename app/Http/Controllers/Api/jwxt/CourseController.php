@@ -208,7 +208,7 @@ class CourseController extends Controller
             //获取姓名
             $name = DB::table('users')->where('stu_id',$uid)->get()->toArray()[0]->name;
             //http请求
-            $response = Http::get('https://campus_data.acver.xyz/api/student/'.$uid.'/course');
+            $response = Http::get('http://159.75.6.240:8080/api/student/'.$uid.'/course');
             $class =  json_decode($response->body(),true);
             $class = $class['data'];
             $user_schedule = array(

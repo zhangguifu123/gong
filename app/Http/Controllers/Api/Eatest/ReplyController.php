@@ -42,6 +42,30 @@ class ReplyController extends Controller
         return msg(0, $message);
     }
 
+
+    //获取指定用户评论回复
+    public function getOneList(Request $request){
+        //提取数据
+        $uid = $request->route('uid');
+        $page = $request->route('page');
+        $offset = $page * 13 -13;
+        //查看评论
+        $list = EatestReplies::query()
+            ->where([
+                ['fromId', $uid],
+                ['status', 0]
+            ])
+            ->limit(13)
+            ->offset($offset)
+            ->orderByDesc('created_at')
+            ->get();
+        if(!$list){
+            return msg(4,__LINE__);
+        }
+        $message = ['total' => count($list),'list' => $list];
+        return msg(0,$message);
+    }
+
     //删除
     public function delete(Request $request)
     {

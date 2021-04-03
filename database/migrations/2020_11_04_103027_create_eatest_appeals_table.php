@@ -16,8 +16,8 @@ class CreateEatestAppealsTable extends Migration
         Schema::create('eatest_appeals', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('eatestId')->comment('评测id');
-            $table->integer('userId')->comment('申诉人姓名');
-            $table->string('type')->comment('申诉类型');
+            $table->integer('userId')->comment('申诉人id');
+            $table->integer('type')->comment('申诉类型');
             $table->string('content')->comment('申诉内容');
             $table->string('describe')->comment('申诉描述');
             $table->integer('status')->default(0)->comment('0 待处理,1 无效申诉,2 内容还原');

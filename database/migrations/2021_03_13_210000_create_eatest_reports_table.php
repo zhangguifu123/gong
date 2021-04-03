@@ -17,9 +17,9 @@ class CreateEatestReportsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->bigInteger("eatestId")->comment("被举报评测/评论id");
-            $table->integer("userId")->comment("举报者用户名");
-            $table->integer("targetId")->comment("被举报者用户名");
-            $table->string("type")->comment("举报类型");
+            $table->integer("userId")->comment("举报者id");
+            $table->integer("targetId")->comment("被举报者id");
+            $table->integer("type")->comment("举报类型");
             $table->string("describe")->comment("举报描述/评论");
 //            $table->string("reportTime")->comment("举报时间");
             $table->string("reason")->comment("举报理由");
