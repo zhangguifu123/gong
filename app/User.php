@@ -2,11 +2,13 @@
 
 namespace App;
 
+
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
 
@@ -36,7 +38,41 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    public function info()
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
+    public function setToken($user){
+        //自定义的载荷填充
+        $customClaims = [
+            'iss' => "http://market.sky31.com",
+            'uid' => $user->id,
+        ];
+        //利用JWT工厂类生成根据自定义的载荷生成payload
+        $payload = JWTFactory::partialMock() ($customClaims);
+        //调用Auth类的encode方法就可以生成token
+        $token =  JWTAuth::clearResolvedInstance() ($payload);
+        //注意,此处的token是一个类,如何直接添加进response()->json()中将会报错,所以强制转换为String便可以当成字符床正常使用了
+        return (string)$token;
+    }
+
+
+
+
+
+    public function info($token)
     {
         return [
             'id'         => $this->id,
@@ -50,7 +86,8 @@ class User extends Authenticatable
             'focused'      => $this->focused,
             'countdown'  => $this->countdown,
             'remember'   => $this->remember,
-            'avatar'     => $this->avatar
+            'avatar'     => $this->avatar,
+            "token" => $token
         ];
     }
 

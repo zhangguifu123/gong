@@ -5,6 +5,7 @@ namespace App\Http\Middleware\User;
 use App\User;
 use Closure;
 
+/** 已废弃！！！！！！！专用Auth/RefreshToken认证登录！！！！！！！ 2021.4.4 张桂福 */
 class LoginCheck
 {
     /**

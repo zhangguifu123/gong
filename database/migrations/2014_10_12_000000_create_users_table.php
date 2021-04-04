@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('nickname')->comment('昵称');
             $table->string('name')->comment('姓名');
             $table->string('stu_id', 20)->unique()->comment('学号');
-            $table->string('password', 40)->comment("密码md5");
+            $table->string('password')->comment("密码bcrypt");
             $table->json('collection')->comment('我的收藏');
             $table->json('like')->comment('我的喜欢');
             $table->json('eatest')->comment('我的发布');

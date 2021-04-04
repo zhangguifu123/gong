@@ -107,8 +107,15 @@ Route::namespace('Api')->group(function (){
     /** 推送 */
     Route::post('push/send',"PushSdk\ToSingleController@send");
 
+//    Route::middleware('jwt.auth')->get('users', function () {
+//        return auth('api')->user();
+//    });
+
+
+
     /** 用户区 */
-    Route::group(['middleware' => 'login.check'], function () {
+
+    Route::group(['middleware' => 'auth.check'], function () {
         /** 关注 */
 
         Route::post('focus',"Eatest\FocusController@focus")->middleware(['focus.exist.check']);
@@ -241,9 +248,6 @@ Route::namespace('Api')->group(function (){
 
 
     });
-
-    //审核测试
-//    Route::get('filtter','');
 
 
 });

@@ -95,5 +95,7 @@ class Kernel extends HttpKernel
         //FocusOn
         'focus.exist.check' => \App\Http\Middleware\Focus\FocusExistCheck::class,
         'unfocus.exist.check' => \App\Http\Middleware\Focus\UnFocusExistCheck::class,
+        //JWT AUTH
+        'auth.check' => \App\Http\Middleware\Auth\RefreshToken::class,
     ];
 }

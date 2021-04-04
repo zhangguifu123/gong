@@ -230,6 +230,10 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         //图片压缩
         'Image' => Intervention\Image\Facades\Image::class,
+        //JWT
+//        'JWTAuth' => 'Tymon\JWTAuth\Facades\JWTAuth',
+//        'JWTFactory' => 'Tymon\JWTAuth\Facades\JWTFactory',
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
     ],
 
 ];

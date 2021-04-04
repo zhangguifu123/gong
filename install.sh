@@ -6,7 +6,6 @@ if [ ! -f ".env" ]; then
   sudo rm -rf ./dockercnf/mysql5.7/db_data/*
   sudo docker run --rm -it -v $PWD:/app composer:1.9.1 install
   sudo docker-compose up --build -d
-
   sleep 2
   sudo cp .env.example .env
   sudo chmod -R 777 .env

@@ -8,8 +8,11 @@ use App\Model\Eatest\Evaluation;
 use App\Model\User\Ecard;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Facades\JWTFactory;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class StudentLoginController extends Controller
 {
@@ -46,7 +49,7 @@ class StudentLoginController extends Controller
                     'avatar'     => json_encode( config("app.url")."/storage/avatar/avatar.jpg"),
                     'name'       => $output['data']['name'], //默认信息
                     'stu_id'     => $data['stu_id'],
-                    'password'   => md5($data['password']),
+                    'password'   => bcrypt($data['password']),
                     'like'       => '[]',
                     'eatest'     => '[]', //mysql 中 json 默认值只能设置为NULL 为了避免不必要的麻烦，在创建的时候赋予初始值
                     'countdown'  => '[]',
@@ -67,27 +70,26 @@ class StudentLoginController extends Controller
 
                 if ($resultUser && $resultEcard) {
                     //直接使用上面的 $user 会导致没有id  这个对象新建的时候没有id save后才有的id 但是该id只是在数据库中 需要再次查找模型
-                    session(['login' => true, 'uid' => $user->id]);
-
-                    return msg(0, $user->info());
+                    $token = Auth::guard('api')->login($user,true);
+                    return msg(0, $user->info($token));
                 } else {
                     return msg(4, __LINE__);
                 }
             }
         } else { //查询到该用户记录
-            if ($user->password === md5($data['password'])) { //匹配数据库中的密码
-                session(['login' => true, 'uid' => $user->id]);
-                return msg(0, $user->info());
+            $token = Auth::guard('api')->login($user,true);
+            if ($token) { //匹配数据库中的密码
+                return msg(0, $user->info($token));
             } else { //匹配失败 用户更改密码或者 用户名、密码错误
                 $output = checkUser($data['stu_id'], $data['password']);
                 if ($output['code'] == 0) {
-                    $user->password = md5($data['password']);
-                    $user->remember = md5($data['password'] . time() . rand(1000, 2000));
+                    $user->password = bcrypt($data['password']);
+                    $user->remember = bcrypt($data['password'] . time() . rand(1000, 2000));
                     $user->save();
-
+                    print_r(1);
                     session(['login' => true, 'uid' => $user->id]);
 
-                    return msg(0, $user->info());
+                    return msg(0, $user->info($token));
                 }
             }
         }
