@@ -57,8 +57,11 @@ class EvaluationController extends Controller
         //发布，同时将评测加入我的发布，话题发帖数加一
         if ($evaluation->save()) {
             User::query()->find($uid)->add_eatest($evaluation->id);
-            EatestTopics::query()->find($data['topic'])->increment('eatestSum');
-            EatestLabels::query()->find(json_decode($data['label']))->increment('UsageTime');
+            if ($data['topic'] !== null) {
+                EatestTopics::query()->where('topicName',$data['topic'])->increment('eatestSum');
+            }
+//            EatestTopics::query()->find($data['topic'])->increment('eatestSum');
+            EatestLabels::query()->whereIn('labelName',json_decode($data['label']))->increment('UsageTime');
             return msg(0, ["id" => $evaluation->id]);
         }
         //未知错误
@@ -350,7 +353,7 @@ class EvaluationController extends Controller
                 "title"    => ["string", "max:50"],
                 "content"  => ["string", "max:400"],
                 "label"    => ["json"],
-                "topic"    => ["integer", "nullable"],
+                "topic"    => ["string", "nullable"],
                 "nickname" => ["string", "max:10"]
             ];
         //是否缺失参数
