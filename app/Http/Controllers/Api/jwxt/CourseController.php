@@ -170,15 +170,15 @@ class CourseController extends Controller
             return msg(11,__LINE__);
         }
         $uid = $uid[0]->uid;
-
-
-        $name = DB::table('users')->where('stu_id',$uid)->get('name')->toArray();
+        $name = DB::table('users')->where('stu_id',$uid)->get(['name','avatar']);
         if (!$name){
             return msg(11,__LINE__);
         }
-        $name = $name[0]->name;
-        $data = ['std'=>$uid,'name'=>$name,'association'=>$association];
-        return msg(0,$data);
+        foreach ($name as $item) {
+            $item->std = $uid;
+            $item->association = $association;
+        }
+        return msg(0,$name);
     }
 
     public function empty_course(Request $request){
