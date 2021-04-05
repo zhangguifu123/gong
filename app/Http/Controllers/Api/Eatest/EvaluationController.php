@@ -154,10 +154,10 @@ class EvaluationController extends Controller
         $isFocus = FocusOn::query()
             ->find($fromId)
             ->where([
-                ['follow_uid',201905190444],
+                ['follow_uid', $uid],
                 ['status', '!=', '-1']
             ])->first();
-        if($uid == null){
+        if($fromId == null){
             $focusStatus = false;
         }else if($isFocus == null){
             $focusStatus = false;
@@ -203,7 +203,7 @@ class EvaluationController extends Controller
         //拉取我的列表
         $eatest = User::query()->find($uid)->eatest;
         $eatest = array_keys(json_decode($eatest,true));
-        $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$eatest)
+        $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$eatest)->where('status', "!=", 2)
             ->limit(5)
             ->offset($offset)
             ->orderByDesc('evaluations.created_at')
