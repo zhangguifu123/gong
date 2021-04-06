@@ -41,8 +41,8 @@ class CourseController extends Controller
         $week_string = '第' . $week[0] . '-' . end($week) . '周';
         //获取学号
         //用户id
-//        $id = handleUid($request);
-        $id = $request->route('uid');
+        $id = handleUid($request);
+//        $id = $request->route('uid');
         //学号
         $uid = DB::table('users')->where('id',$id)->get(['stu_id'])->toArray();
         $uid = $uid[0]->stu_id;
@@ -74,6 +74,7 @@ class CourseController extends Controller
     //获取课表
     public function get_list(Request $request){
         $uid = $request->route('uid');
+//        return $uid;
         $course_list = Course::query()->where('uid',$uid)
             ->get(['id','course', 'location','teacher','week','week_string','section_start','end_start','section_length','day']);
 //            ->toArray();
@@ -248,6 +249,104 @@ class CourseController extends Controller
         }
         return $table;
     }
+
+
+    //生成空课表
+    public function createEmptyCourse(Request $request){
+        //提取数据
+        $id = $request->route('id');        //小组id
+        $uids = json_decode($request->route('uid'));      //数组
+        //生成课表
+        //获取小组成员
+//        $GroupMember = CourseGroup::query()->find($id)->whereIn('')->get('member')->toArray();
+//        $member = json_decode($GroupMember[0]['member'],true);
+//        return $member;
+
+
+//        $request->off('uid','201905190401');
+//        $course = $this->get_list($request);
+//        return $course;
+
+
+//        $course = Http::get('http://123.57.211.11:10302/api/course/extra/' . '201905190401');
+//        return $course_list;
+//        $course_list = json_decode($course->body(),true)['data'];
+//        return $course_list;
+
+        //获取有课成员
+        //获取成员课表
+
+        foreach ($uids as $uid) {
+            $course = Http::get('http://123.57.211.11:10302/api/course/extra/' . $uid);
+//        return $course;
+            $course_list = json_decode($course->body(),true)['data'];
+//        return $course_list;
+            foreach ($course_list as $i => $item) {
+                foreach ($item as $j => $sitem) {
+                    $data[$i][$j][] = $uid;        //有课成员
+//                    echo 'j:' . $j;
+                }
+//                echo 'i:' . $i . PHP_EOL;
+//                echo 'i:' . $i;
+            }
+        }
+//        return $data;
+        //初始化空课表
+        $groupMemberName = DB::table('info')->whereIn('sid',$uids)->get('name')->toArray();
+        if(!$groupMemberName){
+            msg(4,__LINE__);
+        }
+        foreach ($groupMemberName as $name){
+            $names[] = $name->name;
+        }
+        for ($i=0;$i<=7;$i++) {
+            for ($j=0;$j<=5;$j++) {
+                foreach ($names as $item) {
+                    $list[$i][$j][] = $item;
+                }
+//                $list[$i][$j] = $names;
+            }
+        }
+//        return $groupMemberName[0];
+//        return $list;
+
+        //获取
+        //获取无课成员
+        $memberName = [];
+        foreach ($data as $key1=>$val){
+            foreach ($val as $key2=>$value){
+                $memberUid = array_values(array_diff($uids,$value));
+//                return $memberUid;
+                $groupMemberName = DB::table('info')->whereIn('sid',$memberUid)->get('name')->toArray();
+                if(!$groupMemberName){
+                    msg(4,__LINE__);
+                }
+//                return $groupMemberName;
+                //成员学号由姓名替换
+//                $memberName = null;
+                foreach ($groupMemberName as $name){
+                    $memberName[] = $name->name;
+                }
+                if($memberName == []){
+                    unset($list[$key1][$key2]);
+                }else{
+                    $list[$key1][$key2] = $memberName;
+                }
+//                $list[$key1][$key2] = $memberName;
+                $memberName = [];
+            }
+        }
+        echo json_encode($list);
+        return "";
+        return msg(0,$list);
+    }
+
+
+
+
+
+
+
 
     //空课表函数
     private function tableFormat($data)

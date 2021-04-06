@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Api\Manager;
 
 use App\Http\Controllers\Controller;
+use App\Lib\Dfacheck;
 use App\Model\Eatest\EatestComments;
 use App\Model\Eatest\EatestReplies;
 use App\Model\Eatest\Evaluation;
 use Illuminate\Http\Request;
 
 //require "DFAFiltter.php";
+//use App\Lib\;
+
 
 /**
  * $status = [
@@ -35,11 +38,6 @@ class ReviewController extends Controller
         $content = $request->input('content');
 //        return $content;
         //敏感词过滤
-//        $replace = new DFAFilterController();
-//        return $replace;
-//        $replaced = $replace->execFilter($content);
-//        $replace = DfaCheck::execFilter($content);
-//        return $replace;
         $replace = new DfaCheck();
         $replaced = $replace->execFilter($content);
         return $replaced;

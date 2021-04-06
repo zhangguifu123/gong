@@ -166,7 +166,7 @@ Route::namespace('Api')->group(function (){
         Route::get('/countdown/{uid}', 'jwxt\CountDownController@query')->where(["uid" => "[0-9]+"])->middleware("owner.check");
 
         /** Course*/
-        Route::post('/course/extra/{uid}',"jwxt\CourseController@publish")->where(["uid" => "[0-9]+"]);
+        Route::post('/course/extra',"jwxt\CourseController@publish");
         //测评所有者和管理员均可操作
 //        Route::get('/course/extra/{uid}',"jwxt\CourseController@get_list")->middleware("owner.check");
         Route::get('/course/extra/{uid}',"jwxt\CourseController@get_list");
