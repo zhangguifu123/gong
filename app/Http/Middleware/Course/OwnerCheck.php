@@ -19,7 +19,7 @@ class OwnerCheck
         $uid = handleUid($request);
 
         $course = Course::query()->find($request->route('id'));
-        if( (session("login") == true && $course->uid == $uid) // 发布者本人
+        if( $course->uid == $uid // 发布者本人
             || session("ManagerLogin") == true // 或者管理员
         ) {
             return $next($request);
