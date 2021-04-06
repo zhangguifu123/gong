@@ -247,6 +247,7 @@ class EvaluationController extends Controller
     /** 拉取列表信息 */
     public function get_list(Request $request)
     {
+        $uid = handleUid($request);
         $new_list = [];
         //判断若拉取首页，则获取推荐美文
         if ($request->route("page") == 1) {
@@ -277,8 +278,18 @@ class EvaluationController extends Controller
         if ($request->route("page") == 1) {
             $evaluation_list = array_merge($new_list, $evaluation_list);
         }
-
-        $message = ['total' => count($evaluation_list), 'list' => $evaluation_list];
+        //定义循环内的参数，防止报warning
+        $new_evaluation_list = [];
+        //判断是否喜欢and收藏
+        foreach ($evaluation_list as $evaluation){
+            //判断evaluation_id 是否存在于 user表的 like和collection数组里
+            $is_like = key_exists($evaluation['id'],json_decode(User::query()->find($uid)->like,true));
+            $is_collection = key_exists($evaluation['id'],json_decode(User::query()->find($uid)->collection,true));
+            //加入两个参数 并生成新数组
+            $evaluation += ['is_like' => $is_like,'is_collection' => $is_collection];
+            $new_evaluation_list[] = $evaluation;
+        }
+        $message = ['total' => count($new_evaluation_list), 'list' => $new_evaluation_list];
         return msg(0, $message);
     }
 
