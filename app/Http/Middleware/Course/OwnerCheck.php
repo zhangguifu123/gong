@@ -4,6 +4,7 @@ namespace App\Http\Middleware\Course;
 
 use App\Model\jwxt\Course;
 use Closure;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class OwnerCheck
 {
@@ -16,11 +17,9 @@ class OwnerCheck
      */
     public function handle($request, Closure $next)
     {
-        $uid = handleUid($request);
-        print_r($uid);
+        $stu_id = JWTAuth::parseToken()->authenticate()->stu_id;
         $course = Course::query()->find($request->route('id'));
-        print_r($course->uid);
-        if( $course->uid == $uid // 发布者本人
+        if( $course->uid == $stu_id // 发布者本人
             || session("ManagerLogin") == true // 或者管理员
         ) {
             return $next($request);
