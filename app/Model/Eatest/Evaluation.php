@@ -4,6 +4,7 @@ namespace App\Model\Eatest;
 
 use App\Models\Like;
 use App\User;
+use http\Env\Request;
 use Illuminate\Database\Eloquent\Model;
 
 class Evaluation extends Model
@@ -14,17 +15,16 @@ class Evaluation extends Model
     protected $guarded = ['id','created_at','updated_at'];
 
 
-    public function info()
+    public function info($uid)
     {
         $publisher_name = User::query()->find($this->publisher)->nickname;
 
         // 未登录使用默认值
         $is_like = 0;
         $is_collection = 0;
-        if (session("login")) {
-            $is_like = key_exists($this->id,json_decode(User::query()->find(session("uid"))->like,true));
-            $is_collection = key_exists($this->id,json_decode(User::query()->find(session("uid"))->collection,true));
-        }
+
+        $is_like = key_exists($this->id,json_decode(User::query()->find($uid)->like,true));
+        $is_collection = key_exists($this->id,json_decode(User::query()->find($uid)->collection,true));
 
         return [
             "id" => $this->id,

@@ -108,21 +108,7 @@ Route::namespace('Api')->group(function (){
     Route::post('push/send',"PushSdk\ToSingleController@send");
 
     /** 用户区 */
-<<<<<<< HEAD
 
-    Route::group([
-        'prefix' => 'auth'
-    ], function ($router) {
-
-        $router->post('login', 'Auth\AuthController@login');
-
-        $router->post('logout', 'Auth\AuthController@logout');
-
-    });
-
-
-=======
->>>>>>> 9226c790cab4643acdb73d8c441db92f57641d92
     Route::group(['middleware' => 'auth.check'], function () {
         Route::post('/logout','StudentLoginController@logout');
         /** 关注 */

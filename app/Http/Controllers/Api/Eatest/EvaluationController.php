@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Validator;
 class EvaluationController extends Controller
 {
 
-    //发布
+    /**发布 */
     public function publish(Request $request){
         //声明理想数据格式
         $uid = handleUid($request);
@@ -65,7 +65,7 @@ class EvaluationController extends Controller
         return msg(4, __LINE__);
     }
 
-    //删除
+    /** 删除 */
     public function delete(Request $request)
     {
         $files = [];
@@ -88,7 +88,7 @@ class EvaluationController extends Controller
         return msg(0, __LINE__);
     }
 
-    //修改
+    /** 删除 */
     public function update(Request $request)
     {
         //通过路由获取前端数据，并判断数据格式
@@ -106,7 +106,7 @@ class EvaluationController extends Controller
         return msg(4, __LINE__);
     }
 
-    //上架/下架
+    /**  上架/下架 */
     public function updateStatus(Request $request)
     {
         //检查是否存在数据格式
@@ -126,10 +126,89 @@ class EvaluationController extends Controller
         return msg(4, __LINE__);
     }
 
-    //拉取
-        //拉取单篇信息
+    /**  拉取我的列表 */
+    public function get_me_list(Request $request){
+        //提取数据
+        $uid = $request->route('uid'); //学生id
+//        $page = $request->route('page');
+//        $offset = $page * 5 - 5;
+        //拉取我的列表
+        $eatest = User::query()->find($uid)->eatest;
+        $eatest = array_keys(json_decode($eatest,true));
+        $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$eatest)
+//            ->limit(5)
+//            ->offset($offset)
+            ->orderByDesc('evaluations.created_at')
+            ->leftJoin('users','evaluations.publisher','=','users.id')
+            ->get([
+                "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
+                "collections", "top", "img", "title", "evaluations.created_at as time,","users.avatar as fromAvatar"
+            ]);
+        foreach ($evaluation_list as $item){
+            $item->commentSum = EatestComments::query()->where('eatest_id',$item->id)->count();
+        }
+//        $msg = ['total' => count($evaluation_list), 'msg' => $evaluation_list];
+        return msg(0,$evaluation_list);
+    }
+
+    /** 拉取指定用户发布 */
+    public function getOneList(Request $request){
+        //提取数据
+        $uid = $request->route('uid'); //学生id
+        $page = $request->route('page');
+        $offset = $page * 5 - 5;
+        //拉取我的列表
+        $eatest = User::query()->find($uid)->eatest;
+        $eatest = array_keys(json_decode($eatest,true));
+        $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$eatest)->where('status', "!=", 2)
+            ->limit(5)
+            ->offset($offset)
+            ->orderByDesc('evaluations.created_at')
+            ->leftJoin('users','evaluations.publisher','=','users.id')
+            ->get([
+                "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
+                "collections", "top", "img", "title", "evaluations.created_at as time,","users.avatar as fromAvatar"
+            ]);
+        foreach ($evaluation_list as $item){
+            $item->commentSum = EatestComments::query()->where('eatest_id',$item->id)->count();
+        }
+        $msg = ['total' => count($evaluation_list), 'msg' => $evaluation_list];
+        return msg(0,$msg);
+    }
+
+    /** 拉取我的喜欢 */
+    public function get_like_list(Request $request){
+        $uid = $request->route('uid');
+        $like = User::query()->find($uid)->like;
+        $like = array_keys(json_decode($like,true));
+        $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$like)
+            ->leftJoin('users','evaluations.publisher','=','users.id')
+            ->get([
+                "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
+                "collections", "top", "img", "title", "evaluations.created_at as time"
+            ])->toArray();
+
+        return msg(0,$evaluation_list);
+    }
+    /** 拉取我的收藏 */
+    public function get_collection_list(Request $request){
+        $uid = $request->route('uid');
+        $collection = User::query()->find($uid)->collection;
+        $collection = array_keys(json_decode($collection,true));
+        $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$collection)
+            ->leftJoin('users','evaluations.publisher','=','users.id')
+            ->get([
+            "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
+            "collections", "top", "img", "title", "evaluations.created_at as time"
+        ])->toArray();
+
+        return msg(0,$evaluation_list);
+    }
+    /** 拉取单篇信息 */
     public function get(Request $request)
     {
+        $uid = handleUid($request);
+
         $evaluation = Evaluation::query()->find($request->route('id'));
         //判断近期是否浏览过该文章，若没有浏览量+1 and 建立近期已浏览session
         if (
@@ -139,7 +218,7 @@ class EvaluationController extends Controller
             $evaluation->increment("views");
             session(["mark" => time()]);
         }
-        $evaluation_list = $evaluation->info();
+        $evaluation_list = $evaluation->info($uid);
         $uid = $evaluation_list['publisher'];
 
         //昵称覆写
@@ -165,89 +244,10 @@ class EvaluationController extends Controller
 
         return msg(0, $evaluation_list);
     }
-
-    //拉取我的列表
-    public function get_me_list(Request $request){
-        //提取数据
-        $uid = $request->route('uid'); //学生id
-//        $page = $request->route('page');
-//        $offset = $page * 5 - 5;
-        //拉取我的列表
-        $eatest = User::query()->find($uid)->eatest;
-        $eatest = array_keys(json_decode($eatest,true));
-        $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$eatest)
-//            ->limit(5)
-//            ->offset($offset)
-            ->orderByDesc('evaluations.created_at')
-            ->leftJoin('users','evaluations.publisher','=','users.id')
-            ->get([
-                "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
-                "collections", "top", "img", "title", "evaluations.created_at as time,","users.avatar as fromAvatar"
-            ]);
-        foreach ($evaluation_list as $item){
-            $item->commentSum = EatestComments::query()->where('eatest_id',$item->id)->count();
-        }
-//        $msg = ['total' => count($evaluation_list), 'msg' => $evaluation_list];
-        return msg(0,$evaluation_list);
-    }
-
-    //拉取指定用户发布
-    public function getOneList(Request $request){
-        //提取数据
-        $uid = $request->route('uid'); //学生id
-        $page = $request->route('page');
-        $offset = $page * 5 - 5;
-        //拉取我的列表
-        $eatest = User::query()->find($uid)->eatest;
-        $eatest = array_keys(json_decode($eatest,true));
-        $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$eatest)->where('status', "!=", 2)
-            ->limit(5)
-            ->offset($offset)
-            ->orderByDesc('evaluations.created_at')
-            ->leftJoin('users','evaluations.publisher','=','users.id')
-            ->get([
-                "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
-                "collections", "top", "img", "title", "evaluations.created_at as time,","users.avatar as fromAvatar"
-            ]);
-        foreach ($evaluation_list as $item){
-            $item->commentSum = EatestComments::query()->where('eatest_id',$item->id)->count();
-        }
-        $msg = ['total' => count($evaluation_list), 'msg' => $evaluation_list];
-        return msg(0,$msg);
-    }
-
-    //拉取我的喜欢
-    public function get_like_list(Request $request){
-        $uid = $request->route('uid');
-        $like = User::query()->find($uid)->like;
-        $like = array_keys(json_decode($like,true));
-        $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$like)
-            ->leftJoin('users','evaluations.publisher','=','users.id')
-            ->get([
-                "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
-                "collections", "top", "img", "title", "evaluations.created_at as time"
-            ])->toArray();
-
-        return msg(0,$evaluation_list);
-    }
-    //拉取我的收藏
-    public function get_collection_list(Request $request){
-        $uid = $request->route('uid');
-        $collection = User::query()->find($uid)->collection;
-        $collection = array_keys(json_decode($collection,true));
-        $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$collection)
-            ->leftJoin('users','evaluations.publisher','=','users.id')
-            ->get([
-            "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
-            "collections", "top", "img", "title", "evaluations.created_at as time"
-        ])->toArray();
-
-        return msg(0,$evaluation_list);
-    }
-        //拉取列表信息
+    /** 拉取列表信息 */
     public function get_list(Request $request)
     {
-
+        $new_list = [];
         //判断若拉取首页，则获取推荐美文
         if ($request->route("page") == 1) {
             //获取推荐美文，创建collect_count
@@ -276,9 +276,6 @@ class EvaluationController extends Controller
         //判断若拉取首页，将推荐美文和正常拉取合并
         if ($request->route("page") == 1) {
             $evaluation_list = array_merge($new_list, $evaluation_list);
-//            for ($i = 0;$i<3;$i++){
-//                $new_list_count[] = $new_list[$i]['id'];
-//            }
         }
 
         $message = ['total' => count($evaluation_list), 'list' => $evaluation_list];
