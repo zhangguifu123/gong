@@ -10,12 +10,8 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-<<<<<<< HEAD
-//use Namshi\JOSE\JWT;
 use Tymon\JWTAuth\Facades\JWTFactory;
 use Tymon\JWTAuth\Facades\JWTAuth;
-=======
->>>>>>> 9226c790cab4643acdb73d8c441db92f57641d92
 
 class StudentLoginController extends Controller
 {
@@ -91,11 +87,6 @@ class StudentLoginController extends Controller
                     $user->password = bcrypt($data['password']);
                     $user->remember = bcrypt($data['password'] . time() . rand(1000, 2000));
                     $user->save();
-<<<<<<< HEAD
-=======
-
-                    session(['login' => true, 'uid' => $user->id]);
->>>>>>> 9226c790cab4643acdb73d8c441db92f57641d92
 
                     return msg(0, $user->info($token));
                 }
