@@ -41,10 +41,10 @@ class CourseController extends Controller
         $week_string = '第' . $week[0] . '-' . end($week) . '周';
         //获取学号
         //用户id
-//        $id = handleUid($request);
-        $id = $request->route('uid');
+        $uid = handleUid($request);
+//        $id = $request->route('uid');
         //学号
-        $uid = DB::table('users')->where('id',$id)->get(['stu_id'])->toArray();
+        $uid = DB::table('users')->where('id',$uid)->get(['stu_id'])->toArray();
         $uid = $uid[0]->stu_id;
 //        $uid = 201905190401;
         //加上额外必要数据
@@ -73,7 +73,9 @@ class CourseController extends Controller
     }
     //获取课表
     public function get_list(Request $request){
-        $uid = $request->route('uid');
+//        $uid = $request->route('uid')
+        $uid = handleUid($request);
+
         $course_list = Course::query()->where('uid',$uid)
             ->get(['id','course', 'location','teacher','week','week_string','section_start','end_start','section_length','day']);
 //            ->toArray();
