@@ -8,12 +8,14 @@ use App\Model\Eatest\Evaluation;
 use App\Model\User\Ecard;
 use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+<<<<<<< HEAD
 //use Namshi\JOSE\JWT;
 use Tymon\JWTAuth\Facades\JWTFactory;
 use Tymon\JWTAuth\Facades\JWTAuth;
+=======
+>>>>>>> 9226c790cab4643acdb73d8c441db92f57641d92
 
 class StudentLoginController extends Controller
 {
@@ -73,6 +75,7 @@ class StudentLoginController extends Controller
 
                     $token = Auth::guard('api')->login($user,true);
                     return msg(0, $user->info($token));
+
                 } else {
                     return msg(4, __LINE__);
                 }
@@ -81,12 +84,18 @@ class StudentLoginController extends Controller
             $token = Auth::guard('api')->login($user,true);
             if ($token) { //匹配数据库中的密码
                 return msg(0, $user->info($token));
+;
             } else { //匹配失败 用户更改密码或者 用户名、密码错误
                 $output = checkUser($data['stu_id'], $data['password']);
                 if ($output['code'] == 0) {
                     $user->password = bcrypt($data['password']);
                     $user->remember = bcrypt($data['password'] . time() . rand(1000, 2000));
                     $user->save();
+<<<<<<< HEAD
+=======
+
+                    session(['login' => true, 'uid' => $user->id]);
+>>>>>>> 9226c790cab4643acdb73d8c441db92f57641d92
 
                     return msg(0, $user->info($token));
                 }

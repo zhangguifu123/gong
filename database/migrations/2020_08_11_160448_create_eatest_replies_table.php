@@ -22,7 +22,7 @@ class CreateEatestRepliesTable extends Migration
             $table->bigInteger('toId')->comment('被评论者id');
             $table->string('fromAvatar')->comment('评论者头像');
             $table->string("content")->comment("回复内容");
-            $table->integer('handleStatus')->comment('处理结果 0待审核 1上架 2下架');
+            $table->integer('handleStatus')->default(0)->comment('处理结果 0待审核 1上架 2下架');
             $table->timestamps();
         });
     }

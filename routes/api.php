@@ -38,7 +38,7 @@ Route::namespace('Api')->group(function (){
     //Eatest拉取单页详情
     Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware(['eatest.exist.check']);
     //审核
-    Route::post('/review',"Manager\ReviewController@sensitiveFilter");
+    Route::post('/review/sensitiveWord',"Manager\ReviewController@sensitiveFilter");
     //测试
     Route::get('/image', "ImageController@get");
     /**管理员*/
@@ -108,6 +108,7 @@ Route::namespace('Api')->group(function (){
     Route::post('push/send',"PushSdk\ToSingleController@send");
 
     /** 用户区 */
+<<<<<<< HEAD
 
     Route::group([
         'prefix' => 'auth'
@@ -120,6 +121,8 @@ Route::namespace('Api')->group(function (){
     });
 
 
+=======
+>>>>>>> 9226c790cab4643acdb73d8c441db92f57641d92
     Route::group(['middleware' => 'auth.check'], function () {
         Route::post('/logout','StudentLoginController@logout');
         /** 关注 */
@@ -252,7 +255,8 @@ Route::namespace('Api')->group(function (){
 
 
 
-    });
+   });
+
 
 
 });
