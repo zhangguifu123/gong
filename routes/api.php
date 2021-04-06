@@ -107,17 +107,22 @@ Route::namespace('Api')->group(function (){
     /** 推送 */
     Route::post('push/send',"PushSdk\ToSingleController@send");
 
-//    Route::middleware('jwt.auth')->get('users', function () {
-//        return auth('api')->user();
-//    });
-
-
-
     /** 用户区 */
 
-    Route::group(['middleware' => 'auth.check'], function () {
-        /** 关注 */
+    Route::group([
+        'prefix' => 'auth'
+    ], function ($router) {
 
+        $router->post('login', 'Auth\AuthController@login');
+
+        $router->post('logout', 'Auth\AuthController@logout');
+
+    });
+
+
+    Route::group(['middleware' => 'auth.check'], function () {
+        Route::post('/logout','StudentLoginController@logout');
+        /** 关注 */
         Route::post('focus',"Eatest\FocusController@focus")->middleware(['focus.exist.check']);
         Route::post('unfocus',"Eatest\FocusController@unfocus")->middleware(['unfocus.exist.check']);
         Route::get('focus/{uid}',"Eatest\FocusController@get_user_focus_list");

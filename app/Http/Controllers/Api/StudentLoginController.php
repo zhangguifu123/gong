@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+//use Namshi\JOSE\JWT;
 use Tymon\JWTAuth\Facades\JWTFactory;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -18,7 +19,6 @@ class StudentLoginController extends Controller
 {
     public function login(Request $request)
     {
-        session(['login' => false, 'uid' => null]);
         // 带remember的请求直接通过
         if ($request->has(["remember"])) {
             $user = User::query()->where('remember', $request->input('remember'))->first();
@@ -70,6 +70,7 @@ class StudentLoginController extends Controller
 
                 if ($resultUser && $resultEcard) {
                     //直接使用上面的 $user 会导致没有id  这个对象新建的时候没有id save后才有的id 但是该id只是在数据库中 需要再次查找模型
+
                     $token = Auth::guard('api')->login($user,true);
                     return msg(0, $user->info($token));
                 } else {
@@ -86,8 +87,6 @@ class StudentLoginController extends Controller
                     $user->password = bcrypt($data['password']);
                     $user->remember = bcrypt($data['password'] . time() . rand(1000, 2000));
                     $user->save();
-                    print_r(1);
-                    session(['login' => true, 'uid' => $user->id]);
 
                     return msg(0, $user->info($token));
                 }
@@ -95,9 +94,14 @@ class StudentLoginController extends Controller
         }
         return msg(2, __LINE__);
     }
+    //退出登录
+    public function logout(Request $request){
+        $token = Auth::guard('api')->logout();
+        return msg(0,__LINE__);
+    }
 
     public function update_nickname(Request $request){
-        //若没有session 判断remember
+        //获取uid
         $uid = handleUid($request);
 
         $user = User::query()->find($uid);

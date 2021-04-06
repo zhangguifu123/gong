@@ -109,7 +109,6 @@ function IGtTransmissionTemplateDemo($title,$content){
 function handleUid(Request $request){
     //获取id
     $uid = Auth::guard('api')->user()->getAuthIdentifier();
-    print_r($uid);
     if ($uid == null){
         $uid = $request->header('uid');
     }

@@ -28,16 +28,13 @@ class EvaluationController extends Controller
 
     //发布
     public function publish(Request $request){
+        //声明理想数据格式
+        $uid = handleUid($request);
         //通过路由获取前端数据，并判断数据格式
         $data = $this->data_handle($request);
         if (!is_array($data)) {
             return $data;
         }
-//        var_dump(json_decode($data['label']),true);
-//        return "0";
-        //声明理想数据格式
-        $uid = handleUid($request);
-
         //加上额外必要数据
         $data = $data + ["top" => 0, "collections" => 0, "like" => 0, "views" => 0, "publisher" => $uid];
         $evaluation = new Evaluation($data);
