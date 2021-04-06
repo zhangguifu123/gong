@@ -17,8 +17,9 @@ class OwnerCheck
     public function handle($request, Closure $next)
     {
         $uid = handleUid($request);
-
+        print_r($uid);
         $course = Course::query()->find($request->route('id'));
+        print_r($course->uid);
         if( $course->uid == $uid // 发布者本人
             || session("ManagerLogin") == true // 或者管理员
         ) {
