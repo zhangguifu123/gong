@@ -20,9 +20,9 @@ class CountDownController extends Controller
             return $data;
         }
         //若没有session 判断remember
-        $uid = handleUid($request);
-
-        $data = $data + ["uid" => session('uid')];
+//        $uid = handleUid($request);
+        $uid = 1;
+        $data = $data + ["uid" => $uid];
         $countdown = new CountDown($data);
 
         //发布，同时将评测加入我的倒计时
@@ -50,6 +50,9 @@ class CountDownController extends Controller
     // 置顶
     public function top(Request $request)
     {
+        //提取数据
+//        $uid = handleUid($request);
+        $uid = 1;
         //查找目标
         $countdown = CountDown::query()->find($request->route("id"));
         $top = CountDown::query()->find($request->route("id"),['top'])->toArray();
@@ -59,7 +62,7 @@ class CountDownController extends Controller
             return msg(0,"置顶取消");
         }else{
             //取消以前的置顶
-            $old = CountDown::query()->where("uid","=",session('uid'))->where("top", "=", "1")->first();
+            $old = CountDown::query()->where("uid","=",$uid)->where("top", "=", "1")->first();
             if ($old) {
                 $old->update(["top" => 0]);
             }

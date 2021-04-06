@@ -6216,6 +6216,12 @@ components:
           description: 关联码
           type: string
           example: '5BZNRJGA'
+        avatar:
+          description: 关联人头像
+          type: array
+          example: 
+            - http://test.gong.com/stroage/images/768eaa0d061ec924f2e8b03bab598240.jpg
+            - http://test.gong.com/stroage/images/546bsa0dsadec9dsr238b03jsi523413.jpg
     Course:
       description: 查看课表
       type: object

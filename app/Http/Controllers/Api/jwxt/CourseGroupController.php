@@ -9,6 +9,7 @@ use App\StudentInfo;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Psy\Util\Str;
 
 class CourseGroupController extends Controller
@@ -177,41 +178,79 @@ class CourseGroupController extends Controller
     }
 
 
-    //生成空课表
-    public function createEmptyCourse(Request $request){
-        //提取数据
-        $id = $request->route('id');        //小组id
-        $uids = json_decode($request->route('uid'));      //数组
-        //生成课表
-        //获取小组成员
-        $GroupMember = CourseGroup::query()->find($id)->get('member')->toArray();
-        $member = json_decode($GroupMember[0]['member'],true);
-        //获取成员总课表
-        $course_list = Course::query()->whereIn('uid',$uids)
-            ->get(['id', 'uid' ,'week','week_string','section_start','end_start','day']);
-        foreach ($course_list as $course_item){
-            $i = $course_item->day;     //周几
-            $j = ($course_item->section_start + 1) / 2;
-            $data[$i][$j][] = $course_item->uid;        //有课成员
-        }
-        //获取成员空课表
-        foreach ($data as $key1=>$val){
-            foreach ($val as $key2=>$value){
-                $memberUid = array_values(array_diff($member,$value));
-                $groupMemberName = DB::table('info')->whereIn('sid',$memberUid)->get()->toArray();
-                if(!$groupMemberName){
-                    msg(4,__LINE__);
-                }
-                //成员学号由姓名替换
-                foreach ($groupMemberName as $name){
-                    $memberName[] = $name->name;
-                }
-                $data[$key1][$key2] = $memberName;
-                $memberName = [];
-            }
-        }
-        return msg(0,$data);
-    }
+//    //生成空课表
+//    public function createEmptyCourse(Request $request){
+//        //提取数据
+//        $id = $request->route('id');        //小组id
+//        $uids = json_decode($request->route('uid'));      //数组
+//        //生成课表
+//            //获取小组成员
+////        $GroupMember = CourseGroup::query()->find($id)->whereIn('')->get('member')->toArray();
+////        $member = json_decode($GroupMember[0]['member'],true);
+////        return $member;
+//            //获取有课成员
+//                //获取成员课表
+//
+//        foreach ($uids as $uid) {
+//            $course = Http::get('http://123.57.211.11:10302/api/course/extra/' . $uid);
+////        return $course_list;
+//            $course_list = json_decode($course->body(),true)['data'];
+////        return $course_list;
+//            foreach ($course_list as $i => $item) {
+//                foreach ($item as $j => $sitem) {
+//                    $data[$i][$j][] = $uid;        //有课成员
+////                    echo 'j:' . $j;
+//                }
+////                echo 'i:' . $i . PHP_EOL;
+////                echo 'i:' . $i;
+//            }
+//        }
+//
+////        return $data;
+//        //初始化空课表
+//        $groupMemberName = DB::table('info')->whereIn('sid',$uids)->get('name')->toArray();
+//        if(!$groupMemberName){
+//            msg(4,__LINE__);
+//        }
+//        foreach ($groupMemberName as $name){
+//            $names[] = $name->name;
+//        }
+//        for ($i=0;$i<=7;$i++) {
+//            for ($j=0;$j<=5;$j++) {
+//                $list[$i][$j][] = $names;
+//            }
+//        }
+////        return $groupMemberName[0];
+////        return $list;
+//
+//        //获取
+//                //获取无课成员
+//        $memberName = [];
+//        foreach ($data as $key1=>$val){
+//            foreach ($val as $key2=>$value){
+//                $memberUid = array_values(array_diff($uids,$value));
+////                return $memberUid;
+//                $groupMemberName = DB::table('info')->whereIn('sid',$memberUid)->get('name')->toArray();
+//                if(!$groupMemberName){
+//                    msg(4,__LINE__);
+//                }
+////                return $groupMemberName;
+//                //成员学号由姓名替换
+////                $memberName = null;
+//                foreach ($groupMemberName as $name){
+//                    $memberName[] = $name->name;
+//                }
+//                if($memberName == []){
+//                    unset($list[$key1][$key2]);
+//                }else{
+//                    $data[$key1][$key2] = $memberName;
+//                }
+////                $list[$key1][$key2] = $memberName;
+//                $memberName = [];
+//            }
+//        }
+//        return msg(0,$data);
+//    }
 
 
     //创建分享码
