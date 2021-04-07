@@ -27,15 +27,22 @@ class searchEatestController extends Controller
         $offset = $page * 8 - 8;
 //        var_dump($index);
         //拉取所有符合条件的评测
+
         $list = Evaluation::query()
+            ->limit(8)
+            ->offset($offset)
+            ->orderByDesc("evaluations.created_at")
             ->where('title','like','%' . $index . '%')      //标题
             ->orwhere('content','like','%' . $index . '%')      //内容
             ->orWhere('label','like','%' . $index . '%')      //标签
             ->orWhere('topic', 'like','%' . $index . '%')       //话题
-            ->limit(8)
-            ->offset(1)
-            ->orderByDesc('created_at')
-            ->get()->toArray();
+            ->whereIn('evaluations.status',[0,1])
+            ->leftJoin('users','evaluations.publisher','=','users.id')
+            ->get([
+                "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
+                "collections", "top", "img", "title", "users.avatar","evaluations.created_at as time","users.avatar as fromAvatar"
+            ])
+            ->toArray();
 //        $list = Evaluation::all();
 //        return $list;
         if(!$list){
