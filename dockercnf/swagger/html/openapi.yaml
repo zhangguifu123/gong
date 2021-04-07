@@ -3231,6 +3231,85 @@ paths:
                     time: 2020-08-24 19:48:16
         '403':
           $ref: '#/components/responses/InvalidProperties'
+  /eatest/fuzzySearch/{index}/{page}:
+    get:
+      summary: 模糊搜索
+      operationId: EatestSearch
+      tags:
+        - eatest
+      parameters:
+        - name: index
+          description: 搜索关键字 (按标题、内容、标签、话题相关搜索)
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 螺蛳粉
+        - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    description: 页码
+                    type: integer
+                  limit:
+                    description: 每页限制
+                    type: integer
+                  total:
+                    description: 总页数
+                    type: integer
+                  data:
+                    description: 评测列表
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EatestMessage'
+              example:
+                page: 1
+                limit: 1
+                total: 2
+                data:
+                  - id: 1,
+                    publisher_name: 我是你的小可爱吗
+                    label: 
+                     - 好吃
+                       贼好吃
+                    topic: 螺蛳粉
+                    views: 0
+                    like: 12
+                    collections: 43
+                    top: 0
+                    img: 
+                      - 太长了
+                        太长了
+                    title: 小可爱开店啦！
+                    location: 联建
+                    shop_name: 小可爱的店铺
+                    time: 2020-08-24 18:48:16
+                    
+                  - id: 2
+                    publisher_name: 我是你的大可爱吗
+                    label: 
+                     - 难吃
+                       贼难吃
+                    topic: 螺蛳粉
+                    views: 66
+                    like: 12
+                    collections: 54
+                    top: 1
+                    img: 
+                      - 太长了
+                        太长了
+                    title: 小可爱开店啦！
+                    location: 联建
+                    shop_name: 小可爱的店铺
+                    time: 2020-08-24 19:48:16
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
   /upick/keep/{id}:
     post:
       summary: upick收藏

@@ -84,7 +84,7 @@ class CourseGroupController extends Controller
     public function deleteGroup(Request $request)
     {
         //提取数据
-        $id = $request->route('$id');
+        $id = $request->route('id');
         //删除小组
         $delete = CourseGroup::destroy($id);
         if($delete){

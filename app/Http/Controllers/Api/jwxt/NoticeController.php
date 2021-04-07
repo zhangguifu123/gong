@@ -81,4 +81,10 @@ class NoticeController extends Controller
         return msg(4, __LINE__);
     }
 
+
+    public function getEatestLikeList (Request $request)
+    {
+        //
+    }
+
 }
