@@ -272,7 +272,8 @@ class EvaluationController extends Controller
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
                 "collections", "top", "img", "title", "users.avatar","evaluations.created_at as time","users.avatar as fromAvatar"
-            ])->toArray();
+            ])
+            ->toArray();
 
         //判断若拉取首页，将推荐美文和正常拉取合并
         if ($request->route("page") == 1) {
