@@ -18,7 +18,7 @@ class CreateCourseGroupsTable extends Migration
             $table->timestamps();
             $table->string('groupName')->comment('小组名称');
             $table->integer('memberSum')->comment('成员数');
-            $table->json('member')->default('[]')->comment('小组成员');
+            $table->json('member')->comment('小组成员');
             $table->string('Founder')->comment('创建人姓名');
             $table->string('FounderUid')->comment('创建人学号');
             $table->string('sharingCode')->comment('分享码');

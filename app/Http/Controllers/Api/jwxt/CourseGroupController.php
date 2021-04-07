@@ -31,8 +31,8 @@ class CourseGroupController extends Controller
         //提取数据
         $uid = $request->route('uid');       //创建人学号
         $data = $request->only(array_keys($params));
-//        $member[] = $uid;
-        $data = $data + ['memberSum' => 1, 'FounderUid' => $uid];
+        $member = [];
+        $data = $data + ['memberSum' => 1, 'member' => json_encode($member), 'FounderUid' => $uid];
         //创建小组
         $addGroup = CourseGroup::query()->create($data);
 //        return $data;
