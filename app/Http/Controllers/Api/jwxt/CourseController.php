@@ -176,7 +176,7 @@ class CourseController extends Controller
             return msg(11,__LINE__);
         }
         foreach ($name as $item) {
-            $item->avatar = substr($item->avatar, 1, strlen($item->avatar) - 1);
+            $item->avatar = substr($item->avatar, 1, strlen($item->avatar) - 2);
             $item->std = $uid;
             $item->association = $association;
         }
