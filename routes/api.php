@@ -31,7 +31,7 @@ Route::namespace('Api')->group(function (){
     Route::get('/eatest/list/{page}', "Eatest\EvaluationController@get_list")->where(["page" => "[0-9]+"]);
     Route::post('/eatest/image/delete','ImageController@delete');
     //模糊搜索
-    Route::get('eatest/fuzzySearch/{index}','Eatest\searchEatestController@search');
+    Route::get('eatest/fuzzySearch/{index}/{page}','Eatest\searchEatestController@search')->where(['page' => '[0-9]+']);
 //        ->where(['index' => '[0-9A-Za-z]+']);
     //添加标签
     Route::post('manager/label','Manager\LabelController@addLabel');
@@ -128,7 +128,7 @@ Route::namespace('Api')->group(function (){
 //        Route::get('/CourseGroup/list/{Founder}/created','jwxt\CourseGroupController@getCreatedGroupList')->where(['Founder' => '[0-9]+']);
         Route::get('/CourseGroup/list/{uid}/created','jwxt\CourseGroupController@getCreatedGroupList')->where(['id' => '[0-9]+']);
         Route::get('/CourseGroup/list/{uid}/joined','jwxt\CourseGroupController@getJoinedGroupList')->where(['uid' => '[0-9]+']);
-        Route::delete('/CourseGroup/{id}','jwxt\CourseGroupController@deleteGroup')->where(['uid' => '[0-9]+']);
+        Route::delete('/CourseGroup/{id}','jwxt\CourseGroupController@deleteGroup')->where(['id' => '[0-9]+']);
         Route::post('/CourseGroup/{sharingCode}/member/{uid}','jwxt\CourseGroupController@joinGroup')->where(['sharingCode' => '[A-Z0-9]+','uid' => '[0-9]+']);      //
         Route::delete('/CourseGroup/{id}/member/{uid}','jwxt\CourseGroupController@deleteGroupMember')->where(['id' => '[0-9]+' , 'uid' => '[0-9]+']);
         Route::get('/CourseGroup/sharingCode','jwxt\CourseGroupController@createSharingCode');
@@ -221,10 +221,14 @@ Route::namespace('Api')->group(function (){
         Route::group(["middleware" => ['user.exist.check']],function (){
             Route::get('/notice/eatest/comments/{id}',"jwxt\NoticeController@get_eatest_comments_list")->where(["id" => "[0-9]+"]);
             Route::get('/notice/eatest/reply/{id}',"jwxt\NoticeController@get_eatest_reply_list")->where(["id" => "[0-9]+"]);
+            Route::get('/notice/eatest/like/{id}',"jwxt\NoticeController@getEatestLikeList")->where(["id" => "[0-9]+"]);
+            Route::get('/notice/eatest/comments/like/{id}',"jwxt\NoticeController@getEatestCommentLikeList")->where(["id" => "[0-9]+"]);
         });
 
-            Route::put('/notice/eatest/comments/{id}',"jwxt\NoticeController@eatest_comment_update")->where(["id" => "[0-9]+"])->middleware('comment.exist.check');
-            Route::put('/notice/eatest/reply/{id}',"jwxt\NoticeController@eatest_reply_update")->where(["id" => "[0-9]+"])->middleware('reply.exist.check');
+        Route::put('/notice/eatest/comments/{id}',"jwxt\NoticeController@eatest_comment_update")->where(["id" => "[0-9]+"])->middleware('comment.exist.check');
+        Route::put('/notice/eatest/reply/{id}',"jwxt\NoticeController@eatest_reply_update")->where(["id" => "[0-9]+"])->middleware('reply.exist.check');
+        Route::put('/notice/eatest/like/{id}',"jwxt\NoticeController@EatestLikeUpdate")->where(["id" => "[0-9]+"]);
+        Route::put('/notice/eatest/comments/like/{id}',"jwxt\NoticeController@EatestCommentLikeUpdate")->where(["id" => "[0-9]+"]);
 
         /**AssociationCode */
         //获取关联码

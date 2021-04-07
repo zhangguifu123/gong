@@ -19,6 +19,7 @@ class CreateCommentLikesTable extends Migration
             $table->unsignedBigInteger("comment")->comment("被赞/踩评论id");
             $table->boolean("like")->comment("0踩 1赞");
             $table->unique(["user", "comment"]);
+            $table->Integer("status")->default(0)->comment("0未查看 1已查看");
         });
     }
 

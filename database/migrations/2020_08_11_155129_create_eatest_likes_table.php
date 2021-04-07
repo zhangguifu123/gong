@@ -20,6 +20,7 @@ class CreateEatestLikesTable extends Migration
             $table->boolean("like")->comment("0踩 1赞");
             $table->unique(["user", "evaluation"]);
             $table->Integer("type")->comment("0 Eatest 1Upick");
+            $table->Integer("status")->default(0)->comment("0未查看 1已查看");
         });
     }
 
