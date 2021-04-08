@@ -139,8 +139,10 @@ class StudentLoginController extends Controller
     public function userMsg(Request $request){
         //提取数据(用户id)
         $id = $request->route('id');
+//        return $id;
         //拉取个人信息
-        $list = User::query()->find($id)->get();
+        $list = User::query()->where('id',$id)->get();
+//        return $list;
         foreach ($list as $item){
             $evaluations = Evaluation::query()->where('publisher',$item->id)->get();
 //            return $evaluations;
