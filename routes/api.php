@@ -25,7 +25,7 @@ Route::namespace('Api')->group(function (){
     Route::get('/upick', "Eatest\FoodController@get_list");
     Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware("eatest.exist.check");
     //个人信息
-    Route::get('/user/{id}','StudentLoginController@userMsg')->where(["id"=>"[0-9]+"]);
+    Route::get('/user/{id}','StudentLoginController@userMsg')->where(["id" => "[0-9]+"]);
     //图片上传
     Route::post('/image','ImageController@upload');
     Route::get('/eatest/list/{page}', "Eatest\EvaluationController@get_list")->where(["page" => "[0-9]+"]);
@@ -36,7 +36,7 @@ Route::namespace('Api')->group(function (){
     //添加标签
     Route::post('manager/label','Manager\LabelController@addLabel');
     //Eatest拉取单页详情
-    Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware(['eatest.exist.check']);
+//    Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware(['eatest.exist.check']);
     //审核
     Route::post('/review/sensitiveWord',"Manager\ReviewController@sensitiveFilter");
     //测试
