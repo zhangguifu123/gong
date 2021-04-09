@@ -241,7 +241,8 @@ Route::namespace('Api')->group(function (){
         Route::post('/course/associate','jwxt\CourseController@associate_course');
         Route::post('/course/info','jwxt\CourseController@info');
 
-
+        //用户反馈
+        Route::post('/user/feedback','User\UserFeedbackController@addFeedback');
 
 
 
