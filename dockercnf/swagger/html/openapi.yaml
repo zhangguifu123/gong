@@ -1179,6 +1179,7 @@ paths:
             application/json:
                 schema:
                   $ref: '#/components/schemas/Success'
+  /CourseGroup/{id}:
     delete:
       tags:
         - user
@@ -1191,24 +1192,6 @@ paths:
           required: true
           schema:
             type: integer
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                Founder:
-                  description: 创建人姓名
-                  type: string
-                  example: 啦啦啦
-                groupName:
-                  description: 小组名称
-                  type: string
-                  example: 技术开发部
-                sharingCode:
-                  description: 分享码
-                  type: string
-                  example: SKY21235
       responses:
         '200':
           description: 删除成功
@@ -4542,7 +4525,7 @@ paths:
           $ref: '#/components/responses/NoPermission'
         '404':
           $ref: '#/components/responses/NotFound'
-  '/notice/eatest/reply/{id}':
+  /notice/eatest/reply/{id}:
     get:
       summary: 获取Eatest未读取Reply
       tags:
@@ -4590,6 +4573,136 @@ paths:
       parameters:
         - name: id
           description: 目标id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /notice/eatest/like/{id}:
+    get:
+      summary: 获取Eatest未读取点赞
+      tags:
+       - notice
+      parameters:
+        - name: id
+          description: 评测id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                    example: 0
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  data:
+                    description: 数据
+                    type: object
+                    properties:
+                      total:
+                        description: 条数
+                        type: integer
+                        example: 1
+                      list:
+                        description: 点赞列表
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/EatestLikeNotice'
+    put:
+      summary: 标志已读Eatest点赞
+      tags:
+       - notice
+      parameters:
+        - name: id
+          description: 点赞id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /notice/eatest/comment/like/{id}:
+    get:
+      summary: 获取EatestComment未读取点赞
+      tags:
+       - notice
+      parameters:
+        - name: id
+          description: 评测id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                    example: 0
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  data:
+                    description: 数据
+                    type: object
+                    properties:
+                      total:
+                        description: 条数
+                        type: integer
+                        example: 1
+                      list:
+                        description: 点赞列表
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/EatestCommentLikeNotice'
+    put:
+      summary: 标志已读EatestComment点赞
+      tags:
+       - notice
+      parameters:
+        - name: id
+          description: 点赞id
           in: path
           required: true
           schema:
@@ -5653,6 +5766,38 @@ components:
           type: string
           description: 回复时间
           example: '2020-08-21 15:31:32'
+    EatestLikeNotice:
+      description: 评测点赞信息
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 评测点赞id
+          example: 1
+        user:
+          type: integer
+          description: 用户id
+          example: 1
+        evaluation:
+          type: integer
+          description: 评测id
+          example: 1
+    EatestCommentLikeNotice:
+      description: 评论点赞信息
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 评论点赞id
+          example: 1
+        user:
+          type: integer
+          description: 用户id
+          example: 1
+        evaluation:
+          type: integer
+          description: 评测id
+          example: 1
     Bankcard:
       description: 消费余额
       type: object
