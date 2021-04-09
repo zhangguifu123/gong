@@ -231,6 +231,11 @@ Route::namespace('Api')->group(function (){
         Route::put('/notice/eatest/like/{id}',"jwxt\NoticeController@EatestLikeUpdate")->where(["id" => "[0-9]+"]);
         Route::put('/notice/eatest/comment/like/{id}',"jwxt\NoticeController@EatestCommentLikeUpdate")->where(["id" => "[0-9]+"]);
 
+        Route::put('/notice/eatest/comment',"jwxt\NoticeController@EatestCommentAllUpdate");
+        Route::put('/notice/eatest/reply',"jwxt\NoticeController@EatestReplyAllUpdate");
+        Route::put('/notice/eatest/like',"jwxt\NoticeController@EatestLikeAllUpdate");
+        Route::put('/notice/eatest/comment/like',"jwxt\NoticeController@EatestCommentLikeAllUpdate");
+
         /**AssociationCode */
         //获取关联码
         Route::get('/course/association/{uid}','jwxt\AssociationCodeController@get_association')->where(["uid"=>"[0-9]{12}"]);
