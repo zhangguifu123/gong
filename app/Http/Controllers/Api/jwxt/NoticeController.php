@@ -54,7 +54,7 @@ class NoticeController extends Controller
     }
 
     /**
-     * Eatest Comment 状态修改
+     * Eatest Comment 状态修改(指定)
      * @param Request $request
      * @return string
      */
@@ -69,7 +69,7 @@ class NoticeController extends Controller
     }
 
     /**
-     * Eatest Reply 状态修改
+     * Eatest Reply 状态修改(指定)
      * @param Request $request
      * @return string
      */
@@ -122,7 +122,7 @@ class NoticeController extends Controller
     }
 
     /**
-     * Eatest Like 状态修改
+     * Eatest Like 状态修改(指定)
      * @param Request $request
      * @return string
      */
@@ -137,13 +137,73 @@ class NoticeController extends Controller
     }
 
     /**
-     * Eatest Comment Like 状态修改
+     * Eatest Comment Like 状态修改(指定)
      * @param Request $request
      * @return string
      */
     public function EatestCommentLikeUpdate(Request $request){
         //修改
-        $like = CommentLikes::query()->find($request->route('id'));
+        $like = CommentLikes::query()->where('id',$request->route('id'));
+        $status = $like->update(['status' => 1]);
+        if ($status) {
+            return msg(0, __LINE__);
+        }
+        return msg(4, __LINE__);
+    }
+
+    /**
+     * Eatest Comment 状态修改(全部)
+     * @param Request $request
+     * @return string
+     */
+    public function EatestCommentAllUpdate(Request $request){
+
+        $comments = EatestComments::query();
+        $status = $comments->update(['status' => 1]);
+        if ($status) {
+            return msg(0, __LINE__);
+        }
+        return msg(4, __LINE__);
+    }
+
+    /**
+     * Eatest Reply 状态修改(全部)
+     * @param Request $request
+     * @return string
+     */
+    public function EatestReplyAllUpdate(Request $request){
+
+        $comments = EatestReplies::query();
+        $status = $comments->update(['status' => 1]);
+        if ($status) {
+            return msg(0, __LINE__);
+        }
+        return msg(4, __LINE__);
+    }
+
+    /**
+     * Eatest Like 状态修改(全部)
+     * @param Request $request
+     * @return string
+     */
+    public function EatestLikeAllUpdate(Request $request){
+        //修改
+        $like = EatestLikes::query();
+        $status = $like->update(['status' => 1]);
+        if ($status) {
+            return msg(0, __LINE__);
+        }
+        return msg(4, __LINE__);
+    }
+
+    /**
+     * Eatest Comment Like 状态修改(全部)
+     * @param Request $request
+     * @return string
+     */
+    public function EatestCommentLikeAllUpdate(Request $request){
+        //修改
+        $like = CommentLikes::query();
         $status = $like->update(['status' => 1]);
         if ($status) {
             return msg(0, __LINE__);

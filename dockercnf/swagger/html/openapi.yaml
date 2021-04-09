@@ -4491,7 +4491,7 @@ paths:
           $ref: '#/components/responses/NoPermission'
         '404':
           $ref: '#/components/responses/NotFound'
-  '/notice/eatest/comments/{id}':
+  /notice/eatest/comments/{id}:
     get:
       summary: 获取Eatest未读取Comments
       tags:
@@ -4738,6 +4738,78 @@ paths:
           required: true
           schema:
             type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /notice/eatest/comment:
+    put:
+      summary: 标志全部已读Eatest Comment
+      tags:
+       - notice
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /notice/eatest/reply:
+    put:
+      summary: 标志全部已读Eatest Reply
+      tags:
+       - notice
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /notice/eatest/like:
+    put:
+      summary: 标志全部已读Eatest点赞
+      tags:
+       - notice
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '401':
+          $ref: '#/components/responses/NotAuthorization'
+        '403':
+          $ref: '#/components/responses/NoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /notice/eatest/comment/like:
+    put:
+      summary: 标志全部已读EatestComment点赞
+      tags:
+       - notice
       responses:
         '200':
           description: 成功
