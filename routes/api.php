@@ -110,7 +110,7 @@ Route::namespace('Api')->group(function (){
 
     /** 用户区 */
 
-    Route::group(['middleware' => 'auth.check'], function () {
+//    Route::group(['middleware' => 'auth.check'], function () {
         Route::post('/logout','StudentLoginController@logout');
         /** 关注 */
         Route::post('focus',"Eatest\FocusController@focus")->middleware(['focus.exist.check']);
@@ -134,7 +134,7 @@ Route::namespace('Api')->group(function (){
         Route::delete('/CourseGroup/{id}/member/{uid}','jwxt\CourseGroupController@deleteGroupMember')->where(['id' => '[0-9]+' , 'uid' => '[0-9]+']);
         Route::get('/CourseGroup/sharingCode','jwxt\CourseGroupController@createSharingCode');
         Route::get('/CourseGroup/{id}/member/list','jwxt\CourseGroupController@getMemberList')->where(['id' => '[0-9]+']);
-        Route::get('/CourseGroup/{id}/emptyCourse/{uid}','jwxt\CourseGroupController@createEmptyCourse')->where(['id' => '[0-9]+']);
+        Route::get('/CourseGroup/{id}/emptyCourse/{uid}','jwxt\CourseController@createEmptyCourse')->where(['id' => '[0-9]+']);
 
         /** Report */
         Route::post('/report',"Manager\ReportController@addReport");
@@ -158,13 +158,14 @@ Route::namespace('Api')->group(function (){
         Route::put('/nickname','StudentLoginController@update_nickname');
         /**CountDown倒计时 */
         Route::post('/countdown', 'jwxt\CountDownController@addCountDown');
-        Route::group(["middleware" => ["owner.countdown.check","countdown.exist.check"]],function (){
+//        Route::group(["middleware" => ["owner.countdown.check","countdown.exist.check"]],function (){
             Route::delete('/countdown/{id}', 'jwxt\CountDownController@delete')->where(["id" => "[0-9]+"]);
             Route::put('/countdown/{id}', 'jwxt\CountDownController@update')->where(["id" => "[0-9]+"]);
             Route::put('/countdown/top/{id}','jwxt\CountDownController@top')->where(["id" => "[0-9]+"]);
-        });
+//        });
 
-        Route::get('/countdown/{uid}', 'jwxt\CountDownController@query')->where(["uid" => "[0-9]+"])->middleware("owner.check");
+        Route::get('/countdown/{uid}', 'jwxt\CountDownController@query')->where(["uid" => "[0-9]+"]);
+//            ->middleware("owner.check");
 
         /** Course*/
         Route::post('/course/extra',"jwxt\CourseController@publish");
@@ -252,7 +253,7 @@ Route::namespace('Api')->group(function (){
 
 
 
-   });
+//   });
 
 
 
