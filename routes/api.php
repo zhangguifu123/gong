@@ -25,6 +25,8 @@ Route::namespace('Api')->group(function (){
     Route::post('/manager/login', "ManagerController@login");
     Route::get('/upick', "Eatest\FoodController@get_list");
     Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware("eatest.exist.check");
+    //图片上传
+    Route::post('/image','ImageController@upload');
     //个人信息
     Route::get('/user/{id}','StudentLoginController@userMsg')->where(["id"=>"[0-9]+"]);
     //Eatest公共区
@@ -111,8 +113,7 @@ Route::namespace('Api')->group(function (){
     /** 用户区 */
 
     Route::group(['middleware' => 'auth.check'], function () {
-        //图片上传
-        Route::post('/image','ImageController@upload');
+
         //退出
         Route::post('/logout','StudentLoginController@logout');
         /** 关注 */
