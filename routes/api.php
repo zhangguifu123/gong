@@ -25,11 +25,10 @@ Route::namespace('Api')->group(function (){
     Route::post('/manager/login', "ManagerController@login");
     Route::get('/upick', "Eatest\FoodController@get_list");
     Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware("eatest.exist.check");
+    //个人信息
+    Route::get('/user/{id}','StudentLoginController@userMsg')->where(["id" => "[0-9]+"]);
     //图片上传
     Route::post('/image','ImageController@upload');
-    //个人信息
-    Route::get('/user/{id}','StudentLoginController@userMsg')->where(["id"=>"[0-9]+"]);
-    //Eatest公共区
     Route::get('/eatest/list/{page}', "Eatest\EvaluationController@get_list")->where(["page" => "[0-9]+"]);
     Route::post('/eatest/image/delete','ImageController@delete');
     //模糊搜索
@@ -113,8 +112,6 @@ Route::namespace('Api')->group(function (){
     /** 用户区 */
 
     Route::group(['middleware' => 'auth.check'], function () {
-
-        //退出
         Route::post('/logout','StudentLoginController@logout');
         /** 关注 */
         Route::post('focus',"Eatest\FocusController@focus")->middleware(['focus.exist.check']);
@@ -138,7 +135,7 @@ Route::namespace('Api')->group(function (){
         Route::delete('/CourseGroup/{id}/member/{uid}','jwxt\CourseGroupController@deleteGroupMember')->where(['id' => '[0-9]+' , 'uid' => '[0-9]+']);
         Route::get('/CourseGroup/sharingCode','jwxt\CourseGroupController@createSharingCode');
         Route::get('/CourseGroup/{id}/member/list','jwxt\CourseGroupController@getMemberList')->where(['id' => '[0-9]+']);
-        Route::get('/CourseGroup/{id}/emptyCourse/{uid}','jwxt\CourseGroupController@createEmptyCourse')->where(['id' => '[0-9]+']);
+        Route::get('/CourseGroup/{id}/emptyCourse/{uid}','jwxt\CourseController@createEmptyCourse')->where(['id' => '[0-9]+']);
 
         /** Report */
         Route::post('/report',"Manager\ReportController@addReport");
@@ -168,7 +165,8 @@ Route::namespace('Api')->group(function (){
             Route::put('/countdown/top/{id}','jwxt\CountDownController@top')->where(["id" => "[0-9]+"]);
         });
 
-        Route::get('/countdown/{uid}', 'jwxt\CountDownController@query')->where(["uid" => "[0-9]+"])->middleware("owner.check");
+        Route::get('/countdown/{uid}', 'jwxt\CountDownController@query')->where(["uid" => "[0-9]+"]);
+//            ->middleware("owner.check");
 
         /** Course*/
         Route::post('/course/extra',"jwxt\CourseController@publish");
