@@ -97,7 +97,7 @@ class StudentLoginController extends Controller
     }
     //退出登录
     public function logout(Request $request){
-        $token = Auth::guard('api')->logout();
+        Auth::guard('api')->logout();
         return msg(0,__LINE__);
     }
 

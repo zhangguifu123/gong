@@ -20,14 +20,14 @@ use Illuminate\Support\Facades\Route;
 Route::namespace('Api')->group(function (){
 
     /** 公共区 */
+    Route::post('/tokenRefresh','Auth\AuthController@refresh');
     Route::post('/login','StudentLoginController@login');
     Route::post('/manager/login', "ManagerController@login");
     Route::get('/upick', "Eatest\FoodController@get_list");
     Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware("eatest.exist.check");
     //个人信息
-    Route::get('/user/{id}','StudentLoginController@userMsg')->where(["id" => "[0-9]+"]);
-    //图片上传
-    Route::post('/image','ImageController@upload');
+    Route::get('/user/{id}','StudentLoginController@userMsg')->where(["id"=>"[0-9]+"]);
+    //Eatest公共区
     Route::get('/eatest/list/{page}', "Eatest\EvaluationController@get_list")->where(["page" => "[0-9]+"]);
     Route::post('/eatest/image/delete','ImageController@delete');
     //模糊搜索
@@ -111,6 +111,9 @@ Route::namespace('Api')->group(function (){
     /** 用户区 */
 
     Route::group(['middleware' => 'auth.check'], function () {
+        //图片上传
+        Route::post('/image','ImageController@upload');
+        //退出
         Route::post('/logout','StudentLoginController@logout');
         /** 关注 */
         Route::post('focus',"Eatest\FocusController@focus")->middleware(['focus.exist.check']);
