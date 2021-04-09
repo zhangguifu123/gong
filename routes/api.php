@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::namespace('Api')->group(function (){
 
     /** 公共区 */
+    Route::post('/tokenRefresh','Auth\AuthController@refresh');
     Route::post('/login','StudentLoginController@login');
     Route::post('/manager/login', "ManagerController@login");
     Route::get('/upick', "Eatest\FoodController@get_list");
