@@ -41,6 +41,7 @@ Route::namespace('Api')->group(function (){
     Route::post('/review/sensitiveWord',"Manager\ReviewController@sensitiveFilter");
     //测试
     Route::get('/image', "ImageController@get");
+
     /**管理员*/
     //用户登录验证
     Route::get('/food', "Eatest\FoodController@get");
@@ -222,13 +223,13 @@ Route::namespace('Api')->group(function (){
             Route::get('/notice/eatest/comments/{id}',"jwxt\NoticeController@get_eatest_comments_list")->where(["id" => "[0-9]+"]);
             Route::get('/notice/eatest/reply/{id}',"jwxt\NoticeController@get_eatest_reply_list")->where(["id" => "[0-9]+"]);
             Route::get('/notice/eatest/like/{id}',"jwxt\NoticeController@getEatestLikeList")->where(["id" => "[0-9]+"]);
-            Route::get('/notice/eatest/comments/like/{id}',"jwxt\NoticeController@getEatestCommentLikeList")->where(["id" => "[0-9]+"]);
+            Route::get('/notice/eatest/comment/like/{id}',"jwxt\NoticeController@getEatestCommentLikeList")->where(["id" => "[0-9]+"]);
         });
 
         Route::put('/notice/eatest/comments/{id}',"jwxt\NoticeController@eatest_comment_update")->where(["id" => "[0-9]+"])->middleware('comment.exist.check');
         Route::put('/notice/eatest/reply/{id}',"jwxt\NoticeController@eatest_reply_update")->where(["id" => "[0-9]+"])->middleware('reply.exist.check');
         Route::put('/notice/eatest/like/{id}',"jwxt\NoticeController@EatestLikeUpdate")->where(["id" => "[0-9]+"]);
-        Route::put('/notice/eatest/comments/like/{id}',"jwxt\NoticeController@EatestCommentLikeUpdate")->where(["id" => "[0-9]+"]);
+        Route::put('/notice/eatest/comment/like/{id}',"jwxt\NoticeController@EatestCommentLikeUpdate")->where(["id" => "[0-9]+"]);
 
         /**AssociationCode */
         //获取关联码

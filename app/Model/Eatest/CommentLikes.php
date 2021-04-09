@@ -4,10 +4,10 @@ namespace App\Model\Eatest;
 
 use Illuminate\Database\Eloquent\Model;
 
-class EatestLikes extends Model
+class CommentLikes extends Model
 {
     //
-    protected $fillable = ["user", "evaluation", "like"];
+    protected $guarded = ['id'];
 
     public $timestamps = false;
 }

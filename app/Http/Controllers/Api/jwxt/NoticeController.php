@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api\jwxt;
 
 use App\Http\Controllers\Controller;
+use App\Model\Eatest\CommentLikes;
 use App\Model\Eatest\EatestComments;
+use App\Model\Eatest\EatestLikes;
 use App\Model\Eatest\EatestReplies;
 use App\User;
 use Illuminate\Http\Request;
@@ -81,10 +83,71 @@ class NoticeController extends Controller
         return msg(4, __LINE__);
     }
 
-
+    /**
+     * Eatest Like 未查看评测点赞
+     * @param Request $request
+     * @return string
+     */
     public function getEatestLikeList (Request $request)
     {
-        //
+        //提取数据
+        $eatestId = $request->route('id');   //评测id
+        //拉取未读点赞
+        $list = EatestLikes::query()
+            ->where('evaluation',$eatestId)
+            ->where('status',0)
+            ->get(['id', 'user', 'evaluation'])
+            ->toArray();
+        $message = ['total' => count($list), 'list' => $list];
+        return msg(0,$message);
     }
 
+    /**
+     * Eatest Comment Like 未查看评论点赞
+     * @param Request $request
+     * @return string
+     */
+    public function getEatestCommentLikeList (Request $request)
+    {
+        //提取数据
+        $eatestId = $request->route('id');   //评测id
+        //拉取未读点赞
+        $list = CommentLikes::query()
+            ->where('evaluation',$eatestId)
+            ->where('status',0)
+            ->get(['id', 'user', 'evaluation'])
+            ->toArray();
+        $message = ['total' => count($list), 'list' => $list];
+        return msg(0,$message);
+    }
+
+    /**
+     * Eatest Like 状态修改
+     * @param Request $request
+     * @return string
+     */
+    public function EatestLikeUpdate(Request $request){
+        //修改
+        $like = EatestLikes::query()->where('id',$request->route('id'));
+        $status = $like->update(['status' => 1]);
+        if ($status) {
+            return msg(0, __LINE__);
+        }
+        return msg(4, __LINE__);
+    }
+
+    /**
+     * Eatest Comment Like 状态修改
+     * @param Request $request
+     * @return string
+     */
+    public function EatestCommentLikeUpdate(Request $request){
+        //修改
+        $like = CommentLikes::query()->find($request->route('id'));
+        $status = $like->update(['status' => 1]);
+        if ($status) {
+            return msg(0, __LINE__);
+        }
+        return msg(4, __LINE__);
+    }
 }

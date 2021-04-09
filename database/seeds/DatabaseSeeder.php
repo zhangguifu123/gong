@@ -371,6 +371,54 @@ class DatabaseSeeder extends Seeder
             ],
         ]);
 
+        DB::table('eatest_likes')->insert([            //学生信息
+            [
+                'user' => 1,
+                'evaluation' => 1,
+                'like' => 1,
+                'type' => 0,
+                'status' => 0,
+            ],
+            [
+                'user' => 2,
+                'evaluation' => 2,
+                'like' => 1,
+                'type' => 0,
+                'status' => 0,
+            ],
+            [
+                'user' => 1,
+                'evaluation' => 5,
+                'like' => 1,
+                'type' => 0,
+                'status' => 0,
+            ],
+        ]);
+
+        DB::table('comment_likes')->insert([            //学生信息
+            [
+                'user' => 1,
+                'comment' => 1,
+                'like' => 1,
+//                'type' => 0,
+                'status' => 0,
+            ],
+            [
+                'user' => 2,
+                'comment' => 2,
+                'like' => 1,
+//                'type' => 0,
+                'status' => 0,
+            ],
+            [
+                'user' => 1,
+                'comment' => 5,
+                'like' => 1,
+//                'type' => 0,
+                'status' => 0,
+            ],
+        ]);
+
 //        DB::table('eatest_reports')->insert([        //举报
 //            'eatestId' => '1',
 //            'userName' => 'hahaha',
