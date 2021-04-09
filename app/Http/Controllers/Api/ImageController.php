@@ -50,9 +50,9 @@ class ImageController extends Controller
         }
 
         //若没有session 判断remember
-        $uid = handleUid($request);
+//        $uid = handleUid($request);
 
-        $name = md5($uid . time() . rand(1, 500));
+        $name = md5(time() . rand(1, 500));
         $all_name = $name . "." . $ext;
         $pic_url = storage_path('app/public/image/'). $all_name;
         $result = $file->move(storage_path('app/public/image/'), $all_name);

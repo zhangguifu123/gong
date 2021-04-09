@@ -9,6 +9,7 @@ services:
       - ./:/var/www/html/
       - ./dockercnf/nginx1.17.5:/etc/nginx/conf.d
       - ./dockercnf/nginx1.17.5/ssl/:/etc/nginx/ssl/
+#      - ./dockercnf/nginx1.17.5/log/error.log:/var/log/nginx/error.log
       - ./dockercnf/run:/sock
     depends_on:
       - php
