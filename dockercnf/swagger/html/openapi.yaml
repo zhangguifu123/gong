@@ -974,6 +974,37 @@ paths:
                   $ref: '#/components/schemas/Success'
         '403':
           $ref: '#/components/responses/InvalidProperties'
+  /user/feedback:
+    post:
+      summary: 用户反馈
+      operationId: userFeecback
+      tags:
+        - user
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                stu_id:
+                  description: 关注用户ID
+                  type: integer
+                  example: 2
+                content:
+                  description: 反馈内容
+                  type: string
+                  example: 用不了
+                phone:
+                  description: 用户联系方式(电话号)
+                  type: integer
+                  example: 18888888888
+      responses:
+        '200':
+            description: 举报成功
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Success'
   /focus:
     post:
       summary: 关注 
