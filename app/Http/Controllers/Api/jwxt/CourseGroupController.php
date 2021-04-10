@@ -71,8 +71,10 @@ class CourseGroupController extends Controller
         $getList = CourseGroup::query()
             ->orderByDesc('created_at')
             ->get();
+//        return $list->member;
         foreach ($getList as $list){
-            if(key_exists($uid,json_decode($list->member,true))){
+            return $list->member;
+            if(in_array($uid,json_decode($list->member,true))){
                 $data[] = $list;
             }
         }

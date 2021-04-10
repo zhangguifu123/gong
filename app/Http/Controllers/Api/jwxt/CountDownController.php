@@ -41,10 +41,16 @@ class CountDownController extends Controller
         $sid = (User::query()->where('id',$uid)->get('stu_id')->toArray())[0]['stu_id'];
 //	$sid = '201905962202';
         //拉取数据
+
+//return $countdown_jwxt;
+        $countdown_list=CountDown::query()
+            ->where('uid',$uid)->orderByDesc("top")
+            ->get()->toArray();
+
         $response = json_decode(Http::get('159.75.6.240:8080/api/student/examInCache/' . $sid)->body(),true)['data'];
         //return $response[0];
         foreach ($response as $item) {
-            $countdown_jwxt[] = [
+            $countdown_list[] = [
                 "target" => $item['exam_name'],
                 "remarks" => $item['exam_type'],
                 "end_time" => $item['exam_time'],
@@ -52,12 +58,8 @@ class CountDownController extends Controller
                 "type" => 0
             ];
         }
-//return $countdown_jwxt;
-        $countdown_list=CountDown::query()
-            ->where('uid',$uid)->orderByDesc("top")
-            ->get()->toArray();
 
-        $message = ['total' => count($countdown_list), 'list' => $countdown_list + $countdown_jwxt];
+        $message = ['total' => count($countdown_list), 'list' => $countdown_list];
         return msg(0,$message);
 
 
