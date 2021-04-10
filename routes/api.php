@@ -37,7 +37,7 @@ Route::namespace('Api')->group(function (){
     //添加标签
     Route::post('manager/label','Manager\LabelController@addLabel');
     //Eatest拉取单页详情
-//    Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware(['eatest.exist.check']);
+    Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware(['eatest.exist.check']);
     //审核
     Route::post('/review/sensitiveWord',"Manager\ReviewController@sensitiveFilter");
     //测试
