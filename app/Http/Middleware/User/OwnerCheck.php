@@ -17,7 +17,7 @@ class OwnerCheck
     public function handle($request, Closure $next)
     {
         $uid = handleUid($request);
-        if(session()->has('uid') && session('login') === true && $uid == $request->route("uid")) {
+        if($uid == $request->route("uid")) {
             return $next($request);
         } else {
             $remember = User::query()->where('remember','=',$request->header('remember'))->get()->toArray();
