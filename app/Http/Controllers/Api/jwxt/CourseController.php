@@ -258,7 +258,7 @@ class CourseController extends Controller
         $id = $request->route('id');        //小组id
         $uids = json_decode($request->route('uid'));      //数组
         //生成课表
-        
+
         //获取有课成员
 
         foreach ($uids as $uid) {
