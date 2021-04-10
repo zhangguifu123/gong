@@ -258,31 +258,24 @@ class CourseController extends Controller
         $id = $request->route('id');        //小组id
         $uids = json_decode($request->route('uid'));      //数组
         //生成课表
-        //获取小组成员
-//        $request->off('uid','201905190401');
-//        $course = $this->get_list($request);
-//        return $course;
+        
         //获取有课成员
 
         foreach ($uids as $uid) {
             $course = Http::get('http://123.57.211.11:10302/api/course/extra/' . $uid);
-//        return $course;
             $course_list = json_decode($course->body(),true)['data'];
-//        return $course_list;
             foreach ($course_list as $i => $item) {
                 foreach ($item as $j => $sitem) {
                     $data[$i][$j][] = $uid;        //有课成员
                 }
             }
         }
-//        return $data;
-        //初始化空课表
-        $groupMemberName = DB::table('info')->whereIn('sid',$uids)->get('name')->toArray();
-        if(!$groupMemberName){
-            msg(4,__LINE__);
-        }
-        foreach ($groupMemberName as $name){
-            $names[] = $name->name;
+        //初始化空课表(默认为空)
+        foreach ($uids as $uid) {
+//            return $uid;
+            $response = json_decode(Http::get('http://159.75.6.240:8080/api/student/' . $uid . '/info')->body(),true)['data'];
+//            return $response;
+            $names[] = $response['name'];
         }
 
         for ($i=1;$i<=7;$i++) {
