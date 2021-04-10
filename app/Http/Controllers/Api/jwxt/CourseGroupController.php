@@ -156,7 +156,7 @@ class CourseGroupController extends Controller
         //提取数据
         $id = $request->route('id');
         //获取成员信息
-        $courseGroup = CourseGroup::query()->find($id)->get(['id','groupName','memberSum','member','Founder','FounderUid','sharingCode'])->toArray();
+        $courseGroup = CourseGroup::query()->where('id',$id)->get(['id','groupName','memberSum','member','Founder','FounderUid','sharingCode'])->toArray();
         if(!$courseGroup){
             msg(4,__LINE__);
         }
@@ -167,6 +167,7 @@ class CourseGroupController extends Controller
         if(!$FounderName){
             msg(4,__LINE__);
         }
+//        return $FounderName;
         //获取成员信息
         $memberName = DB::table('info')->whereIn('sid',$memberUid)->get(['sid as uid','name','college'])->toArray();
         if(!$memberName){
