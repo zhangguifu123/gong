@@ -38,20 +38,20 @@ class CountDownController extends Controller
     public function query(Request $request){
         //提取数据
         $uid = $request->route('uid');
-        //$sid = (User::query()->where('id',$uid)->get('stu_id')->toArray())[0]['stu_id'];
-	$sid = '201905962202';
+        $sid = (User::query()->where('id',$uid)->get('stu_id')->toArray())[0]['stu_id'];
+//	$sid = '201905962202';
         //拉取数据
         $response = json_decode(Http::get('159.75.6.240:8080/api/student/examInCache/' . $sid)->body(),true)['data'];
         //return $response[0];
-	foreach ($response as $item) {
-		$countdown_jwxt[] = [
-			"target" => $item['exam_name'],
-			"remarks" => $item['exam_type'],
-			"end_time" => $item['exam_time'],
-			"location" => $item['exam_location'],
-			"type" => 0
-		];
-	}
+        foreach ($response as $item) {
+            $countdown_jwxt[] = [
+                "target" => $item['exam_name'],
+                "remarks" => $item['exam_type'],
+                "end_time" => $item['exam_time'],
+                "location" => $item['exam_location'],
+                "type" => 0
+            ];
+        }
 //return $countdown_jwxt;
         $countdown_list=CountDown::query()
             ->where('uid',$uid)->orderByDesc("top")
