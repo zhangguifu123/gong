@@ -88,7 +88,7 @@ class EvaluationController extends Controller
         return msg(0, __LINE__);
     }
 
-    /** 删除 */
+    /** 修改 */
     public function update(Request $request)
     {
         //通过路由获取前端数据，并判断数据格式
@@ -211,13 +211,13 @@ class EvaluationController extends Controller
 
         $evaluation = Evaluation::query()->find($request->route('id'));
         //判断近期是否浏览过该文章，若没有浏览量+1 and 建立近期已浏览session
-        if (
-            !session()->has("mark" . $request->route('id'))
-            || session("mark" . $request->route('id')) + 1800 < time()
-        ) {
+//        if (
+//            !session()->has("mark" . $request->route('id'))
+//            || session("mark" . $request->route('id')) + 1800 < time()
+//        ) {
             $evaluation->increment("views");
-            session(["mark" => time()]);
-        }
+//            session(["mark" => time()]);
+//        }
         $evaluation_list = $evaluation->info($uid);
         $uid = $evaluation_list['publisher'];
 

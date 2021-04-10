@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Model\jwxt\CountDown;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
@@ -35,9 +36,15 @@ class CountDownController extends Controller
     }
 
     public function query(Request $request){
+        //提取数据
+        $uid = $request->route('uid');
+        $sid = User::query()->where('id',$uid)->get('stu_id')->toArray();
+        return $sid['sid'];
         //拉取数据
+        $response = json_decode(Http::get('159.75.6.240:8080/api/student/examInCache/' . $sid)->body(),true)['data'];
+        return $uid;
         $countdown_list=CountDown::query()
-            ->where('uid',$request->route('uid'))->orderByDesc("top")
+            ->where('uid',$uid)->orderByDesc("top")
             ->get()->toArray();
 
         $message = ['total' => count($countdown_list), 'list' => $countdown_list];
