@@ -20,8 +20,7 @@ class CountDownController extends Controller
             return $data;
         }
         //若没有session 判断remember
-//        $uid = handleUid($request);
-        $uid = 1;
+        $uid = handleUid($request);
         $data = $data + ["uid" => $uid];
         $countdown = new CountDown($data);
 
