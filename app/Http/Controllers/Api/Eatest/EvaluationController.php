@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Lib\WeChat;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\JWTAuth;
 
 /**
  * focusStatus = [
@@ -207,7 +208,10 @@ class EvaluationController extends Controller
     /** 拉取单篇信息 */
     public function get(Request $request)
     {
-        $uid = handleUid($request);
+        $uid = 0;
+        if (JWTAuth::parseToken()->check()){
+            $uid = handleUid($request);
+        }
 
         $evaluation = Evaluation::query()->find($request->route('id'));
         //判断近期是否浏览过该文章，若没有浏览量+1 and 建立近期已浏览session

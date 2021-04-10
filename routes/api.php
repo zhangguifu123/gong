@@ -31,6 +31,8 @@ Route::namespace('Api')->group(function (){
     Route::post('/image','ImageController@upload');
     Route::get('/eatest/list/{page}', "Eatest\EvaluationController@get_list")->where(["page" => "[0-9]+"]);
     Route::post('/eatest/image/delete','ImageController@delete');
+    //Eatest拉取单页详情
+    Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware(['eatest.exist.check']);
     //模糊搜索
     Route::get('eatest/fuzzySearch/{index}/{page}','Eatest\searchEatestController@search')->where(['page' => '[0-9]+']);
 //        ->where(['index' => '[0-9A-Za-z]+']);
@@ -180,8 +182,7 @@ Route::namespace('Api')->group(function (){
         Route::post('/test','Eatest\EvaluationController@test');
         //Eatest增删改查
         Route::post('/eatest','Eatest\EvaluationController@publish');
-        //Eatest拉取单页详情
-        Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware(['eatest.exist.check']);
+
         Route::get('/eatest/me/{uid}','Eatest\EvaluationController@get_me_list');
         Route::get('/eatest/like/{uid}','Eatest\EvaluationController@get_like_list');
         Route::get('/eatest/collection/{uid}','Eatest\EvaluationController@get_collection_list');

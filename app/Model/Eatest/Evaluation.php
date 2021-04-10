@@ -23,8 +23,15 @@ class Evaluation extends Model
         $is_like = 0;
         $is_collection = 0;
 
-        $is_like = key_exists($this->id,json_decode(User::query()->find($uid)->like,true));
-        $is_collection = key_exists($this->id,json_decode(User::query()->find($uid)->collection,true));
+        if ($uid != 0){
+            $is_like = key_exists($this->id,json_decode(User::query()->find($uid)->like,true));
+            $is_collection = key_exists($this->id,json_decode(User::query()->find($uid)->collection,true));
+        }else{
+            $is_like = false;
+            $is_collection = false;
+        }
+
+
 
         return [
             "id" => $this->id,
