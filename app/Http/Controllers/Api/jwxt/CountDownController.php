@@ -111,9 +111,10 @@ class CountDownController extends Controller
     private function data_handle(Request $request = null){
         //声明理想数据格式
         $mod = [
-            "location" => ["string", "max:20"],
+            "location" => ["string", "nullable","max:20"],
             "target" => ["string", "max:50"],
-            "remarks" => ["string", "max:50"],
+            "remarks" => ["string", "nullable", "max:50"],
+            "type" => ["integer"],
             "end_time" => ["string", "max:50"]
         ];
         //是否缺失参数
