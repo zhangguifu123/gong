@@ -36,8 +36,7 @@ Route::namespace('Api')->group(function (){
 //        ->where(['index' => '[0-9A-Za-z]+']);
     //添加标签
     Route::post('manager/label','Manager\LabelController@addLabel');
-    //Eatest拉取单页详情
-    Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware(['eatest.exist.check']);
+
     //审核
     Route::post('/review/sensitiveWord',"Manager\ReviewController@sensitiveFilter");
     //测试
@@ -181,7 +180,8 @@ Route::namespace('Api')->group(function (){
         Route::post('/test','Eatest\EvaluationController@test');
         //Eatest增删改查
         Route::post('/eatest','Eatest\EvaluationController@publish');
-
+        //Eatest拉取单页详情
+        Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware(['eatest.exist.check']);
         Route::get('/eatest/me/{uid}','Eatest\EvaluationController@get_me_list');
         Route::get('/eatest/like/{uid}','Eatest\EvaluationController@get_like_list');
         Route::get('/eatest/collection/{uid}','Eatest\EvaluationController@get_collection_list');
@@ -196,7 +196,6 @@ Route::namespace('Api')->group(function (){
         Route::post('/eatest/image', "Eatest\ImageController@upload");
 
         Route::group(["middleware" => 'eatest.exist.check'], function () {
-//
             //Eatest点赞收藏
             Route::post('/eatest/like/{id}', "Eatest\LikeController@like")->where(["id" => "[0-9]+"]);
             Route::post('/eatest/keep/{id}', "Eatest\CollectionController@eatest_keep")->where(["id" => "[0-9]+"]);
