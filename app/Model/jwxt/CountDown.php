@@ -10,14 +10,15 @@ class CountDown extends Model
 {
     protected $table='count_down';
     public $timestamps=false;
-    protected $fillable = [
-        "uid",
-        "location",
-        "target",
-        "remarks",
-        "end_time",
-        "top"
-    ];
+    protected $guarded = ['id','created_at','updated_at'];
+//    protected $fillable = [
+//        "uid",
+//        "location",
+//        "target",
+//        "remarks",
+//        "end_time",
+//        "top"
+//    ];
 
 
 }

@@ -177,7 +177,7 @@ class CourseGroupController extends Controller
         return msg(0,$data);
     }
 
-    
+
 
 
     //创建分享码
