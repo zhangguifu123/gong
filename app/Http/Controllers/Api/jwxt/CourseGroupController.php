@@ -29,9 +29,8 @@ class CourseGroupController extends Controller
             return $request;
         }
         //提取数据
-//        $FounderUid = handleUid($request);
-        $FounderUid = '201905190401';
-//        $uid = $request->route('uid');       //创建人学号
+        $FounderUid = handleUid($request);
+//        $FounderUid = '201905190401';
         $data = $request->only(array_keys($params));
         $member = [$FounderUid];
         $data = $data + ['memberSum' => 1, 'member' => json_encode($member), 'FounderUid' => $FounderUid];
