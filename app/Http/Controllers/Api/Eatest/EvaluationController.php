@@ -212,12 +212,15 @@ class EvaluationController extends Controller
     /** 拉取单篇信息 */
     public function get(Request $request)
     {
+        $evaluation = Evaluation::query()->find($request->route('id'));
+
         $uid = 0;
         $focusStatus = false;
-        if (JWTAuth::parseToken()->check()){
+        $authorization = $request->header('Authorization');
+        if (isset($authorization) && $authorization !=null){
             $uid = handleUid($request);
             //是否关注
-            $fromId = Evaluation::query()->find($request->route('id'))->publisher;
+            $fromId = $evaluation->publisher;
             $isFocus = FocusOn::query()
                 ->where([
                     ['uid',$uid],
@@ -231,7 +234,6 @@ class EvaluationController extends Controller
             }
         }
 
-        $evaluation = Evaluation::query()->find($request->route('id'));
         //判断近期是否浏览过该文章，若没有浏览量+1 and 建立近期已浏览session
 //        if (
 //            !session()->has("mark" . $request->route('id'))
