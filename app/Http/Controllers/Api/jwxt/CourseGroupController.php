@@ -71,6 +71,7 @@ class CourseGroupController extends Controller
         $getList = CourseGroup::query()
             ->orderByDesc('created_at')
             ->get();
+	$data = [];
         foreach ($getList as $list){
             if(in_array($uid,json_decode($list->member,true))){
                 $data[] = $list;
@@ -132,24 +133,24 @@ class CourseGroupController extends Controller
         //提取数据
         $groupId = $request->route('id');
         $memberUid = $request->route('uid');           //数组
-//        return $memberId;
+        //return $groupId;
 
         //删除小组成员
-        $courseGroup = CourseGroup::query()->find($groupId);
+        $courseGroup = CourseGroup::query()->where('id',$groupId);
         if(!$courseGroup){
             return msg(4,__LINE__);
         }
         $record = $courseGroup->get('member')->first();
         //移除成员
         $member = json_decode($record->member,true);
-//        unset($member[$memberUid]);
-        $member = array_values(array_diff($member,[$memberUid]));
-//        return $member;
+        $member = array_diff($member,[$memberUid]);
         $data = ['member' => $member];
-        $deleteMember = CourseGroup::query()->update($data);
+        $deleteMember = $courseGroup->update($data);
         if(!$deleteMember){
             return msg(4,__LINE__);
         }
+	//成员数减一
+	$courseGroup->decrement('memberSum');
         return msg(0,__LINE__);
     }
 
@@ -168,12 +169,13 @@ class CourseGroupController extends Controller
         //获取创建人信息
         foreach ($memberUid as $item) {
             $response = json_decode(Http::get('http://159.75.6.240:8080/api/student/' . $item . '/info')->body(),true)['data'];
+	    $avatar = (User::query()->where('stu_id', $item)->get('avatar')->toArray())[0]['avatar'];
             $member[] = [
                 'uid' => $response['sid'],
                 'name' => $response['name'],
                 'college' => $response['college'],
                 'grade' => substr($item, 2, 2) . "级",
-                'avatar' => (User::query()->where('stu_id', $item)->get('avatar')->toArray())[0]['avatar']
+                'avatar' => substr($avatar, 1, strlen($avatar) - 2)
             ];
         }
         $courseGroup[0]['member'] = $member;
