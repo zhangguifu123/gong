@@ -105,6 +105,9 @@ class CourseGroupController extends Controller
         if(!$courseGroup){
             return msg(4,__LINE__);
         }
+        //小组成员数加一
+        $courseGroup->increment('memberSum');
+
         $record = $courseGroup->get('member')->first();
 
         //加入新成员
@@ -164,11 +167,14 @@ class CourseGroupController extends Controller
         $memberUid = json_decode($courseGroup[0]['member'],true);
         //获取创建人信息
         foreach ($memberUid as $item) {
+            return (User::query()->where('stu_id', $item)->get('avatar'))['avatar'];
             $response = json_decode(Http::get('http://159.75.6.240:8080/api/student/' . $item . '/info')->body(),true)['data'];
             $member[] = [
                 'uid' => $response['sid'],
                 'name' => $response['name'],
-                'college' => $response['college']
+                'college' => $response['college'],
+                'grade' => substr($item, 2, 2),
+                'avatar' => (User::query()->where('stu_id', $item)->get('avatar'))['avatar']
             ];
         }
         $courseGroup[0]['member'] = $member;

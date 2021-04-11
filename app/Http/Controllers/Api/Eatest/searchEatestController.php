@@ -40,7 +40,7 @@ class searchEatestController extends Controller
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
-                "collections", "top", "img", "title", "users.avatar","evaluations.created_at as time","users.avatar as fromAvatar"
+                "collections", "top", "img", "title", "users.avatar","evaluations.created_at as time"
             ])
             ->toArray();
 //        $list = Evaluation::all();
