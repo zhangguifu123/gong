@@ -264,6 +264,7 @@ class CourseController extends Controller
         foreach ($uids as $uid) {
             $course = Http::get('http://123.57.211.11:10302/api/course/extra/' . $uid);
             $course_list = json_decode($course->body(),true)['data'];
+//            return $course_list;
             foreach ($course_list as $i => $item) {
                 foreach ($item as $j => $sitem) {
                     $data[$i][$j][] = $uid;        //有课成员
@@ -272,12 +273,9 @@ class CourseController extends Controller
         }
         //初始化空课表(默认为空)
         foreach ($uids as $uid) {
-//            return $uid;
             $response = json_decode(Http::get('http://159.75.6.240:8080/api/student/' . $uid . '/info')->body(),true)['data'];
-//            return $response;
             $names[] = $response['name'];
         }
-
         for ($i=1;$i<=7;$i++) {
             for ($j=1;$j<=5;$j++) {
                 foreach ($names as $item) {
@@ -285,27 +283,20 @@ class CourseController extends Controller
                 }
             }
         }
-
         //获取
         //获取无课成员
-        $memberName = [];
         foreach ($data as $key1=>$val){
             foreach ($val as $key2=>$value){
+                $memberName = [];
                 $memberUid = array_values(array_diff($uids,$value));
-                $groupMemberName = DB::table('info')->whereIn('sid',$memberUid)->get('name')->toArray();
-                if(!$groupMemberName){
-                    msg(4,__LINE__);
-                }
-                //成员学号由姓名替换
-                foreach ($groupMemberName as $name){
-                    $memberName[] = $name->name;
+                foreach ($memberUid as $uid) {
+                    $memberName[] = json_decode(Http::get('http://159.75.6.240:8080/api/student/' . $uid . '/info')->body(),true)['data']['name'];
                 }
                 if($memberName == []){
                     unset($list[$key1][$key2]);
                 }else{
                     $list[$key1][$key2] = $memberName;
                 }
-                $memberName = [];
             }
         }
         return msg(0,$list);
