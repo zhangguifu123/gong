@@ -23,7 +23,8 @@ class Evaluation extends Model
     public function isLike_Collection($request,$evaluation_list){
         //定义循环内的参数，防止报warning
         $new_evaluation_list = [];
-        if (JWTAuth::parseToken()->check()){
+        $authorization = $request->header('Authorization');
+        if (isset($authorization) && $authorization !=null){
             $uid = handleUid($request);
         }else{
             $uid = 0;

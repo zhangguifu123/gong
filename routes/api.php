@@ -112,7 +112,7 @@ Route::namespace('Api')->group(function (){
 
     /** 用户区 */
 
-    Route::group(['middleware' => 'auth.check'], function () {
+    Route::group(['middleware' => ['login.check','auth.check']], function () {
         Route::post('/logout','StudentLoginController@logout');
         /** 关注 */
         Route::post('focus',"Eatest\FocusController@focus")->middleware(['focus.exist.check']);
