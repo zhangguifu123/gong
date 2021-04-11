@@ -19,7 +19,6 @@ class LoginCheck
     {
         $authorization = $request->header('Authorization');
         if((isset($authorization) && $authorization !=null)||(session()->has('ManagerLogin') && session('ManagerLogin') === true)) {
-            var_dump(1);
             return $next($request);
         }else{
                 return  response(msg(6, __LINE__));
