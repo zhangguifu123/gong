@@ -160,7 +160,7 @@ class EvaluationController extends Controller
         //拉取我的列表
         $eatest = User::query()->find($uid)->eatest;
         $eatest = array_keys(json_decode($eatest,true));
-        $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$eatest)->where('status', "!=", 2)
+        $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$eatest)->where('evaluations.status', "!=", 2)
             ->limit(5)
             ->offset($offset)
             ->orderByDesc('evaluations.created_at')
