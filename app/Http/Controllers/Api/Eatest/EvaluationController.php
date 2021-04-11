@@ -14,8 +14,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Lib\WeChat;
 use Illuminate\Support\Facades\Validator;
-use Tymon\JWTAuth\JWTAuth;
-
+use Tymon\JWTAuth\Facades\JWTAuth;
 /**
  * focusStatus = [
  *      0 => '已关注',
@@ -189,7 +188,10 @@ class EvaluationController extends Controller
                 "collections", "top", "img", "title", "evaluations.created_at as time", "users.avatar as fromAvatar"
             ])->toArray();
 
-        return msg(0,$evaluation_list);
+        $evaluation = new Evaluation();
+        $message = $evaluation->isLike_Collection($request,$evaluation_list);
+
+        return msg(0,$message);
     }
     /** 拉取我的收藏 */
     public function get_collection_list(Request $request){
@@ -203,14 +205,30 @@ class EvaluationController extends Controller
             "collections", "top", "img", "title", "evaluations.created_at as time" , "users.avatar as fromAvatar"
         ])->toArray();
 
-        return msg(0,$evaluation_list);
+        $evaluation = new Evaluation();
+        $message = $evaluation->isLike_Collection($request,$evaluation_list);
+        return msg(0,$message);
     }
     /** 拉取单篇信息 */
     public function get(Request $request)
     {
         $uid = 0;
+        $focusStatus = false;
         if (JWTAuth::parseToken()->check()){
             $uid = handleUid($request);
+            //是否关注
+            $fromId = Evaluation::query()->find($request->route('id'))->publisher;
+            $isFocus = FocusOn::query()
+                ->where([
+                    ['uid',$uid],
+                    ['follow_uid', $fromId],
+                    ['status', '!=', '-1']
+                ])->first();
+            if($isFocus == null){
+                $focusStatus = false;
+            }else{
+                $focusStatus = true;
+            }
         }
 
         $evaluation = Evaluation::query()->find($request->route('id'));
@@ -229,21 +247,7 @@ class EvaluationController extends Controller
         $nickname = User::query()->find($uid)->nickname;
         $evaluation_list['nickname'] = $nickname;
         $avatar = User::query()->find($uid)->avatar;
-        //是否关注
-        $fromId = handleUid($request);
-        $isFocus = FocusOn::query()
-            ->find($fromId)
-            ->where([
-                ['follow_uid', $uid],
-                ['status', '!=', '-1']
-            ])->first();
-        if($fromId == null){
-            $focusStatus = false;
-        }else if($isFocus == null){
-            $focusStatus = false;
-        }else{
-            $focusStatus = true;
-        }
+
         $evaluation_list = $evaluation_list + ['avatar' => $avatar, 'isFocus' => $focusStatus];
 
         return msg(0, $evaluation_list);
@@ -251,7 +255,6 @@ class EvaluationController extends Controller
     /** 拉取列表信息 */
     public function get_list(Request $request)
     {
-        $uid = handleUid($request);
         $new_list = [];
         //判断若拉取首页，则获取推荐美文
         if ($request->route("page") == 1) {
@@ -275,7 +278,7 @@ class EvaluationController extends Controller
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
-                "collections", "top", "img", "title", "users.avatar","evaluations.created_at as time","users.avatar as fromAvatar"
+                "collections", "top", "img", "title", "users.avatar","evaluations.created_at as time"
             ])
             ->toArray();
 
@@ -283,18 +286,8 @@ class EvaluationController extends Controller
         if ($request->route("page") == 1) {
             $evaluation_list = array_merge($new_list, $evaluation_list);
         }
-        //定义循环内的参数，防止报warning
-        $new_evaluation_list = [];
-        //判断是否喜欢and收藏
-        foreach ($evaluation_list as $evaluation){
-            //判断evaluation_id 是否存在于 user表的 like和collection数组里
-            $is_like = key_exists($evaluation['id'],json_decode(User::query()->find($uid)->like,true));
-            $is_collection = key_exists($evaluation['id'],json_decode(User::query()->find($uid)->collection,true));
-            //加入两个参数 并生成新数组
-            $evaluation += ['is_like' => $is_like,'is_collection' => $is_collection];
-            $new_evaluation_list[] = $evaluation;
-        }
-        $message = ['total' => count($new_evaluation_list), 'list' => $new_evaluation_list];
+        $evaluation = new Evaluation();
+        $message = $evaluation->isLike_Collection($request,$evaluation_list);
         return msg(0, $message);
     }
 

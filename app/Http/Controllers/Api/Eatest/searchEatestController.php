@@ -27,8 +27,7 @@ class searchEatestController extends Controller
         $offset = $page * 8 - 8;
 //        var_dump($index);
         //拉取所有符合条件的评测
-
-        $list = Evaluation::query()
+        $evaluation_list = Evaluation::query()
             ->limit(8)
             ->offset($offset)
             ->orderByDesc("evaluations.created_at")
@@ -45,10 +44,12 @@ class searchEatestController extends Controller
             ->toArray();
 //        $list = Evaluation::all();
 //        return $list;
-        if(!$list){
+        if(!$evaluation_list){
             return msg(4,__LINE__);
         }
-        return msg(0,$list);
+        $evaluation = new Evaluation();
+        $message = $evaluation->isLike_Collection($request,$evaluation_list);
+        return msg(0,$message);
         //排序
         /**
          * 标题、内容、标签、话题
