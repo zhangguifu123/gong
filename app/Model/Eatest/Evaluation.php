@@ -10,9 +10,9 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class Evaluation extends Model
 {
-    protected $fillable = [
-        "publisher", "label", "views", "collections", "like","img", "title", "content", "nickname", "top",'status'
-    ];
+//    protected $fillable = [
+//        "publisher", "label", "views", "collections", "like","img", "title", "content", "nickname", "top",'status'
+//    ];
     protected $guarded = ['id','created_at','updated_at'];
 
 
