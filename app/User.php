@@ -54,19 +54,6 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function setToken($user){
-        //自定义的载荷填充
-        $customClaims = [
-            'iss' => "http://market.sky31.com",
-            'uid' => $user->id,
-        ];
-        //利用JWT工厂类生成根据自定义的载荷生成payload
-        $payload = JWTFactory::partialMock() ($customClaims);
-        //调用Auth类的encode方法就可以生成token
-        $token =  JWTAuth::clearResolvedInstance() ($payload);
-        //注意,此处的token是一个类,如何直接添加进response()->json()中将会报错,所以强制转换为String便可以当成字符床正常使用了
-        return (string)$token;
-    }
 
 
 

@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Http;
 
 
 function pushMessage($cid,$title,$content){
@@ -176,14 +177,19 @@ function compressedImage($imgsrc, $imgdst) {
  * @return mixed
  */
 function checkUser($sid, $password) { //登录验证
-    $api_url = "https://api.sky31.com/edu-new/student_info.php";
-    $api_url = $api_url . "?role=" . config("sky31.role") . '&hash=' . config("sky31.hash") . '&sid=' . $sid . '&password=' . urlencode($password);
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $api_url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $output = curl_exec($ch);
-    curl_close($ch);
-    return json_decode($output, true);
+//    $api_url = "https://api.sky31.com/edu-new/student_info.php";
+//    $api_url = $api_url . "?role=" . config("sky31.role") . '&hash=' . config("sky31.hash") . '&sid=' . $sid . '&password=' . urlencode($password);
+//    $ch = curl_init();
+//    curl_setopt($ch, CURLOPT_URL, $api_url);
+//    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//    $output = curl_exec($ch);
+//    curl_close($ch);
+    $api_url = Http::post('http://159.75.6.240:8080/api/student/info', [
+        'sid' => $sid,
+        'password' => $password
+    ]);
+    return json_decode($api_url->body(), true);
+//    return json_decode($output, true);
 }
 
 /**
