@@ -10,9 +10,9 @@ class CreateCountDownTable extends Migration {
         Schema::create('count_down', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('uid')->comment('学生id');
-            $table->string('location',20)->comment('地点');
+            $table->string('location',20)->comment('地点')->nullable();
             $table->string('target',50)->comment('目标');
-            $table->string('remarks',50)->comment('备注');
+            $table->string('remarks',50)->comment('备注')->nullable();
             $table->date('end_time')->comment('截止日期');
             $table->integer("top")->default(0)->comment("置顶");
             $table->integer('type')->comment('0考试 1自定义');
