@@ -167,7 +167,7 @@ class EvaluationController extends Controller
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
-                "collections", "top", "img", "title", "evaluations.created_at as time,","users.avatar as fromAvatar"
+                "collections", "top", "img", "title", "evaluations.created_at as time","users.avatar as fromAvatar"
             ]);
         foreach ($evaluation_list as $item){
             $item->commentSum = EatestComments::query()->where('eatest_id',$item->id)->count();
