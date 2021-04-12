@@ -186,7 +186,7 @@ function checkUser($sid, $password) { //登录验证
 //    curl_close($ch);
     $api_url = Http::post('http://159.75.6.240:8080/api/student/info', [
         'sid' => $sid,
-        'password' => $password
+        'pwd' => $password
     ]);
     return json_decode($api_url->body(), true);
 //    return json_decode($output, true);
