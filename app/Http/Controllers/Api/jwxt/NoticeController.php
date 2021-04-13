@@ -91,13 +91,24 @@ class NoticeController extends Controller
     public function getEatestLikeList (Request $request)
     {
         //提取数据
-        $eatestId = $request->route('id');   //评测id
-        //拉取未读点赞
-        $list = EatestLikes::query()
-            ->where('evaluation', $eatestId)
-            ->where('status',0)
-            ->get(['id', 'user', 'evaluation'])
+        $toId = $request->route('id');   //用户id
+        $list = EatestReplies::query()
+            ->leftJoin('evaluations', 'evaluations.id','=','eatest_likes.evaluation')
+            ->where([
+                ['eatest_likes.status', 0],
+                ['evaluations.publisher', $toId]
+            ])
+            ->get([
+                'eatest_likes.id','eatest_likes.user','eatest_likes.evaluation'
+            ])
             ->toArray();
+        return $list;
+        //拉取eatest未读点赞
+//        $list = EatestLikes::query()
+//            ->where('evaluation', $eatestId)
+//            ->where('status',0)
+//            ->get(['id', 'user', 'evaluation'])
+//            ->toArray();
         $message = ['total' => count($list), 'list' => $list];
         return msg(0,$message);
     }
