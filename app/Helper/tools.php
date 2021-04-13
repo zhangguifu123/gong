@@ -214,6 +214,7 @@ function msg($code, $msg) {
         11 => '目标不存在',
         12 => '图片不和谐',
         13 => 'token已过期',
+        14 => 'token未过期'
     );
 
     $result = array(

@@ -16,7 +16,7 @@ class AuthController extends Controller
             return msg(0,$this->respondWithToken(JWTAuth::parseToken()->refresh()));
         }else{
             $user = JWTAuth::parseToken()->authenticate();
-            return msg(0,$user);
+            return msg(14,$user);
         }
     }
 
