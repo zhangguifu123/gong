@@ -22,7 +22,7 @@ class NoticeController extends Controller
     {
         //获取作者Id
         $toId = $request->route("id");
-        $notice_list = EatestComments::query()->where('toId','=',$toId)->where('status', 0)
+        $notice_list = EatestComments::query()->where('toId','=',$toId)->where('eatest_comments.status', 0)
             ->leftJoin('evaluations','eatest_comments.eatest_id','=','evaluations.id')
             ->get(
             ['eatest_comments.id','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar','eatest_comments.content','eatest_comments.created_at as time']
