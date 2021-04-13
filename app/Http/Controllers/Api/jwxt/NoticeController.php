@@ -92,16 +92,16 @@ class NoticeController extends Controller
     {
         //提取数据
         $toId = $request->route('id');   //用户id
-        $list = EatestReplies::query()
+        $list = EatestLikes::query()
             ->leftJoin('evaluations', 'evaluations.id','=','eatest_likes.evaluation')
             ->where([
                 ['eatest_likes.status', 0],
                 ['evaluations.publisher', $toId]
             ])
-//            ->get([
-//                'eatest_likes.id','eatest_likes.user','eatest_likes.evaluation'
-//            ])
-            ->get()
+            ->get([
+                'eatest_likes.id','eatest_likes.user','eatest_likes.evaluation'
+            ])
+//            ->get()
             ->toArray();
         return $list;
         //拉取eatest未读点赞
