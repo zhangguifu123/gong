@@ -28,8 +28,8 @@ class NoticeController extends Controller
             ['eatest_comments.id','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar','eatest_comments.content','eatest_comments.created_at as time']
         )->toArray();
 
-        $list_count = EatestComments::query()->where('toId','=',$toId)->count();
-        $message = ['total'=>$list_count,'list'=>$notice_list];
+//        $list_count = EatestComments::query()->where('toId','=',$toId)->count();
+        $message = ['total'=>count($notice_list),'list'=>$notice_list];
         return msg(0, $message);
     }
 
