@@ -25,7 +25,7 @@ class NoticeController extends Controller
         $notice_list = EatestComments::query()->where('toId','=',$toId)->where('eatest_comments.status', 0)
             ->leftJoin('evaluations','eatest_comments.eatest_id','=','evaluations.id')
             ->get(
-            ['eatest_comments.id','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar','eatest_comments.content','eatest_comments.created_at as time']
+            ['eatest_comments.id','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar','eatest_comments.content','eatest_comments.created_at as time','evaluations.img']
         )->toArray();
 
 //        $list_count = EatestComments::query()->where('toId','=',$toId)->count();
@@ -45,7 +45,7 @@ class NoticeController extends Controller
         $notice_list = EatestReplies::query()->where('eatest_replies.toId','=',$toId)->where('eatest_replies.status', 0)
             ->leftJoin('eatest_comments','eatest_replies.comment_id','=','eatest_comments.id')
             ->get(
-            ['eatest_replies.id','comment_id','eatest_comments.content as commentContent','eatest_replies.toId','eatest_replies.fromId','eatest_replies.fromName','eatest_replies.fromAvatar','eatest_replies.content','eatest_replies.created_at as time']
+            ['eatest_replies.id','comment_id','eatest_comments.content as commentContent','eatest_replies.toId','eatest_replies.fromId','eatest_replies.fromName','eatest_replies.fromAvatar','eatest_replies.content','eatest_replies.created_at as time','evaluations.img']
         )->toArray();
 
         $list_count = EatestReplies::query()->where('toId','=',$toId)->count();
@@ -99,7 +99,7 @@ class NoticeController extends Controller
                 ['evaluations.publisher', $toId]
             ])
             ->get(
-                ['eatest_likes.id','eatest_likes.user','eatest_likes.evaluation']
+                ['eatest_likes.id','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar','eatest_likes.user','eatest_likes.evaluation','evaluations.img']
             )
             ->toArray();
         $message = ['total' => count($list), 'list' => $list];
@@ -123,7 +123,7 @@ class NoticeController extends Controller
                 ['evaluations.publisher', $toId]
             ])
             ->get(
-                ['comment_likes.id','comment_likes.user','comment_likes.evaluation']
+                ['comment_likes.id','comment_likes.user','comment_likes.evaluation','evaluations.img','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar']
             )
             ->toArray();
         $message = ['total' => count($list), 'list' => $list];
