@@ -98,9 +98,10 @@ class NoticeController extends Controller
                 ['eatest_likes.status', 0],
                 ['evaluations.publisher', $toId]
             ])
-            ->get([
-                'eatest_likes.id','eatest_likes.user','eatest_likes.evaluation'
-            ])
+//            ->get([
+//                'eatest_likes.id','eatest_likes.user','eatest_likes.evaluation'
+//            ])
+            ->get()
             ->toArray();
         return $list;
         //拉取eatest未读点赞
