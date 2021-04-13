@@ -98,18 +98,10 @@ class NoticeController extends Controller
                 ['eatest_likes.status', 0],
                 ['evaluations.publisher', $toId]
             ])
-            ->get([
-                'eatest_likes.id','eatest_likes.user','eatest_likes.evaluation'
-            ])
-//            ->get()
+            ->get(
+                ['eatest_likes.id','eatest_likes.user','eatest_likes.evaluation']
+            )
             ->toArray();
-        return $list;
-        //拉取eatest未读点赞
-//        $list = EatestLikes::query()
-//            ->where('evaluation', $eatestId)
-//            ->where('status',0)
-//            ->get(['id', 'user', 'evaluation'])
-//            ->toArray();
         $message = ['total' => count($list), 'list' => $list];
         return msg(0,$message);
     }
@@ -122,12 +114,17 @@ class NoticeController extends Controller
     public function getEatestCommentLikeList (Request $request)
     {
         //提取数据
-        $eatestId = $request->route('id');   //评测id
+        $toId = $request->route('id');   //用户id
         //拉取未读点赞
         $list = CommentLikes::query()
-            ->where('evaluation', $eatestId)
-            ->where('status',0)
-            ->get(['id', 'user', 'evaluation'])
+            ->leftJoin('evaluations', 'evaluations.id','=','comment_likes.evaluation')
+            ->where([
+                ['comment_likes.status', 0],
+                ['evaluations.publisher', $toId]
+            ])
+            ->get(
+                ['comment_likes.id','comment_likes.user','comment_likes.evaluation']
+            )
             ->toArray();
         $message = ['total' => count($list), 'list' => $list];
         return msg(0,$message);
