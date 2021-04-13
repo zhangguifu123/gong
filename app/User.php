@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -74,7 +75,8 @@ class User extends Authenticatable implements JWTSubject
             'countdown'  => $this->countdown,
             'remember'   => $this->remember,
             'avatar'     => $this->avatar,
-            "token" => $token
+            "token" => $token,
+            'expires_in' => JWTAuth::factory()->getTTL() * 60
         ];
     }
 
