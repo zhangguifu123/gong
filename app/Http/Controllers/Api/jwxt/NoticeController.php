@@ -22,7 +22,7 @@ class NoticeController extends Controller
     {
         //获取作者Id
         $toId = $request->route("id");
-        $notice_list = EatestComments::query()->where('toId','=',$toId)->where('status','=','0')
+        $notice_list = EatestComments::query()->where('toId','=',$toId)->where('status', 0)
             ->leftJoin('evaluations','eatest_comments.eatest_id','=','evaluations.id')
             ->get(
             ['eatest_comments.id','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar','eatest_comments.content','eatest_comments.created_at as time']
@@ -42,7 +42,7 @@ class NoticeController extends Controller
     {
         //获取作者Id
         $toId = $request->route("id");
-        $notice_list = EatestReplies::query()->where('eatest_replies.toId','=',$toId)->where('eatest_replies.status','=','0')
+        $notice_list = EatestReplies::query()->where('eatest_replies.toId','=',$toId)->where('eatest_replies.status', 0)
             ->leftJoin('eatest_comments','eatest_replies.comment_id','=','eatest_comments.id')
             ->get(
             ['eatest_replies.id','comment_id','eatest_comments.content as commentContent','eatest_replies.toId','eatest_replies.fromId','eatest_replies.fromName','eatest_replies.fromAvatar','eatest_replies.content','eatest_replies.created_at as time']
@@ -94,7 +94,7 @@ class NoticeController extends Controller
         $eatestId = $request->route('id');   //评测id
         //拉取未读点赞
         $list = EatestLikes::query()
-            ->where('evaluation',$eatestId)
+            ->where('evaluation', $eatestId)
             ->where('status',0)
             ->get(['id', 'user', 'evaluation'])
             ->toArray();
@@ -113,7 +113,7 @@ class NoticeController extends Controller
         $eatestId = $request->route('id');   //评测id
         //拉取未读点赞
         $list = CommentLikes::query()
-            ->where('evaluation',$eatestId)
+            ->where('evaluation', $eatestId)
             ->where('status',0)
             ->get(['id', 'user', 'evaluation'])
             ->toArray();
