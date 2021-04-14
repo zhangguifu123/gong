@@ -15,7 +15,7 @@ class CreateEatestLikesTable extends Migration
     {
         Schema::create('eatest_likes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger("user")->index();
+            $table->unsignedBigInteger("user")->index()->comment('点赞用户id');
             $table->unsignedBigInteger("evaluation")->comment("被赞/踩帖子id");
             $table->boolean("like")->comment("0踩 1赞");
             $table->unique(["user", "evaluation"]);
