@@ -188,8 +188,7 @@ class EvaluationController extends Controller
                 "collections", "top", "img", "title", "evaluations.created_at as time", "users.avatar as fromAvatar"
             ])->toArray();
 
-        $evaluation = new Evaluation();
-        $message = $evaluation->isLike_Collection($request,$evaluation_list);
+        $message = $this->isLike_Collection($request,$evaluation_list);
 
         return msg(0,$message);
     }
@@ -205,8 +204,7 @@ class EvaluationController extends Controller
             "collections", "top", "img", "title", "evaluations.created_at as time" , "users.avatar as fromAvatar"
         ])->toArray();
 
-        $evaluation = new Evaluation();
-        $message = $evaluation->isLike_Collection($request,$evaluation_list);
+        $message = $this->isLike_Collection($request,$evaluation_list);
         return msg(0,$message);
     }
     /** 拉取单篇信息 */
@@ -288,8 +286,7 @@ class EvaluationController extends Controller
         if ($request->route("page") == 1) {
             $evaluation_list = array_merge($new_list, $evaluation_list);
         }
-        $evaluation = new Evaluation();
-        $message = $evaluation->isLike_Collection($request,$evaluation_list);
+        $message = $this->isLike_Collection($request,$evaluation_list);
         return msg(0, $message);
     }
 
@@ -349,6 +346,37 @@ class EvaluationController extends Controller
         return $new_list;
     }
 
+    /** 返回Eatest列表 是否喜欢和收藏
+     * @param $request
+     * @param $evaluation_list
+     */
+    private function isLike_Collection($request,$evaluation_list){
+        //定义循环内的参数，防止报warning
+        $new_evaluation_list = [];
+        $authorization = $request->header('Authorization');
+        if (isset($authorization) && $authorization !=null){
+            $uid = handleUid($request);
+        }else{
+            $uid = 0;
+        }
+        //判断是否喜欢and收藏
+        foreach ($evaluation_list as $evaluation){
+            //判断evaluation_id 是否存在于 user表的 like和collection数组里
+            if ($uid != 0){
+                $is_like = key_exists($evaluation['id'],json_decode(User::query()->find($uid)->like,true));
+                $is_collection = key_exists($evaluation['id'],json_decode(User::query()->find($uid)->collection,true));
+            }else{
+                $is_like = 0;
+                $is_collection = 0;
+            }
+
+            //加入两个参数 并生成新数组
+            $evaluation += ['is_like' => $is_like,'is_collection' => $is_collection];
+            $new_evaluation_list[] = $evaluation;
+        }
+        $message = ['total' => count($new_evaluation_list), 'list' => $new_evaluation_list];
+        return $message;
+    }
 
     //检查函数
     private function data_handle(Request $request = null){
@@ -380,4 +408,6 @@ class EvaluationController extends Controller
         };
         return $data;
     }
+
+
 }
