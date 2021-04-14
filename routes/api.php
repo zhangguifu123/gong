@@ -25,7 +25,7 @@ Route::namespace('Api')->group(function (){
     Route::get('/upick', "Eatest\FoodController@get_list");
     Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware("eatest.exist.check");
     //个人信息
-    Route::get('/user/{id}','StudentLoginController@userMsg')->where(["id" => "[0-9]+"]);
+    Route::get('/manager/user/{id}','StudentLoginController@userMsg')->where(["id" => "[0-9]+"]);
     //图片上传
     Route::post('/image','ImageController@upload');
     //Eatest 帖子、评论、回复列表
@@ -116,6 +116,9 @@ Route::namespace('Api')->group(function (){
     /** 用户区 */
 
     Route::group(['middleware' => ['login.check','auth.check']], function () {
+        //个人信息
+        Route::get('/user/{id}','StudentLoginController@userMsg')->where(["id" => "[0-9]+"]);
+        //退出登录
         Route::post('/logout','StudentLoginController@logout');
         /** 关注 */
         Route::post('focus',"Eatest\FocusController@focus")->middleware(['focus.exist.check']);
