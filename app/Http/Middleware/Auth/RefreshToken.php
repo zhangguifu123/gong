@@ -19,7 +19,7 @@ class RefreshToken extends BaseMiddleware
     public function handle($request, Closure $next)
     {
         if (!JWTAuth::parseToken()->check()){
-            return response(msg(13,__LINE__));
+            return response(msg(13,JWTAuth::parseToken()->refresh()));
         }
         return $next($request);
     }
