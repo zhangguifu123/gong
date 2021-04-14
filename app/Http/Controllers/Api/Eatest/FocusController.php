@@ -77,23 +77,32 @@ class FocusController extends Controller
         return msg(0,['userFocusCount' => $user->focus]);
     }
 
-    //获取关注列表
+    //获取关注or粉丝列表
     public function get_user_focus_list(Request $request)
     {
         //
         $user_id = $request->route("uid");
+        $type    = $request->route('type');
+
+        if ('focusing' == $type){
+            $type = 'uid';
+        }
+
+        if ('focused' == $type){
+            $type = 'follow_uid';
+        }
+
         $user = User::query()->find($user_id);
         if (!$user) {
             return msg(3, "目标不存在" . __LINE__);
         }
-        $focus_id_list = array_keys(json_decode($user->focus, true));
 
-        $focus_list = DB::table("users")->whereIn("id", $focus_id_list)
+        $focus_list = DB::table("users")->where($type,$user_id)
             ->get(["id", "nickname", "name", "collection",
                 "like", "eatest", "focused", "focus", "avatar"])
             ->toArray();
         $list_count = $user->focus;
-        $message = ['total'=>$list_count,'list'=>$focus_list];
+        $message    = ['total'=>$list_count,'list'=>$focus_list];
         return msg(0, $message);
     }
 
