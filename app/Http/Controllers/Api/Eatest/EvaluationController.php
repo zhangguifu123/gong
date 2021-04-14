@@ -375,7 +375,7 @@ class EvaluationController extends Controller
             $evaluation += ['is_like' => $is_like,'is_collection' => $is_collection];
             $new_evaluation_list[] = $evaluation;
         }
-        $message = ['total' => count($new_evaluation_list), 'list' => $new_evaluation_list];
+        $message = ['total' => count($evaluation_list), 'list' => $new_evaluation_list];
         return $message;
     }
 
