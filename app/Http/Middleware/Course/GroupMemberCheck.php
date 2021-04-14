@@ -20,6 +20,7 @@ class GroupMemberCheck
         $stu_id = JWTAuth::parseToken()->authenticate()->stu_id;
         var_dump($stu_id . PHP_EOL);
         $course = CourseGroup::query()->where('sharingCode',$request->route('sharingCode'));
+        return $course->member;
         var_dump(json_decode($course->member, true) . PHP_EOL);
         return response("失败");
         if( in_array($stu_id, json_decode($course->member, true))) {
