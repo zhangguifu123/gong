@@ -126,18 +126,6 @@ Route::namespace('Api')->group(function (){
 //        /** Appeal */
 //        Route::post('/appeal',"Manager\AppealController@upload");
 
-        /** 多人空课表 */
-        Route::post('/CourseGroup/{uid}','jwxt\CourseGroupController@addGroup')->where(['uid' => '[0-9]+']);
-//        Route::get('/CourseGroup/list/{Founder}/created','jwxt\CourseGroupController@getCreatedGroupList')->where(['Founder' => '[0-9]+']);
-        Route::get('/CourseGroup/list/{uid}/created','jwxt\CourseGroupController@getCreatedGroupList')->where(['id' => '[0-9]+']);
-        Route::get('/CourseGroup/list/{uid}/joined','jwxt\CourseGroupController@getJoinedGroupList')->where(['uid' => '[0-9]+']);
-        Route::delete('/CourseGroup/{id}','jwxt\CourseGroupController@deleteGroup')->where(['id' => '[0-9]+']);
-        Route::post('/CourseGroup/{sharingCode}/member/{uid}','jwxt\CourseGroupController@joinGroup')->where(['sharingCode' => '[A-Z0-9]+','uid' => '[0-9]+']);      //
-        Route::delete('/CourseGroup/{id}/member/{uid}','jwxt\CourseGroupController@deleteGroupMember')->where(['id' => '[0-9]+' , 'uid' => '[0-9]+']);
-        Route::get('/CourseGroup/sharingCode','jwxt\CourseGroupController@createSharingCode');
-        Route::get('/CourseGroup/{id}/member/list','jwxt\CourseGroupController@getMemberList')->where(['id' => '[0-9]+']);
-        Route::get('/CourseGroup/{id}/emptyCourse/{uid}','jwxt\CourseController@createEmptyCourse')->where(['id' => '[0-9]+']);
-
         /** Report */
         Route::post('/report',"Manager\ReportController@addReport");
         /** Appeal */
@@ -168,6 +156,19 @@ Route::namespace('Api')->group(function (){
 
         Route::get('/countdown/{uid}', 'jwxt\CountDownController@query')->where(["uid" => "[0-9]+"]);
 //            ->middleware("owner.check");
+
+        /** 多人空课表 */
+        Route::post('/CourseGroup/{uid}','jwxt\CourseGroupController@addGroup')->where(['uid' => '[0-9]+']);
+//        Route::get('/CourseGroup/list/{Founder}/created','jwxt\CourseGroupController@getCreatedGroupList')->where(['Founder' => '[0-9]+']);
+        Route::get('/CourseGroup/list/{uid}/created','jwxt\CourseGroupController@getCreatedGroupList')->where(['id' => '[0-9]+']);
+        Route::get('/CourseGroup/list/{uid}/joined','jwxt\CourseGroupController@getJoinedGroupList')->where(['uid' => '[0-9]+']);
+        Route::delete('/CourseGroup/{id}','jwxt\CourseGroupController@deleteGroup')->where(['id' => '[0-9]+'])->middleware(['group.exist.check','group.owner.check']);
+        Route::post('/CourseGroup/{sharingCode}/member/{uid}','jwxt\CourseGroupController@joinGroup')->where(['sharingCode' => '[A-Z0-9]+','uid' => '[0-9]+'])->middleware(['group.member.check']);      //
+        Route::delete('/CourseGroup/{id}/member/{uid}','jwxt\CourseGroupController@deleteGroupMember')->where(['id' => '[0-9]+' , 'uid' => '[0-9]+'])->middleware(['group.exist.check','group.owner.check']);
+        Route::get('/CourseGroup/sharingCode','jwxt\CourseGroupController@createSharingCode');
+        Route::get('/CourseGroup/{id}/member/list','jwxt\CourseGroupController@getMemberList')->where(['id' => '[0-9]+']);
+        Route::get('/CourseGroup/{id}/emptyCourse/{uid}','jwxt\CourseController@createEmptyCourse')->where(['id' => '[0-9]+']);
+
 
         /** Course*/
         Route::post('/course/extra',"jwxt\CourseController@publish");
