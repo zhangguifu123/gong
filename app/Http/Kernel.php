@@ -93,6 +93,7 @@ class Kernel extends HttpKernel
         'group.exist.check' => \App\Http\Middleware\Course\GroupExistCheck::class,
         'group.owner.check' => \App\Http\Middleware\Course\GroupOwnerCheck::class,
         'group.member.check' => \App\Http\Middleware\Course\GroupMemberCheck::class,
+        'group.member.exist.check' => \App\Http\Middleware\Course\GroupMemberExistCheck::class,
         //CountDown
         'countdown.exist.check' => \App\Http\Middleware\jwxt\CountDownExistCheck::class,
         'owner.countdown.check' => \App\Http\Middleware\jwxt\OwnerCountDownCheck::class,

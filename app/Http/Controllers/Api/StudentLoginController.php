@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Model\Eatest\EatestComments;
 use App\Model\Eatest\Evaluation;
+use App\Model\Eatest\FocusOn;
 use App\Model\User\Ecard;
 use App\User;
 use Illuminate\Http\Request;
@@ -143,6 +144,26 @@ class StudentLoginController extends Controller
         //拉取个人信息
         $list = User::query()->where('id',$id)->get();
 //        return $list;
+        //是否关注
+        $uid = 0;
+        $focusStatus = false;
+        $authorization = $request->header('Authorization');
+        if (isset($authorization) && $authorization !=null){
+            $uid = handleUid($request);
+            //是否关注
+            $isFocus = FocusOn::query()
+                ->where([
+                    ['uid',$uid],
+                    ['follow_uid', $id],
+                    ['status', '!=', '-1']
+                ])->first();
+            if($isFocus == null){
+                $focusStatus = false;
+            }else{
+                $focusStatus = true;
+            }
+        }
+
         foreach ($list as $item){
             $evaluations = Evaluation::query()->where('publisher',$item->id)->get();
 //            return $evaluations;
@@ -156,7 +177,9 @@ class StudentLoginController extends Controller
             }
             $item->eatestSum = $evaluations->count();
             $item->commentSum = EatestComments::query()->where('fromId',$item->id)->count();
+            $item->isFous = $focusStatus;
         }
+
         return msg(0,$list);
     }
 }
