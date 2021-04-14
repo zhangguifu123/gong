@@ -150,7 +150,7 @@ class CourseGroupController extends Controller
             return msg(4,__LINE__);
         }
 	//成员数减一
-	$courseGroup->decrement('memberSum');
+	    $courseGroup->decrement('memberSum');
         return msg(0,__LINE__);
     }
 

@@ -4,7 +4,7 @@ namespace App\Lib;
 //use Public;
 use Faker\Generator;
 
-class Dfacheck {
+class Sensitive {
 
     private static $instance = null;
 
@@ -49,8 +49,7 @@ class Dfacheck {
      *  ]
      */
     function __construct() {
-        $text = self::readFile('./sensitive.txt');
-//        return $text;
+        $text = self::readFile(dirname(__FILE__) . '/sensitive.txt');
         foreach ($text as $key => $words) {
             $len = mb_strlen($words);
             $treeArr = &self::$sensitiveWordTree;
@@ -137,13 +136,14 @@ class Dfacheck {
      * @param string $file_path
      * @return Generator
      */
-
-    private static function readFile(string $file_path): Generator {
+    private static function readFile(string $file_path){
         $handle = fopen($file_path, 'r');
+        $data = array();
         while (!feof($handle)) {
-            yield trim(fgets($handle));
+            $data[] = trim(fgets($handle));
         }
         fclose($handle);
+        return $data;
     }
 
     private function __clone() {
