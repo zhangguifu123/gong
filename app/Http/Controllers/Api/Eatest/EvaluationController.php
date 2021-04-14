@@ -147,7 +147,7 @@ class EvaluationController extends Controller
         foreach ($evaluation_list as $item){
             $item->commentSum = EatestComments::query()->where('eatest_id',$item->id)->count();
         }
-        $message = $this->isLike_Collection($request,$evaluation_list);
+        $message = $this->isLike_Collection($request,$evaluation_list->toArray());
 //        $msg = ['total' => count($evaluation_list), 'msg' => $evaluation_list];
         return msg(0,$message);
     }
