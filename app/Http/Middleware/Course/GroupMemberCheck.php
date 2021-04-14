@@ -4,6 +4,7 @@ namespace App\Http\Middleware\Course;
 
 use App\Model\jwxt\CourseGroup;
 use Closure;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class GroupMemberCheck
 {
