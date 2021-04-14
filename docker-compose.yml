@@ -29,8 +29,6 @@ services:
   db:
     image: "mysql:5.7.28"
     container_name: "gong_mysql"
-#    ports:
-#      - "8001:3306"
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
@@ -40,6 +38,7 @@ services:
       - ./dockercnf/run/mysql:/var/run/mysqld
     restart: always
     environment:
+      TZ: Asia/Shanghai
       MYSQL_ROOT_PASSWORD: yourpassword
       MYSQL_DATABASE: gong
   gong_redis_db:

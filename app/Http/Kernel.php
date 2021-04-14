@@ -89,6 +89,10 @@ class Kernel extends HttpKernel
         //Course
         'owner.course.check' => \App\Http\Middleware\Course\OwnerCheck::class,
         'course.exist.check' => \App\Http\Middleware\Course\ExistCheck::class,
+        //CourseGroup
+        'group.exist.check' => \App\Http\Middleware\Course\GroupExistCheck::class,
+        'group.owner.check' => \App\Http\Middleware\Course\GroupOwnerCheck::class,
+        'group.member.check' => \App\Http\Middleware\Course\GroupMemberCheck::class,
         //CountDown
         'countdown.exist.check' => \App\Http\Middleware\jwxt\CountDownExistCheck::class,
         'owner.countdown.check' => \App\Http\Middleware\jwxt\OwnerCountDownCheck::class,
