@@ -9,7 +9,6 @@ services:
       - ./:/var/www/html/
       - ./dockercnf/nginx1.17.5:/etc/nginx/conf.d
       - ./dockercnf/nginx1.17.5/ssl/:/etc/nginx/ssl/
-#      - ./dockercnf/nginx1.17.5/log/error.log:/var/log/nginx/error.log
       - ./dockercnf/run:/sock
     depends_on:
       - php
@@ -30,8 +29,8 @@ services:
   db:
     image: "mysql:5.7.28"
     container_name: "gong_mysql"
-    ports:
-      - "8001:3306"
+#    ports:
+#      - "8001:3306"
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci

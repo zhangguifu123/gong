@@ -29,7 +29,11 @@ Route::namespace('Api')->group(function (){
     Route::get('/user/{id}','StudentLoginController@userMsg')->where(["id" => "[0-9]+"]);
     //图片上传
     Route::post('/image','ImageController@upload');
+    //Eatest 帖子、评论、回复列表
     Route::get('/eatest/list/{page}', "Eatest\EvaluationController@get_list")->where(["page" => "[0-9]+"]);
+    Route::get('eatest/{id}/comments','Eatest\CommentController@get_list')->where(["id"=>"[0-9]+"])->middleware(['eatest.exist.check']);
+    Route::get('/eatest/comment/{id}/reply','Eatest\ReplyController@get_list')->where(["id"=>"[0-9]+"])->middleware(['comment.exist.check']);
+
     Route::post('/eatest/image/delete','ImageController@delete');
     //Eatest拉取单页详情
     Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware(['eatest.exist.check']);
@@ -205,12 +209,12 @@ Route::namespace('Api')->group(function (){
         //Eatest评论
         Route::post('eatest/comments/like/{id}','Eatest\CommentController@like')->where(["id"=>"[0-9]+"])->middleware(['comment.exist.check']);
         Route::post('eatest/{id}/comments','Eatest\CommentController@publish')->where(["id"=>"[0-9]+"])->middleware(['eatest.exist.check','comment.from.check']);
-        Route::get('eatest/{id}/comments','Eatest\CommentController@get_list')->where(["id"=>"[0-9]+"])->middleware(['eatest.exist.check']);
+
         Route::delete('eatest/comments/{id}','Eatest\CommentController@delete')->where(["id"=>"[0-9]+"])->middleware(['comment.exist.check','comment.owner.check']);
         //Eatest评论回复
 //        Route::post('eatest/{toId}/reply/{fromId}','Eatest\ReplyController@publish')->where(["toId"=>"[0-9]+","fromId"=>"[0-9]+"])->middleware('reply.tofrom.check');
         Route::post('/eatest/comment/{id}/reply','Eatest\ReplyController@publish')->where(["id"=>"[0-9]+"])->middleware('reply.tofrom.check');
-        Route::get('/eatest/comment/{id}/reply','Eatest\ReplyController@get_list')->where(["id"=>"[0-9]+"])->middleware(['comment.exist.check']);
+
         Route::delete('/eatest/reply/{id}','Eatest\ReplyController@delete')->where(["id"=>"[0-9]+"])->middleware(['reply.exist.check','reply.owner.check']);
         /**User */
         Route::group(["middleware" => ['owner.check']], function () {
