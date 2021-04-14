@@ -17,8 +17,8 @@ class GroupMemberCheck
      */
     public function handle($request, Closure $next)
     {
-        $stu_id = JWTAuth::parseToken()->authenticate()->stu_id;
-        $course = CourseGroup::query()->find($request->route('id'));
+        $stu_id = $request->route('uid');
+        $course = CourseGroup::query()->where('sharingCode',$request->route('sharingCode'))->first();
         if( in_array($stu_id, json_decode($course->member, true))) {
             return response(msg(3, "用户已存在" . __LINE__));
         } else {
