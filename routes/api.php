@@ -44,6 +44,9 @@ Route::namespace('Api')->group(function (){
 
     //审核
     Route::post('/review/sensitiveWord',"Manager\ReviewController@sensitiveFilter");
+    Route::post('/review/eatest',"Manager\ReviewController@eatestFilter");
+    Route::post('/review/eatest/comment',"Manager\ReviewController@commentFilter");
+    Route::post('/review/eatest/comment/reply',"Manager\ReviewController@replyFilter");
     //测试
     Route::get('/image', "ImageController@get");
 
@@ -258,7 +261,19 @@ Route::namespace('Api')->group(function (){
         //用户反馈
         Route::post('/user/feedback','User\UserFeedbackController@addFeedback');
 
-
+        /** 优惠券 */
+        //存储优惠劵
+        Route::post('/coupon/save','Coupon\SaveCouponController@saveCoupon');
+        //修改优惠劵
+        Route::put('/coupon/update','Coupon\SaveCouponController@updateCoupon');
+        //删除优惠劵
+        Route::delete('/coupon/delete','Coupon\SaveCouponController@deleteCoupon');
+        //获取优惠劵
+        Route::get('/coupon/get','Coupon\GetCouponController@getCoupon');
+        //获取商家列表
+        Route::get('/coupon/getStore','Coupon\GetCouponController@getStore');
+        //使用优惠劵
+        Route::post('/coupon/use','Coupon\GetCouponController@useCoupon');
 
 
    });
