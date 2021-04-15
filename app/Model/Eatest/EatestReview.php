@@ -7,4 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class EatestReview extends Model
 {
     //
+    protected $guarded = [];
 }

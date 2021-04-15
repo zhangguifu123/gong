@@ -31,14 +31,14 @@ class ReviewController extends Controller
     public function sensitiveFilter(Request $request)
     {
         //检查数据格式
-//        $params = [
+        $params = [
 //            'id' => ['integer'],      //评测id
-//            'content' => ['string']
-//        ];
-//        $request = handleData($request,$params);
-//        if(!is_object($request)){
-//            return $request;
-//        }
+            'content' => ['string']
+        ];
+        $request = handleData($request,$params);
+        if(!is_object($request)){
+            return $request;
+        }
         //提取数据
         $content = $request->input('content');
 
@@ -57,29 +57,31 @@ class ReviewController extends Controller
     public function eatestFilter(Request $request)
     {
         //检查数据格式
-//        $params = [
-//            'content' => ['string']
-//        ];
-//        $request = handleData($request,$params);
-//        if(!is_object($request)){
-//            return $request;
-//        }
+        $params = [
+            'id' => ['integer'],
+            'content' => ['string']
+        ];
+        $request = handleData($request,$params);
+        if(!is_object($request)){
+            return $request;
+        }
         //提取数据
         $content = $request->input('content');
         $id = $request->input('id');
-//        return $content;
-
+        $uid = handleUid($request);
         //可疑内容提取
         $replace = new Suspicious();
         $replaced = $replace->execFilter($content);
-//        var_dump(explode($replaced));
-//        var_dump(array_diff(str_split($content), str_split($replaced)));
-        return $replaced;
         if($replaced !== $content){
             //可疑词分块数组提取
-
-            $suspiciousWord = [];
-//            $create = EatestReview::query()
+            $replaced = explode('*',$replaced);
+            foreach ($replaced as $key => $item) {
+                if ($item == '') {
+                    unset($replaced[$key]);
+                }
+            }
+            $suspiciousWord = array_values($replaced);
+            $suspicious = EatestReview::query()->create(['id' => $id, 'userId' => $uid, 'content' => json_encode($suspiciousWord), 'type' => 0]);
             return msg(0,__LINE__);
         }
         Evaluation::query()->where('id',$id)->update(['status' => 1]);
@@ -91,28 +93,34 @@ class ReviewController extends Controller
     private function commentFilter($request)
     {
         //检查数据格式
-//        $params = [
-//            'content' => ['string']
-//        ];
-//        $request = handleData($request,$params);
-//        if(!is_object($request)){
-//            return $request;
-//        }
+        $params = [
+            'id' => ['integer'],
+            'content' => ['string']
+        ];
+        $request = handleData($request,$params);
+        if(!is_object($request)){
+            return $request;
+        }
         //提取数据
         $content = $request->input('content');
         $id = $request->input('id');
-//        return $content;
-
+        $uid = handleUid($request);
         //可疑内容提取
         $replace = new Suspicious();
         $replaced = $replace->execFilter($content);
         if($replaced !== $content){
             //可疑词分块数组提取
-            $suspiciousWord = [];
-
+            $replaced = explode('*',$replaced);
+            foreach ($replaced as $key => $item) {
+                if ($item == '') {
+                    unset($replaced[$key]);
+                }
+            }
+            $suspiciousWord = array_values($replaced);
+            $suspicious = CommentReview::query()->create(['id' => $id, 'userId' => $uid, 'content' => json_encode($suspiciousWord), 'type' => 0]);
             return msg(0,__LINE__);
         }
-        Evaluation::query()->where('id',$id)->update(['status' => 1]);
+        EatestComments::query()->where('id',$id)->update(['status' => 1]);
         return msg(0,__LINE__);
     }
 
@@ -121,28 +129,34 @@ class ReviewController extends Controller
     private function replyFilter($request)
     {
         //检查数据格式
-//        $params = [
-//            'content' => ['string']
-//        ];
-//        $request = handleData($request,$params);
-//        if(!is_object($request)){
-//            return $request;
-//        }
+        $params = [
+            'id' => ['integer'],
+            'content' => ['string']
+        ];
+        $request = handleData($request,$params);
+        if(!is_object($request)){
+            return $request;
+        }
         //提取数据
         $content = $request->input('content');
         $id = $request->input('id');
-//        return $content;
-
+        $uid = handleUid($request);
         //可疑内容提取
         $replace = new Suspicious();
         $replaced = $replace->execFilter($content);
         if($replaced !== $content){
             //可疑词分块数组提取
-            $suspiciousWord = [];
-
+            $replaced = explode('*',$replaced);
+            foreach ($replaced as $key => $item) {
+                if ($item == '') {
+                    unset($replaced[$key]);
+                }
+            }
+            $suspiciousWord = array_values($replaced);
+            $suspicious = ReplyReview::query()->create(['id' => $id, 'userId' => $uid, 'content' => json_encode($suspiciousWord), 'type' => 0]);
             return msg(0,__LINE__);
         }
-        Evaluation::query()->where('id',$id)->update(['status' => 1]);
+        EatestReplies::query()->where('id',$id)->update(['status' => 1]);
         return msg(0,__LINE__);
     }
 
