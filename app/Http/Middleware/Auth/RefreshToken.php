@@ -23,34 +23,23 @@ class RefreshToken extends BaseMiddleware
         if (! $token = $auth->setRequest($request)->getToken()) {
             return response(msg(6,__LINE__));
         }
-	try{
-	
-	}catch (JWTException $exception){
-	
-	}
-	print_r(2);
-        //$user = $auth->authenticate($token);
-	$user = auth('api')->payload();
-	var_dump($user);
+        $user = $auth->check();
         if ($user){
             return $next($request);
         }
-	print_r(1);
         if (!$user){
-            sleep(rand(1,5)/100);
-            $newToken = JWTAuth::refresh($token);
-            Redis::setex('token_blacklist:'.$token,30,$newToken);
-            return response(msg(13,["token"=>$newToken,"expires_in"=>JWTAuth::factory()->getTTL() * 60]));
-        }else{
             if($newToken = Redis::get('token_blacklist:'.$token)){
-                 // 给当前的请求设置性的token,以备在本次请求中需要调用用户信息
+                // 给当前的请求设置性的token,以备在本次请求中需要调用用户信息
                 $request->headers->set('Authorization','Bearer '.$newToken);
                 print_r($newToken);
                 return $next($request);
             }else{
-                return response(msg(6,__LINE__));
-
+                sleep(rand(1,5)/100);
+                $newToken = JWTAuth::refresh($token);
+                Redis::setex('token_blacklist:'.$token,30,$newToken);
+                return response(msg(13,["token"=>$newToken,"expires_in"=>JWTAuth::factory()->getTTL() * 60]));
             }
+
         }
     }
 }
