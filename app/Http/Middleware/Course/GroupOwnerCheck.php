@@ -4,6 +4,7 @@ namespace App\Http\Middleware\Course;
 
 use App\Model\jwxt\Course;
 use App\Model\jwxt\CourseGroup;
+use App\User;
 use Closure;
 use Tymon\JWTAuth\Facades\JWTAuth;
 

@@ -86,7 +86,7 @@ class FocusController extends Controller
 
         if ('focusing' == $type){
             $typeBefore = 'uid';
-            $typeLater = 'follow_id';
+            $typeLater = 'follow_uid';
         }
 
         if ('focused' == $type){
