@@ -85,19 +85,21 @@ class FocusController extends Controller
         $type    = $request->route('type');
 
         if ('focusing' == $type){
-            $type = 'uid';
+            $typeBefore = 'uid';
+            $typeLater = 'follow_id';
         }
 
         if ('focused' == $type){
-            $type = 'follow_uid';
+            $typeBefore = 'follow_uid';
+            $typeLater = 'uid';
         }
 
         $user = User::query()->find($user_id);
         if (!$user) {
             return msg(3, "目标不存在" . __LINE__);
         }
-
-        $focus_list = DB::table("users")->where($type,$user_id)
+        $focus_list = FocusOn::query()->where($typeBefore,$user_id)->get($typeLater);
+        $focus_list = DB::table("users")->whereIn('id',$focus_list)
             ->get(["id", "nickname", "name", "collection",
                 "like", "eatest", "focused", "focus", "avatar"])
             ->toArray();

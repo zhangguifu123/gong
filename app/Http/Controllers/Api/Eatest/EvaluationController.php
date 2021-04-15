@@ -215,7 +215,7 @@ class EvaluationController extends Controller
 
         $focusStatus = false;
         $authorization = $request->header('Authorization');
-	if (isset($authorization) && $authorization !=null){
+	    if (isset($authorization) && $authorization !=null){
             $uid = handleUid($request);
 	     //是否关注
             $fromId = $evaluation->publisher;
@@ -231,9 +231,9 @@ class EvaluationController extends Controller
                 $focusStatus = true;
             }
         }else{
-	    $uid = 0;
-	}
-	
+	        $uid = 0;
+	    }
+
         //判断近期是否浏览过该文章，若没有浏览量+1 and 建立近期已浏览session
 //        if (
 //            !session()->has("mark" . $request->route('id'))
@@ -356,12 +356,12 @@ class EvaluationController extends Controller
         //定义循环内的参数，防止报warning
         $new_evaluation_list = [];
         $authorization = $request->header('Authorization');
-	if (isset($authorization) && $authorization !=null){
-	    $uid = handleUid($request);
+	    if (isset($authorization) && $authorization !=null){
+	        $uid = handleUid($request);
         }else{
             $uid = 0;
-         }
-	
+	    }
+
         //判断是否喜欢and收藏
         foreach ($evaluation_list as $evaluation){
             //判断evaluation_id 是否存在于 user表的 like和collection数组里
