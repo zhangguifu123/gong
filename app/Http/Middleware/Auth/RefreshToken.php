@@ -33,7 +33,6 @@ class RefreshToken extends BaseMiddleware
             if($newToken = $redis->get('token_blacklist:'.$token)){
                 // 给当前的请求设置性的token,以备在本次请求中需要调用用户信息
                 $request->headers->set('Authorization','Bearer '.$newToken);
-                print_r($newToken);
                 return $next($request);
             }else{
                 sleep(rand(1,5)/100);
