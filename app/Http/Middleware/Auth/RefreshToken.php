@@ -23,10 +23,19 @@ class RefreshToken extends BaseMiddleware
         if (! $token = $auth->setRequest($request)->getToken()) {
             return response(msg(6,__LINE__));
         }
-        $user = $auth->authenticate($token);
+	try{
+	
+	}catch (JWTException $exception){
+	
+	}
+	print_r(2);
+        //$user = $auth->authenticate($token);
+	$user = auth('api')->payload();
+	var_dump($user);
         if ($user){
             return $next($request);
         }
+	print_r(1);
         if (!$user){
             sleep(rand(1,5)/100);
             $newToken = JWTAuth::refresh($token);
