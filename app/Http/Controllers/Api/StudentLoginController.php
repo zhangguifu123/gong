@@ -79,10 +79,9 @@ class StudentLoginController extends Controller
                 }
             }
         } else { //查询到该用户记录
-            $token = Auth::guard('api')->login($user,true);
+            $token = Auth::attempt($user,true);;
             if ($token) { //匹配数据库中的密码
                 return msg(0, $user->info($token));
-;
             } else { //匹配失败 用户更改密码或者 用户名、密码错误
                 $output = checkUser($data['stu_id'], $data['password']);
                 if ($output['code'] == 0) {
