@@ -81,6 +81,25 @@ class CourseGroupController extends Controller
         return msg(0,$message);
     }
 
+    //查看小组(关联码获取)
+    public function getOneGroup(Request $request)
+    {
+        //提取数据
+        $sharingCode = $request->route('sharingCode');
+        //查看加入的小组
+        $getList = CourseGroup::query()
+            ->where('sharingCode', $sharingCode)
+            ->get(['groupName', 'Founder', 'sharingCode'])
+            ->toArray();
+        if(!$getList){
+            return msg(4, __LINE__);
+        }
+//        $message = ['total' => count($getList), 'list' => $getList];
+        return msg(0,$getList);
+    }
+
+
+
 
     //删除小组
     public function deleteGroup(Request $request)
