@@ -88,7 +88,7 @@ class StudentLoginController extends Controller
                     $user->password = bcrypt($data['password']);
                     $user->remember = bcrypt($data['password'] . time() . rand(1000, 2000));
                     $user->save();
-
+                    $token = Auth::guard('api')->login($user,true);
                     return msg(0, $user->info($token));
                 }
             }
