@@ -168,6 +168,7 @@ Route::namespace('Api')->group(function (){
 
         /** 多人空课表 */
         Route::post('/CourseGroup/{uid}','jwxt\CourseGroupController@addGroup')->where(['uid' => '[0-9]+']);
+        Route::get('/CourseGroup/{sharingCode}','jwxt\CourseGroupController@getOneGroup')->where(['sharingCode' => '[A-Z0-9]+']);
 //        Route::get('/CourseGroup/list/{Founder}/created','jwxt\CourseGroupController@getCreatedGroupList')->where(['Founder' => '[0-9]+']);
         Route::get('/CourseGroup/list/{uid}/created','jwxt\CourseGroupController@getCreatedGroupList')->where(['id' => '[0-9]+']);
         Route::get('/CourseGroup/list/{uid}/joined','jwxt\CourseGroupController@getJoinedGroupList')->where(['uid' => '[0-9]+']);
