@@ -40,7 +40,7 @@ class ReportController extends Controller
                 'type' => ['integer'],
                 'describe' => ['string'],
                 'reason' => ['string'],
-//                'prove' => ['json']
+                'prove' => ['json']
             ];
             $request = handleData($request,$params);
             if(!is_object($request)){
