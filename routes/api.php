@@ -42,11 +42,7 @@ Route::namespace('Api')->group(function (){
     //添加标签
     Route::post('manager/label','Manager\LabelController@addLabel');
 
-    //审核
-    Route::post('/review/sensitiveWord',"Manager\ReviewController@sensitiveFilter");
-    Route::post('/review/eatest',"Manager\ReviewController@eatestFilter");
-    Route::post('/review/eatest/comment',"Manager\ReviewController@commentFilter");
-    Route::post('/review/eatest/comment/reply',"Manager\ReviewController@replyFilter");
+
     //测试
     Route::get('/image', "ImageController@get");
 
@@ -119,6 +115,11 @@ Route::namespace('Api')->group(function (){
     /** 用户区 */
 
     Route::group(['middleware' => ['login.check','auth.check']], function () {
+        //审核
+        Route::post('/review/sensitiveWord',"Manager\ReviewController@sensitiveFilter");
+        Route::post('/review/eatest',"Manager\ReviewController@eatestFilter");
+        Route::post('/review/eatest/comment',"Manager\ReviewController@commentFilter");
+        Route::post('/review/eatest/comment/reply',"Manager\ReviewController@replyFilter");
         //个人信息
         Route::get('/user/{id}','StudentLoginController@userMsg')->where(["id" => "[0-9]+"]);
         //退出登录
