@@ -39,7 +39,7 @@ services:
     restart: always
     environment:
       TZ: Asia/Shanghai
-      MYSQL_ROOT_PASSWORD: yourpassword
+      MYSQL_ROOT_PASSWORD: Yourpassword.
       MYSQL_DATABASE: gong
   gong_redis_db:
     image: "redis:5.0.7"
