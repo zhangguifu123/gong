@@ -37,6 +37,8 @@ tags:
     description: 图书馆
   - name: notice
     description: 消息
+  - name: review
+    description: 审核
   - name: score
     description: 成绩(url不需要/api 端口5000)
   - name: consume
@@ -4209,6 +4211,180 @@ paths:
           $ref: '#/components/responses/NoPermission'
         '404':
           $ref: '#/components/responses/NotFound'
+
+  /review/sensitiveWord:
+    post:
+      summary: 敏感词审核
+      operationId: 敏感词审核
+      tags:
+        - review
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  description: 待审核文本
+                  example: 我草泥马
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                    example: 0
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  # data:
+                    # $ref: '#/components/schemas/Score'
+                example:
+                  code: 0
+                  status: 成功
+        '403':
+          $ref: '#/components/responses/NoPermission'
+  /review/eatest:
+    post:
+      summary: eatest可疑词过滤
+      operationId: eatest可疑词审核
+      tags:
+        - review
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: 评测id
+                  example: 1
+                content:
+                  type: string
+                  description: 待审核文本
+                  example: 我草泥马
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                    example: 0
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  # data:
+                    # $ref: '#/components/schemas/Score'
+                example:
+                  code: 0
+                  status: 成功
+        '403':
+          $ref: '#/components/responses/NoPermission'
+  /review/eatest/comment:
+    post:
+      summary: eatest评论可疑词过滤
+      operationId: eatest评论可疑词审核
+      tags:
+        - review
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: 评论id
+                  example: 1
+                content:
+                  type: string
+                  description: 待审核文本
+                  example: 我草泥马
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                    example: 0
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  # data:
+                    # $ref: '#/components/schemas/Score'
+                example:
+                  code: 0
+                  status: 成功
+        '403':
+          $ref: '#/components/responses/NoPermission'
+  /review/eatest/comment/reply:
+    post:
+      summary: eatest评论回复可疑词过滤
+      operationId: eatest评论回复可疑词审核
+      tags:
+        - review
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: 评论回复id
+                  example: 1
+                content:
+                  type: string
+                  description: 待审核文本
+                  example: 我草泥马
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                    example: 0
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  # data:
+                    # $ref: '#/components/schemas/Score'
+                example:
+                  code: 0
+                  status: 成功
+        '403':
+          $ref: '#/components/responses/NoPermission'
+
   '/score/grade':
     post:
       summary: 成绩详单
