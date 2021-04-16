@@ -75,25 +75,24 @@ class GetCouponController extends Controller
      */
     public function useCoupon(Request $request)
     {
-
         try{
-            $secret_key =Coupon::find($request->post('id'))->value('secret_key');
-            if ($secret_key != md5($request->post('secret_key'))){
+            $secret_key =Coupon::find($request->post('id'));
+            if ($secret_key->secret_key != md5($request->post('secret_key'))){
                 return CommonException::msg(8,"");
             }
             $coupon = Coupon::find($request->post('id'));
             $store = $coupon->store;
             $location = $coupon->location;
             $value = $coupon->value;
-//            $over_time = $coupon->time;
+
         }catch(\Exception $e){
             return CommonException::msg(5,$e->getMessage());
         }
 
         try{
 //            $stock = Coupon::where('store', '=', $request->post('store'))->where('location','=',$request->post('location'))->where('value','=',$request->post('value'))->value('stock');
-            $stock = Coupon::find($request->post('id'))->value('stock');
-            if ($stock <= 0){
+            $stock = Coupon::find($request->post('id'));
+            if ($stock->stock <= 0){
                 return CommonException::msg(6,"");
             }
 

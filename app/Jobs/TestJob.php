@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Models\Coupon;
-use App\Models\CouponUser;
+use App\Model\Coupon\Coupon;
+use App\Model\Coupon\CouponUser;
 use Illuminate\Support\Facades\DB;
 use App\Services\AudioProcessor;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -13,7 +13,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Redis;
-use App\Exceptions\CommandException;
+use App\Exceptions\CommonException;
 
 class TestJob implements ShouldQueue
 {
@@ -53,22 +53,18 @@ class TestJob implements ShouldQueue
         $store = $this->store;
         $location = $this->location;
         $value = $this->value;
-//        $over_time = $this->over_time;
         $use_time = date("Y-m-d H:i:s");
 
         DB::beginTransaction();
         try {
             //优惠劵数量减一
-//            $stock = Coupon::where('store', '=', $store)->where('location','=',$location)->where('value','=',$value)->value('stock');
-            $stock = Coupon::find($id)->value('stock');
+            $coupon = Coupon::find($id);
+            $stock = $coupon->stock;
             $stock -= 1;
-//            Coupon::where('store','=',$store)->where('location','=',$location)->where('value','=',$value)->update( ['stock'=>$stock] );
             Coupon::find($id)->update(['stock'=>$stock]);
-
             //插入已使用优惠劵
             CouponUser::insert(['user'=>$user,'store'=>$store,'location'=>$location,'value'=>$value,
                 'use_time'=>$use_time]);
-            return CommonException::msg(0,"使用成功");
         } catch(\Exception $e)
         {
             DB::rollback();//事务回滚
