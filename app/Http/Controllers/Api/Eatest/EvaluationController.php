@@ -370,7 +370,10 @@ class EvaluationController extends Controller
                 $request->headers->set('Authorization','Bearer '.$newToken);
                 $uid = handleUid($request);
             }else{
-                $uid = 0;
+                sleep(rand(1,5)/100);
+                $newToken = JWTAuth::refresh($token);
+                $redis->setex('token_blacklist:'.$token,30,$newToken);
+                return msg(13,["token"=>$newToken,"expires_in"=>JWTAuth::factory()->getTTL() * 60]);
             }
         }else{
             $uid = 0;
