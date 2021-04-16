@@ -58,13 +58,13 @@ class SaveCouponController extends Controller
         if ($img !=null){
             $entension = $img->getClientOriginalExtension();
             $newName = $store_name . "_" . $location . "." .$entension;
-            if (file_exists('storage/img/' . $newName)){
-                unlink('storage/img/' . $newName);
-                $r = $img->move('storage/img',$newName);
-                $res ="http://159.75.6.240:4396/" . $r;
+            if (file_exists("storage/img/" . $newName)){
+                unlink("storage/img/" . $newName);
+                $r = $img->move("storage/img",$newName);
+                $res ="http://123.57.211.11:10302/" . $r;
             }else{
-                $r = $img->move('storage/img',$newName);
-                $res ="http://159.75.6.240:4396/" . $r;
+                $r = $img->move("storage/img",$newName);
+                $res ="http://123.57.211.11:10302/" . $r;
             }
         }else{
             $res = NULL;
@@ -106,7 +106,7 @@ class SaveCouponController extends Controller
     public function deleteCoupon(Request $request)
     {
         try {
-            $res = Coupon::find($request->get('id'))->delete();
+            $res = Coupon::find($request->post('id'))->delete();
             return CommonException::msg(0,$res);
         }catch(Exception $e){
             return CommonException::msg(4,$e->getMessage());
