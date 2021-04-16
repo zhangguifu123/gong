@@ -22,14 +22,15 @@ class NoticeController extends Controller
     {
         //获取作者Id
         $toId = $request->route("id");
-        $notice_list = EatestComments::query()->where('toId','=',$toId)->where('eatest_comments.status', 0)
+        $notice_list = EatestComments::query()->where('toId','=',$toId)->where('eatest_comments.status',0)
             ->leftJoin('evaluations','eatest_comments.eatest_id','=','evaluations.id')
             ->get(
             ['eatest_comments.id','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar','eatest_comments.content','eatest_comments.created_at as time','evaluations.img']
         )->toArray();
 
-//        $list_count = EatestComments::query()->where('toId','=',$toId)->count();
-        $message = ['total'=>count($notice_list),'list'=>$notice_list];
+
+        $list_count = EatestComments::query()->where('toId','=',$toId)->count();
+        $message = ['total'=>$list_count,'list'=>$notice_list];
         return msg(0, $message);
     }
 
@@ -42,16 +43,43 @@ class NoticeController extends Controller
     {
         //获取作者Id
         $toId = $request->route("id");
-        $notice_list = EatestReplies::query()->where('eatest_replies.toId','=',$toId)->where('eatest_replies.status', 0)
-            ->leftJoin('eatest_comments','eatest_replies.comment_id','=','eatest_comments.id')
+        $notice_list = EatestReplies::query()
+            ->leftJoin('eatest_comments','eatest_replies.comment_id','=','eatest_comments.id')->where('eatest_replies.status',0)
             ->get(
-            ['eatest_replies.id','comment_id','eatest_comments.content as commentContent','eatest_replies.toId','eatest_replies.fromId','eatest_replies.fromName','eatest_replies.fromAvatar','eatest_replies.content','eatest_replies.created_at as time','evaluations.img']
+            ['eatest_replies.id','comment_id','eatest_comments.content as commentContent','eatest_replies.toId',
+                'eatest_replies.fromId','eatest_replies.fromName','eatest_replies.fromAvatar','eatest_replies.content',
+                'eatest_replies.created_at as time','evaluations.img','eatest_replies.toId']
         )->toArray();
 
         $list_count = EatestReplies::query()->where('toId','=',$toId)->count();
         $message = ['total'=>$list_count,'list'=>$notice_list];
         return msg(0, $message);
     }
+
+    public function get_all_comments_replies_list(Request $request)
+    {
+        //获取作者Id
+        $toId = $request->route("id");
+        $comment_list = EatestComments::query()->where('toId','=',$toId)
+            ->leftJoin('evaluations','eatest_comments.eatest_id','=','evaluations.id')
+            ->get(
+                ['eatest_comments.id','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar','eatest_comments.content','eatest_comments.created_at as time','evaluations.img','eatest_comments.status']
+            )->toArray();
+
+        $reply_list = EatestReplies::query()
+            ->leftJoin('eatest_comments','eatest_replies.comment_id','=','eatest_comments.id')
+            ->get(
+                ['eatest_replies.id','comment_id','eatest_comments.content as commentContent','eatest_replies.toId',
+                    'eatest_replies.fromId','eatest_replies.fromName','eatest_replies.fromAvatar','eatest_replies.content',
+                    'eatest_replies.created_at as time','evaluations.img','eatest_replies.toId']
+            )->toArray();
+//        $list_count = EatestComments::query()->where('toId','=',$toId)->count();
+        $comment_message = ['total'=>count($comment_list),'list'=>$comment_list];
+        $reply_message = ['total'=>count($reply_list),'list'=>$reply_list];
+        $message = ['comment_list' => $comment_message,'reply_message' => $reply_message];
+        return msg(0, $message);
+    }
+
 
     /**
      * Eatest Comment 状态修改(指定)
@@ -106,6 +134,23 @@ class NoticeController extends Controller
         return msg(0,$message);
     }
 
+    public function getAllEatestLikeList (Request $request)
+    {
+        //提取数据
+        $toId = $request->route('id');   //用户id
+        $list = EatestLikes::query()
+            ->leftJoin('evaluations', 'evaluations.id','=','eatest_likes.evaluation')
+            ->where([
+                ['evaluations.publisher', $toId]
+            ])
+            ->get(
+                ['eatest_likes.id','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar','eatest_likes.user','eatest_likes.evaluation','evaluations.img','eatest_likes.status']
+            )
+            ->toArray();
+        $message = ['total' => count($list), 'list' => $list];
+        return msg(0,$message);
+    }
+
     /**
      * Eatest Comment Like 未查看评论点赞
      * @param Request $request
@@ -119,11 +164,29 @@ class NoticeController extends Controller
         $list = CommentLikes::query()
             ->leftJoin('evaluations', 'evaluations.id','=','comment_likes.evaluation')
             ->where([
-                ['comment_likes.status', 0],
+                ['comment_likes.status',0],
                 ['evaluations.publisher', $toId]
             ])
             ->get(
                 ['comment_likes.id','comment_likes.user','comment_likes.evaluation','evaluations.img','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar']
+            )
+            ->toArray();
+        $message = ['total' => count($list), 'list' => $list];
+        return msg(0,$message);
+    }
+
+    public function getAllEatestCommentLikeList (Request $request)
+    {
+        //提取数据
+        $toId = $request->route('id');   //用户id
+        //拉取未读点赞
+        $list = CommentLikes::query()
+            ->leftJoin('evaluations', 'evaluations.id','=','comment_likes.evaluation')
+            ->where([
+                ['evaluations.publisher', $toId]
+            ])
+            ->get(
+                ['comment_likes.id','comment_likes.user','comment_likes.evaluation','evaluations.img','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar','comment_likes.status']
             )
             ->toArray();
         $message = ['total' => count($list), 'list' => $list];

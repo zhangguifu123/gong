@@ -237,6 +237,9 @@ Route::namespace('Api')->group(function (){
             Route::get('/notice/eatest/reply/{id}',"jwxt\NoticeController@get_eatest_reply_list")->where(["id" => "[0-9]+"]);
             Route::get('/notice/eatest/like/{id}',"jwxt\NoticeController@getEatestLikeList")->where(["id" => "[0-9]+"]);
             Route::get('/notice/eatest/comment/like/{id}',"jwxt\NoticeController@getEatestCommentLikeList")->where(["id" => "[0-9]+"]);
+            Route::get('/notice/allEatestComment/like/{id}',"jwxt\NoticeController@get_all_comments_replies_list")->where(["id" => "[0-9]+"]);
+            Route::get('/notice/getAllEatestLikeList/like/{id}',"jwxt\NoticeController@getAllEatestLikeList")->where(["id" => "[0-9]+"]);
+            Route::get('/notice/getAllEatestCommentLikeList/like/{id}',"jwxt\NoticeController@getAllEatestCommentLikeList")->where(["id" => "[0-9]+"]);
         });
 
         Route::put('/notice/eatest/comments/{id}',"jwxt\NoticeController@eatest_comment_update")->where(["id" => "[0-9]+"])->middleware('comment.exist.check');
