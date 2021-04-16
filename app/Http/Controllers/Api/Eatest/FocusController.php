@@ -51,7 +51,7 @@ class FocusController extends Controller
         if (!$request->has('unFollowId')) {
             return msg(1, "缺失参数");
         }
-        $mod = ['unFollowId' => ["boolean"]];
+        $mod = ['unFollowId' => ["integer"]];
 
         $data = $request->only(array_keys($mod));
         $validator = Validator::make($data, $mod);
