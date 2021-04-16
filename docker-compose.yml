@@ -51,19 +51,19 @@ services:
      container_name: "wechat_redis"
      volumes:
       - ./dockercnf/redis/wechat_redis_db/:/data
-  swagger-ui:
-    image: "swaggerapi/swagger-ui"
-    container_name: "swagger-ui"
-    privileged: true
-    ports:
-      - "82:8080"
-    volumes:
-      - ./dockercnf/swagger/html:/usr/share/nginx/html
-    environment:
-      API_URL: /openapi.yaml
-  swagger-editor:
-    image: "swaggerapi/swagger-editor"
-    container_name: "swagger-editor"
-    privileged: true
-    ports:
-      - "81:8080"
+#  swagger-ui:
+#    image: "swaggerapi/swagger-ui"
+#    container_name: "swagger-ui"
+#    privileged: true
+#    ports:
+#      - "82:8080"
+#    volumes:
+#      - ./dockercnf/swagger/html:/usr/share/nginx/html
+#    environment:
+#      API_URL: /openapi.yaml
+#  swagger-editor:
+#    image: "swaggerapi/swagger-editor"
+#    container_name: "swagger-editor"
+#    privileged: true
+#    ports:
+#      - "81:8080"
