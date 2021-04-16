@@ -55,7 +55,7 @@ class CountDownController extends Controller
                 "remarks" => $item['exam_type'],
                 "end_time" => $item['exam_time'],
                 "location" => $item['exam_location'],
-                "type" => 0
+                "type" => 1
             ];
         }
 
