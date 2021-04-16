@@ -48,7 +48,7 @@ class NoticeController extends Controller
             ->get(
             ['eatest_replies.id','comment_id','eatest_comments.content as commentContent','eatest_replies.toId',
                 'eatest_replies.fromId','eatest_replies.fromName','eatest_replies.fromAvatar','eatest_replies.content',
-                'eatest_replies.created_at as time','evaluations.img','eatest_replies.toId']
+                'eatest_replies.created_at as time','eatest_replies.toId']
         )->toArray();
 
         $list_count = EatestReplies::query()->where('toId','=',$toId)->count();
@@ -71,7 +71,7 @@ class NoticeController extends Controller
             ->get(
                 ['eatest_replies.id','comment_id','eatest_comments.content as commentContent','eatest_replies.toId',
                     'eatest_replies.fromId','eatest_replies.fromName','eatest_replies.fromAvatar','eatest_replies.content',
-                    'eatest_replies.created_at as time','evaluations.img','eatest_replies.toId']
+                    'eatest_replies.created_at as time','eatest_replies.toId']
             )->toArray();
 //        $list_count = EatestComments::query()->where('toId','=',$toId)->count();
         $comment_message = ['total'=>count($comment_list),'list'=>$comment_list];
