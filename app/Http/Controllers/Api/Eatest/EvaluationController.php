@@ -355,9 +355,23 @@ class EvaluationController extends Controller
     private function isLike_Collection($request,$evaluation_list){
         //定义循环内的参数，防止报warning
         $new_evaluation_list = [];
+
         $authorization = $request->header('Authorization');
 	    if (isset($authorization) && $authorization !=null){
-	        $uid = handleUid($request);
+            $redis = new Redis();
+            $redis->connect("gong_redis", 6379);
+            $auth  = JWTAuth::parseToken();
+            $token = $auth->setRequest($request)->getToken();
+            $user  = $auth->check();
+            if ($user){
+                $uid = handleUid($request);
+            }elseif ($newToken = $redis->get('token_blacklist:'.$token)) {
+                // 给当前的请求设置性的token,以备在本次请求中需要调用用户信息
+                $request->headers->set('Authorization','Bearer '.$newToken);
+                $uid = handleUid($request);
+            }else{
+                $uid = 0;
+            }
         }else{
             $uid = 0;
 	    }
