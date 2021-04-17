@@ -127,7 +127,7 @@ class NoticeController extends Controller
                 ['evaluations.publisher', $toId]
             ])
             ->get(
-                ['eatest_likes.id','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar','eatest_likes.user','eatest_likes.evaluation','evaluations.img']
+                ['eatest_likes.id','evaluations.title','evaluations.id','toId','fromId','fromName','fromAvatar','eatest_likes.user','eatest_likes.evaluation','evaluations.img']
             )
             ->toArray();
         $message = ['total' => count($list), 'list' => $list];
@@ -144,7 +144,7 @@ class NoticeController extends Controller
                 ['evaluations.publisher', $toId]
             ])
             ->get(
-                ['eatest_likes.id','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar','eatest_likes.user','eatest_likes.evaluation','evaluations.img','eatest_likes.status']
+                ['eatest_likes.id','evaluations.title','evaluations.id','toId','fromId','fromName','fromAvatar','eatest_likes.user','eatest_likes.evaluation','evaluations.img','eatest_likes.status']
             )
             ->toArray();
         $message = ['total' => count($list), 'list' => $list];
