@@ -257,7 +257,7 @@ class EvaluationController extends Controller
                 sleep(rand(1,5)/100);
                 $newToken = JWTAuth::refresh($token);
                 $redis->setex('token_blacklist:'.$token,30,$newToken);
-                return ["token"=>$newToken,"expires_in"=>JWTAuth::factory()->getTTL() * 60];
+                return msg(13,["token"=>$newToken,"expires_in"=>JWTAuth::factory()->getTTL() * 60]);
             }
         }else{
             $uid = 0;
