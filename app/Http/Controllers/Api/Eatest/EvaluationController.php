@@ -215,24 +215,53 @@ class EvaluationController extends Controller
 
         $focusStatus = false;
         $authorization = $request->header('Authorization');
-	    if (isset($authorization) && $authorization !=null){
-            $uid = handleUid($request);
-	     //是否关注
-            $fromId = $evaluation->publisher;
-            $isFocus = FocusOn::query()
-                ->where([
-                    ['uid',$uid],
-                    ['follow_uid', $fromId],
-                    ['status', '!=', '-1']
-                ])->first();
-            if($isFocus == null){
-                $focusStatus = false;
+        if (isset($authorization) && $authorization !=null){
+            $redis = new Redis();
+            $redis->connect("gong_redis", 6379);
+            $auth  = JWTAuth::parseToken();
+            $token = $auth->setRequest($request)->getToken();
+            $user  = $auth->check();
+            if ($user){
+                $uid = handleUid($request);
+                //是否关注
+                $fromId = $evaluation->publisher;
+                $isFocus = FocusOn::query()
+                    ->where([
+                        ['uid',$uid],
+                        ['follow_uid', $fromId],
+                        ['status', '!=', '-1']
+                    ])->first();
+                if($isFocus == null){
+                    $focusStatus = false;
+                }else{
+                    $focusStatus = true;
+                }
+            }elseif ($newToken = $redis->get('token_blacklist:'.$token)) {
+                // 给当前的请求设置性的token,以备在本次请求中需要调用用户信息
+                $request->headers->set('Authorization','Bearer '.$newToken);
+                $uid = handleUid($request);
+                //是否关注
+                $fromId = $evaluation->publisher;
+                $isFocus = FocusOn::query()
+                    ->where([
+                        ['uid',$uid],
+                        ['follow_uid', $fromId],
+                        ['status', '!=', '-1']
+                    ])->first();
+                if($isFocus == null){
+                    $focusStatus = false;
+                }else{
+                    $focusStatus = true;
+                }
             }else{
-                $focusStatus = true;
+                sleep(rand(1,5)/100);
+                $newToken = JWTAuth::refresh($token);
+                $redis->setex('token_blacklist:'.$token,30,$newToken);
+                return ["token"=>$newToken,"expires_in"=>JWTAuth::factory()->getTTL() * 60];
             }
         }else{
-	        $uid = 0;
-	    }
+            $uid = 0;
+        }
 
         //判断近期是否浏览过该文章，若没有浏览量+1 and 建立近期已浏览session
 //        if (
@@ -289,6 +318,9 @@ class EvaluationController extends Controller
             $evaluation_list = array_merge($new_list, $evaluation_list);
         }
         $message = $this->isLike_Collection($request,$evaluation_list);
+        if (isset($message['token'])){
+            return msg(13,$message);
+        }
         return msg(0, $message);
     }
 
@@ -373,7 +405,7 @@ class EvaluationController extends Controller
                 sleep(rand(1,5)/100);
                 $newToken = JWTAuth::refresh($token);
                 $redis->setex('token_blacklist:'.$token,30,$newToken);
-                return msg(13,["token"=>$newToken,"expires_in"=>JWTAuth::factory()->getTTL() * 60]);
+                return ["token"=>$newToken,"expires_in"=>JWTAuth::factory()->getTTL() * 60];
             }
         }else{
             $uid = 0;
