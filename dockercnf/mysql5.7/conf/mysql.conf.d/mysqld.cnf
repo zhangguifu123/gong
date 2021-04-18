@@ -25,6 +25,7 @@ socket		= /var/run/mysqld/mysqld.sock
 nice		= 0
 
 [mysqld]
+
 #
 # * Basic Settings
 #
@@ -38,6 +39,7 @@ tmpdir		= /tmp
 lc-messages-dir	= /usr/share/mysql
 skip-external-locking
 skip-grant-tables
+skip-name-resolve
 #
 # Instead of skip-networking the default is now to listen only on
 # localhost which is more compatible and is not less secure.

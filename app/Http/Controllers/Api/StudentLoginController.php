@@ -25,8 +25,7 @@ class StudentLoginController extends Controller
             if ($user) {
                 return msg(0, $user->info());
             }
-        }
-
+		}
         $mod = array(
             'stu_id' => ['regex:/^20[\d]{8,10}$/'],
             'password' => ['regex:/^[^\s]{8,20}$/'],

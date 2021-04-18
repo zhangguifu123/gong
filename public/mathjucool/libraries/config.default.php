@@ -37,7 +37,7 @@ declare(strict_types=1);
  *
  * @global string $cfg['PmaAbsoluteUri']
  */
-$cfg['PmaAbsoluteUri'] = '';
+$cfg['PmaAbsoluteUri'] = 'https://gong.sky31.com';
 
 /**
  * Configure authentication logging destination
@@ -269,7 +269,7 @@ $cfg['Servers'][$i]['user'] = 'root';
  *
  * @global string $cfg['Servers'][$i]['password']
  */
-$cfg['Servers'][$i]['password'] = 'yourpassword';
+$cfg['Servers'][$i]['password'] = 'D0FqWZSmauWc0Vc4';
 
 /**
  * Session to use for 'signon' authentication method
