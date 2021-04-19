@@ -17,7 +17,7 @@ class UserFeedbackController extends Controller
             'content' => ['string'],
             'phone' => ['integer'],
         ];
-//        $request = handleData($request,$params);
+        $request = handleData($request,$params);
         if(!is_object($request)){
             return $request;
         }
