@@ -20,7 +20,6 @@ class CourseGroupController extends Controller
         //检查数据结构
         $params = [
             'Founder' => ['string'],
-//            'FounderUid' => ['integer'],
             'groupName' => ['string'],
             'sharingCode' => ['string']
         ];
@@ -30,13 +29,11 @@ class CourseGroupController extends Controller
         }
         //提取数据
         $FounderUid = $request->route('uid');
-//        $FounderUid = '201905190401';
         $data = $request->only(array_keys($params));
         $member = [$FounderUid];
         $data = $data + ['memberSum' => 1, 'member' => json_encode($member), 'FounderUid' => $FounderUid];
         //创建小组
         $addGroup = CourseGroup::query()->create($data);
-//        return $data;
         if($addGroup){
             return msg(0,__LINE__);
         }
@@ -94,7 +91,6 @@ class CourseGroupController extends Controller
         if(!$getList){
             return msg(4, __LINE__);
         }
-//        $message = ['total' => count($getList), 'list' => $getList];
         return msg(0,$getList);
     }
 
@@ -131,13 +127,9 @@ class CourseGroupController extends Controller
         $record = $courseGroup->get('member')->first();
 
         //加入新成员
-//        $member[] = $memberId;
         $member = json_decode($record->member,true);
-//        $member[$memberUid] = 1;
         $member[] = $memberUid;
-//        return $member;
         $data = ['member' => json_encode($member)];
-//        return $data;
         $join = $courseGroup->update($data);
         if($join){
             return msg(0,__LINE__);
@@ -152,7 +144,6 @@ class CourseGroupController extends Controller
         //提取数据
         $groupId = $request->route('id');
         $memberUid = $request->route('uid');           //数组
-        //return $groupId;
 
         //删除小组成员
         $courseGroup = CourseGroup::query()->where('id',$groupId);
