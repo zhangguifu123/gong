@@ -114,7 +114,7 @@ Route::namespace('Api')->group(function (){
 
     /** 用户区 */
 
-    Route::group(['middleware' => ['login.check','auth.check']], function () {
+//    Route::group(['middleware' => ['login.check','auth.check']], function () {
         //审核
         Route::post('/review/sensitiveWord',"Manager\ReviewController@sensitiveFilter");
         Route::post('/review/eatest',"Manager\ReviewController@eatestFilter");
@@ -178,7 +178,7 @@ Route::namespace('Api')->group(function (){
         Route::delete('/CourseGroup/{id}/member/{uid}','jwxt\CourseGroupController@deleteGroupMember')->where(['id' => '[0-9]+' , 'uid' => '[0-9]+'])->middleware(['group.exist.check','group.owner.check']);
         Route::get('/CourseGroup/sharingCode','jwxt\CourseGroupController@createSharingCode');
         Route::get('/CourseGroup/{id}/member/list','jwxt\CourseGroupController@getMemberList')->where(['id' => '[0-9]+']);
-        Route::get('/CourseGroup/{id}/emptyCourse/{uid}','jwxt\CourseController@createEmptyCourse')->where(['id' => '[0-9]+']);
+        Route::post('/CourseGroup/{id}/emptyCourse','jwxt\CourseController@createEmptyCourse')->where(['id' => '[0-9]+']);
 
 
         /** Course*/
@@ -281,7 +281,7 @@ Route::namespace('Api')->group(function (){
         Route::post('/coupon/use','Coupon\GetCouponController@useCoupon');
 
 
-   });
+//   });
 
 
 
