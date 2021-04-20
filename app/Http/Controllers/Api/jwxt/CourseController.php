@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\jwxt;
 use App\Http\Controllers\Controller;
 use App\Model\Eatest\Evaluation;
 use App\Model\jwxt\Course;
+use App\Model\jwxt\CourseGroup;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -254,9 +255,25 @@ class CourseController extends Controller
 
     //生成空课表
     public function createEmptyCourse(Request $request){
+        $params = [
+            'uids' => ['json'],
+        ];
+        $request = handleData($request,$params);
+        if (!is_object($request)) {
+            return $request;
+        }
         //提取数据
         $id = $request->route('id');        //小组id
-        $uids = json_decode($request->route('uid'));      //数组
+        $uids = json_decode($request->input(array_keys($params)));      //数组
+        //检查是否为组内人员
+        foreach ($uids as $key => $uid) {
+            $bool = CourseGroup::query()->where([['id',$id], ['member','like','%' . $uid . '%']]);
+            if ($bool->get()->toArray() == []) {
+                unset($uids[$key]);
+            }
+        }
+        $uids = array_values($uids);
+//        return $uids;
         //生成课表
 
         //获取有课成员
