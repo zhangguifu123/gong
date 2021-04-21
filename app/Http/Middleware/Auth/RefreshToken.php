@@ -18,6 +18,9 @@ class RefreshToken extends BaseMiddleware
 
     public function handle($request, Closure $next)
     {
+        if (session()->has('ManagerLogin') && session('ManagerLogin') === true) {
+            return $next($request);
+        }
         $newToken = null;
         $auth = JWTAuth::parseToken();
         if (! $token = $auth->setRequest($request)->getToken()) {
