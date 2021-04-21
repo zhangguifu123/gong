@@ -114,7 +114,7 @@ Route::namespace('Api')->group(function (){
 
     /** 用户区 */
 
-//    Route::group(['middleware' => ['login.check','auth.check']], function () {
+    Route::group(['middleware' => ['login.check','auth.check']], function () {
         //审核
         Route::post('/review/sensitiveWord',"Manager\ReviewController@sensitiveFilter");
         Route::post('/review/eatest',"Manager\ReviewController@eatestFilter");
@@ -281,7 +281,7 @@ Route::namespace('Api')->group(function (){
         Route::post('/coupon/use','Coupon\GetCouponController@useCoupon');
 
 
-//   });
+   });
 
 
 
