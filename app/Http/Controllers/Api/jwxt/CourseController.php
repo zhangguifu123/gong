@@ -79,6 +79,7 @@ class CourseController extends Controller
         $course_list = Course::query()->where('uid',$uid)
             ->get(['id','course', 'location','teacher','week','week_string','section_start','end_start','section_length','day']);
 //            ->toArray();
+//        $id = (Course::query()->where('uid', $uid)->max('id')) + 1;
         if(!$course_list){
             return msg(4,__LINE__);
         }

@@ -72,7 +72,7 @@ class searchEatestController extends Controller
 
 
     //条件搜索
-    public function cdSearch(Request $request)
+    public function cdSearch(Request $request, $topic = null, $orderBy = null)
     {
         //获取数据
         $index = $request->route('index');
@@ -84,7 +84,6 @@ class searchEatestController extends Controller
         $evaluation_list = Evaluation::query()
             ->limit(8)
             ->offset($offset)
-            ->orderByDesc("evaluations.created_at")
             ->where('title', 'like', '%' . $index . '%')      //标题
             ->orwhere('content', 'like', '%' . $index . '%')      //内容
             ->orWhere('label', 'like', '%' . $index . '%')      //标签
