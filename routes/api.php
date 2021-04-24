@@ -174,6 +174,7 @@ Route::namespace('Api')->group(function (){
         Route::get('/CourseGroup/list/{uid}/created','jwxt\CourseGroupController@getCreatedGroupList')->where(['id' => '[0-9]+']);
         Route::get('/CourseGroup/list/{uid}/joined','jwxt\CourseGroupController@getJoinedGroupList')->where(['uid' => '[0-9]+']);
         Route::delete('/CourseGroup/{id}','jwxt\CourseGroupController@deleteGroup')->where(['id' => '[0-9]+'])->middleware(['group.exist.check','group.owner.check']);
+        Route::put('/CourseGroup/{id}','jwxt\CourseGroupController@updateGroup')->where(['id' => '[0-9]+'])->middleware(['group.exist.check','group.owner.check']);
         Route::post('/CourseGroup/{sharingCode}/member/{uid}','jwxt\CourseGroupController@joinGroup')->where(['sharingCode' => '[A-Z0-9]+','uid' => '[0-9]+'])->middleware(['group.member.check']);      //
         Route::delete('/CourseGroup/{id}/member/{uid}','jwxt\CourseGroupController@deleteGroupMember')->where(['id' => '[0-9]+' , 'uid' => '[0-9]+'])->middleware(['group.exist.check','group.owner.check']);
         Route::get('/CourseGroup/sharingCode','jwxt\CourseGroupController@createSharingCode');

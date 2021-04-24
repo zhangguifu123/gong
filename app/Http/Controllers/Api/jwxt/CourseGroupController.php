@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Psy\Util\Str;
+use Symfony\Component\Config\Definition\Exception\Exception;
 
 class CourseGroupController extends Controller
 {
@@ -68,7 +69,7 @@ class CourseGroupController extends Controller
         $getList = CourseGroup::query()
             ->orderByDesc('created_at')
             ->get();
-	$data = [];
+	    $data = [];
         foreach ($getList as $list){
             if(in_array($uid,json_decode($list->member,true))){
                 $data[] = $list;
@@ -92,6 +93,31 @@ class CourseGroupController extends Controller
             return msg(4, __LINE__);
         }
         return msg(0,$getList);
+    }
+
+
+    //修改小组名称
+    public function updateGroup(Request $request)
+    {
+        //检查数据格式
+        $params = [
+            'groupName' => ['string']
+        ];
+        $request = handleData($request);
+        if (!is_object($request)) {
+            return $request;
+        }
+        //提取数据
+        $id = $request->route('id');
+        $data = $request->only(array_keys($params));
+        //修改
+        try {
+            $update = CourseGroup::query()->where('id', $id)->update($data);
+            return msg(0, __LINE__);
+        } catch (Exception $e) {
+            return msg(4, __LINE__);
+        }
+
     }
 
 
