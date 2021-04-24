@@ -28,7 +28,7 @@ class CourseController extends Controller
             "teacher"  => ["string", "max:50","nullable"],
             "week"  => ["json"],
             "section_start"  => ["integer"],
-            "end_start"  => ["integer"],
+            "section_end"  => ["integer"],
             "section_length" => ['integer'],
             "day"  => ["integer"],
         ];
@@ -113,7 +113,7 @@ class CourseController extends Controller
             "teacher"  => ["string", "max:50","nullable"],
             "week"  => ["json"],
             "section_start"  => ["integer"],
-            "end_start"  => ["integer"],
+            "section_end"  => ["integer"],
             "section_length" => ['integer'],
             "day"  => ["integer"],
         ];
