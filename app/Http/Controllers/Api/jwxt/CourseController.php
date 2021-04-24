@@ -65,12 +65,20 @@ class CourseController extends Controller
     {
         //提取数据
         $id = $request->route('id');
+        $uid = handleStuId($request);
         //
-        $course = Course::destroy($id);
-        if(!$course){
-            return msg(4,__LINE__);
+        $course = Course::query()->where('id', $id);
+        if ($course->first()->toArray() == null) {
+            $deleteMsg = Http::delete('http://159.75.6.240:8080/api/student/' . $uid . '/course/' . $id);
+            return $deleteMsg;
+        } else {
+            $course = $course->delete($id);
+            if(!$course){
+                return msg(4,__LINE__);
+            }
+            return msg(0, __LINE__);
         }
-        return msg(0, __LINE__);
+
     }
     //获取课表
     public function get_list(Request $request){
@@ -114,14 +122,22 @@ class CourseController extends Controller
             return $request;
         }
         //提取数据
+        $id = $request->route('id');
+        $uid = handleStuId($request);
         $data = $request->only(array_keys($params));
         //修改
-        $course = Course::query()->find($request->route('id'));
-        $course = $course->update($data);
-        if ($course) {
-            return msg(0, __LINE__);
+        $course = Course::query()->where('id', $id);
+        if ($course->first()->toArray() == null) {
+            $deleteMsg = Http::put('http://159.75.6.240:8080/api/student/' . $uid . '/course/' . $id, $data);
+            return $deleteMsg;
+        } else {
+            $course = $course->update($data);
+            if ($course) {
+                return msg(0, __LINE__);
+            }
+            return msg(4, __LINE__);
         }
-        return msg(4, __LINE__);
+
     }
 
 

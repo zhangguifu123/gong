@@ -116,6 +116,15 @@ function handleUid(Request $request){
     return $uid;
 }
 
+function handleStuId(Request $request){
+    //获取id
+    $StuId = JWTAuth::parseToken()->authenticate()->stu_id;
+    if ($StuId == null){
+        $StuId = $request->header('StuId');
+    }
+    return $StuId;
+}
+
 function compressedImage($imgsrc, $imgdst) {
     list($width, $height, $type) = getimagesize($imgsrc);
 
