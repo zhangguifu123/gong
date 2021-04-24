@@ -187,7 +187,7 @@ Route::namespace('Api')->group(function (){
         //测评所有者和管理员均可操作
 //        Route::get('/course/extra/{uid}',"jwxt\CourseController@get_list")->middleware("owner.check");
         Route::get('/course/extra/{uid}',"jwxt\CourseController@get_list");
-        Route::group(["middleware" => ["course.exist.check",'owner.course.check']], function (){
+        Route::group(["middleware" => ['owner.course.check']], function (){
             Route::put('/course/extra/{id}',"jwxt\CourseController@update");
             Route::delete('/course/extra/{id}',"jwxt\CourseController@delete");
         });
