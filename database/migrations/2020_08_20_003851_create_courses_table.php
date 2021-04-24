@@ -23,7 +23,7 @@ class CreateCoursesTable extends Migration
             $table->string('week_string')->comment('周次');
             $table->integer('section_length')->comment('课时长度');
             $table->integer('section_start')->comment('开始小节');
-            $table->integer('end_start')->comment('结束小节');
+            $table->integer('section_end')->comment('结束小节');
             $table->integer('day')->comment('周几');
             $table->timestamps();
         });
