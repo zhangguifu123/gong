@@ -193,7 +193,7 @@ function checkUser($sid, $password) { //登录验证
 //    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 //    $output = curl_exec($ch);
 //    curl_close($ch);
-    $api_url = Http::post('http://159.75.6.240:8080/api/student/info', [
+    $api_url = Http::post('https://jwxt.sky31.com/api/student/info', [
         'sid' => $sid,
         'pwd' => $password
     ]);

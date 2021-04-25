@@ -47,7 +47,7 @@ class CountDownController extends Controller
             ->where('uid',$uid)->orderByDesc("top")
             ->get()->toArray();
 
-        $response = json_decode(Http::get('159.75.6.240:8080/api/student/examInCache/' . $sid)->body(),true)['data'];
+        $response = json_decode(Http::get('https://jwxt.sky31.com/api/student/examInCache/' . $sid)->body(),true)['data'];
         //return $response[0];
         foreach ($response as $item) {
             $countdown_list[] = [
