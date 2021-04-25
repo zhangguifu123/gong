@@ -32,44 +32,44 @@ class LikeController extends Controller
      * @param Request $request
      * @return string
      */
-//    public function like(Request $request)
-//    {
-//        //若没有session 判断remember
-//        $uid = handleUid($request);
-//
-//        if (!$request->has(['action'])) {
-//            return msg(1, "缺失参数");
-//        }
-//        $mod = ['action' => ["regex:/^like$|^unlike$/"]];
-//
-//        $data = $request->only(array_keys($mod));
-//        $validator = Validator::make($data, $mod);
-//        if ($validator->fails()) {
-//            return msg(1, '非法参数' . __LINE__);
-//        }
-//
-//        $user = User::query()->find($uid);
-//        $evaluation_id = $request->route("id");
-//        $evaluation = Evaluation::query()->find($evaluation_id);
-//
-//        if ($request->input("action") == "like") {
-//            if ($user->add_like($evaluation_id)) {
-//                $evaluation->increment("like");
-//                $evaluation->increment("score");
-//            } else {
-//                return msg(3, __LINE__);
-//            }
-//        } else {
-//            if ($user->del_like($evaluation_id)) {
-//                $evaluation->decrement("like");
-//                $evaluation->decrement("score");
-//            } else {
-//                return msg(3, __LINE__);
-//            }
-//        }
-//
-//        return msg(0, __LINE__);
-//    }
+    public function like(Request $request)
+    {
+        //若没有session 判断remember
+        $uid = handleUid($request);
+
+        if (!$request->has(['action'])) {
+            return msg(1, "缺失参数");
+        }
+        $mod = ['action' => ["regex:/^like$|^unlike$/"]];
+
+        $data = $request->only(array_keys($mod));
+        $validator = Validator::make($data, $mod);
+        if ($validator->fails()) {
+            return msg(1, '非法参数' . __LINE__);
+        }
+
+        $user = User::query()->find($uid);
+        $evaluation_id = $request->route("id");
+        $evaluation = Evaluation::query()->find($evaluation_id);
+
+        if ($request->input("action") == "like") {
+            if ($user->add_like($evaluation_id)) {
+                $evaluation->increment("like");
+                $evaluation->increment("score");
+            } else {
+                return msg(3, __LINE__);
+            }
+        } else {
+            if ($user->del_like($evaluation_id)) {
+                $evaluation->decrement("like");
+                $evaluation->decrement("score");
+            } else {
+                return msg(3, __LINE__);
+            }
+        }
+
+        return msg(0, __LINE__);
+    }
 
     /**
      * @api {get} /api/user/:uid/keep     获取用户收藏列表
