@@ -37,7 +37,7 @@ class LikeController extends Controller
         //若没有session 判断remember
         $uid = handleUid($request);
 
-        if (!$request->has('action')) {
+        if (!$request->has(['action'])) {
             return msg(1, "缺失参数");
         }
         $mod = ['action' => ["regex:/^like$|^unlike$/"]];
