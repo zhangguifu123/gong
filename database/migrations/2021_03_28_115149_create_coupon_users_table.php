@@ -15,12 +15,10 @@ class CreateCouponUsersTable extends Migration
     {
         Schema::create('coupon_users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('user')->comment('用户学号');
-            $table->string('store')->comment('商家');
-            $table->string('location', 32)->comment('店家位置');
-            $table->string('value')->comment('面额');
+            $table->string('user_id')->comment('用户id');
+            $table->string('coupon_id')->comment('已使用的优惠劵id');
+            $table->string('coupon_type')->comment('优惠劵类型');
             $table->date('use_time')->comment('使用时间');
-            $table->timestamps();
         });
     }
 
