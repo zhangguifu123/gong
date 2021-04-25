@@ -2,7 +2,9 @@
 
 namespace App\Jobs;
 
-use App\Model\Coupon\Coupon;
+use App\Model\Coupon\Coupon_fir;
+use App\Model\Coupon\Coupon_Sec;
+use App\Model\Coupon\Coupon_Thi;
 use App\Model\Coupon\CouponUser;
 use Illuminate\Support\Facades\DB;
 use App\Services\AudioProcessor;
@@ -18,26 +20,21 @@ use App\Exceptions\CommonException;
 class TestJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    protected $id;
-    protected $user;
-    protected $store;
-    protected $location;
-    protected $value;
+    private $coupon_id;
+    private $coupon_type;
+    private $user_id;
 //    protected $over_time;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($id,$user,$store,$location,$value)
+    public function __construct($user_id,$coupon_id,$coupon_type)
     {
         //
-        $this->id = $id;
-        $this->user = $user;
-        $this->store = $store;
-        $this->location = $location;
-        $this->value = $value;
-//        $this->over_time = $over_time;
+        $this->user_id = $user_id;
+        $this->coupon_id = $coupon_id;
+        $this->coupon_type = $coupon_type;
     }
 
     /**
@@ -48,23 +45,19 @@ class TestJob implements ShouldQueue
     public function handle()
     {
         //
-        $id = $this->id;
-        $user = $this->user;
-        $store = $this->store;
-        $location = $this->location;
-        $value = $this->value;
+        $user_id = $this->user_id;
+        $coupon_id = $this->coupon_id;
+        $coupon_type = $this->coupon_type;
         $use_time = date("Y-m-d H:i:s");
 
         DB::beginTransaction();
         try {
             //优惠劵数量减一
-            $coupon = Coupon::find($id);
-            $stock = $coupon->stock;
-            $stock -= 1;
-            Coupon::find($id)->update(['stock'=>$stock]);
+            $update_stock = $this->updateCouponStock($coupon_type, $coupon_id);
+            echo $update_stock;
             //插入已使用优惠劵
-            CouponUser::insert(['user'=>$user,'store'=>$store,'location'=>$location,'value'=>$value,
-                'use_time'=>$use_time]);
+            $user = CouponUser::insert(['user_id'=>$user_id, 'coupon_id'=>$coupon_id, 'coupon_type'=>$coupon_type, 'use_time'=>$use_time]);
+            echo $user;
         } catch(\Exception $e)
         {
             DB::rollback();//事务回滚
@@ -74,4 +67,26 @@ class TestJob implements ShouldQueue
         DB::commit();
 
     }
+
+    public function updateCouponStock(string $type, string $id)
+    {
+        $coupon = "";
+        switch($type)
+        {
+            case "1":
+                $stock = Coupon_fir::where('id','=',$id)->value('stock');
+                $coupon = Coupon_fir::where('id','=',$id)->update(['stock'=>($stock-1)]);
+                break;
+            case "2":
+                $stock = Coupon_Sec::where('id','=',$id)->value('stock');
+                $coupon = Coupon_Sec::where('id','=',$id)->update(['stock'=>($stock-1)]);
+                break;
+            case "3":
+                $stock = Coupon_Thi::where('id','=',$id)->value('stock');
+                $coupon = Coupon_Thi::where('id','=',$id)->update(['stock'=>($stock-1)]);
+                break;
+        }
+        return $coupon;
+    }
+
 }
