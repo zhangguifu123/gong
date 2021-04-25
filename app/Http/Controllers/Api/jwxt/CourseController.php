@@ -28,7 +28,7 @@ class CourseController extends Controller
             "teacher"  => ["string", "max:50","nullable"],
             "week"  => ["json"],
             "section_start"  => ["integer"],
-            "end_start"  => ["integer"],
+            "section_end"  => ["integer"],
             "section_length" => ['integer'],
             "day"  => ["integer"],
         ];
@@ -85,7 +85,7 @@ class CourseController extends Controller
         $uid = $request->route('uid');
 //        return $uid;
         $course_list = Course::query()->where('uid',$uid)
-            ->get(['id','course', 'location','teacher','week','week_string','section_start','end_start','section_length','day']);
+            ->get(['id','course', 'location','teacher','week','week_string','section_start','section_end','section_length','day']);
 //            ->toArray();
 //        $id = (Course::query()->where('uid', $uid)->max('id')) + 1;
         if(!$course_list){
@@ -113,7 +113,7 @@ class CourseController extends Controller
             "teacher"  => ["string", "max:50","nullable"],
             "week"  => ["json"],
             "section_start"  => ["integer"],
-            "end_start"  => ["integer"],
+            "section_end"  => ["integer"],
             "section_length" => ['integer'],
             "day"  => ["integer"],
         ];

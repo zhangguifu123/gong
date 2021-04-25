@@ -103,7 +103,7 @@ class CourseGroupController extends Controller
         $params = [
             'groupName' => ['string']
         ];
-        $request = handleData($request);
+        $request = handleData($request, $params);
         if (!is_object($request)) {
             return $request;
         }
