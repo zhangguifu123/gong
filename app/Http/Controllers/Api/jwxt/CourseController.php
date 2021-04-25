@@ -69,7 +69,7 @@ class CourseController extends Controller
         //
         $course = Course::query()->where('id', $id);
         if ($course->first()->toArray() == null) {
-            $deleteMsg = Http::delete('http://159.75.6.240:8080/api/student/' . $uid . '/course/' . $id);
+            $deleteMsg = Http::delete('https://jwxt.sky31.com/api/student/' . $uid . '/course/' . $id);
             return $deleteMsg;
         } else {
             $course = $course->delete($id);
@@ -91,7 +91,7 @@ class CourseController extends Controller
         if(!$course_list){
             return msg(4,__LINE__);
         }
-        $response = Http::get('http://159.75.6.240:8080/api/student/'.$uid.'/course');
+        $response = Http::get('https://jwxt.sky31.com/api/student/'.$uid.'/course');
         $data = json_decode($response->body(),true)['data'];
         foreach ($course_list as $course_item){
             $course_item = json_decode($course_item,true);
@@ -128,7 +128,7 @@ class CourseController extends Controller
         //修改
         $course = Course::query()->where('id', $id);
         if ($course->first()->toArray() == null) {
-            $deleteMsg = Http::put('http://159.75.6.240:8080/api/student/' . $uid . '/course/' . $id, $data);
+            $deleteMsg = Http::put('https://jwxt.sky31.com/api/student/' . $uid . '/course/' . $id, $data);
             return $deleteMsg;
         } else {
             $course = $course->update($data);
@@ -165,7 +165,7 @@ class CourseController extends Controller
         $uid = $uid[0]->uid;
 
         //http请求
-        $response = Http::get('http://159.75.6.240:8080/api/student/'.$uid.'/course');
+        $response = Http::get('https://jwxt.sky31.com/api/student/'.$uid.'/course');
         return $response->body();
 
     }
@@ -228,7 +228,7 @@ class CourseController extends Controller
             //获取姓名
             $name = DB::table('users')->where('stu_id',$uid)->get()->toArray()[0]->name;
             //http请求
-            $response = Http::get('http://159.75.6.240:8080/api/student/'.$uid.'/course');
+            $response = Http::get('https://jwxt.sky31.com/api/student/'.$uid.'/course');
             $class =  json_decode($response->body(),true);
             $class = $class['data'];
             $user_schedule = array(
@@ -307,7 +307,7 @@ class CourseController extends Controller
         }
         //初始化空课表(默认为空)
         foreach ($uids as $uid) {
-            $response = json_decode(Http::get('http://159.75.6.240:8080/api/student/' . $uid . '/info')->body(),true)['data'];
+            $response = json_decode(Http::get('https://jwxt.sky31.com/api/student/' . $uid . '/info')->body(),true)['data'];
             $names[] = $response['name'];
         }
         for ($i=1;$i<=7;$i++) {
@@ -324,7 +324,7 @@ class CourseController extends Controller
                 $memberName = [];
                 $memberUid = array_values(array_diff($uids,$value));
                 foreach ($memberUid as $uid) {
-                    $memberName[] = json_decode(Http::get('http://159.75.6.240:8080/api/student/' . $uid . '/info')->body(),true)['data']['name'];
+                    $memberName[] = json_decode(Http::get('https://jwxt.sky31.com/api/student/' . $uid . '/info')->body(),true)['data']['name'];
                 }
                 if($memberName == []){
                     unset($list[$key1][$key2]);
