@@ -49,6 +49,9 @@ class CountDownController extends Controller
 
         $response = json_decode(Http::get('https://jwxt.sky31.com/api/student/examInCache/' . $sid)->body(),true)['data'];
         //return $response[0];
+        if (!is_array($response)) {
+            $response = [];
+        }
         foreach ($response as $item) {
             $countdown_list[] = [
                 "target" => $item['exam_name'],
