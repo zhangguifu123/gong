@@ -311,6 +311,9 @@ class CourseController extends Controller
         //初始化空课表(默认为空)
         foreach ($uids as $uid) {
             $response = json_decode(Http::get('https://jwxt.sky31.com/api/student/' . $uid . '/info')->body(),true)['data'];
+            if (!is_object($response)) {
+                $response = [];
+            }
             $names[] = $response['name'];
         }
         for ($i=1;$i<=7;$i++) {
@@ -327,7 +330,11 @@ class CourseController extends Controller
                 $memberName = [];
                 $memberUid = array_values(array_diff($uids,$value));
                 foreach ($memberUid as $uid) {
-                    $memberName[] = json_decode(Http::get('https://jwxt.sky31.com/api/student/' . $uid . '/info')->body(),true)['data']['name'];
+                    $memberName[] = json_decode(Http::get('https://jwxt.sky31.com/api/student/' . $uid . '/info')->body(),true)['data'];
+                    if (!is_object($memberName)) {
+                        $memberName = [];
+                    }
+                    $memberName = $memberName['name'];
                 }
                 if($memberName == []){
                     unset($list[$key1][$key2]);
