@@ -298,6 +298,9 @@ class CourseController extends Controller
         foreach ($uids as $uid) {
             $course = Http::get('https://gong.sky31.com/api/course/extra/' . $uid);
             $course_list = json_decode($course->body(),true)['data'];
+            if (!is_object($course_list)) {
+                $course_list = [];
+            }
 //            return $course_list;
             foreach ($course_list as $i => $item) {
                 foreach ($item as $j => $sitem) {
