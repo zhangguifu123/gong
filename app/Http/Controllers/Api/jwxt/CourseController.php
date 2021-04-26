@@ -296,7 +296,7 @@ class CourseController extends Controller
         //获取有课成员
 
         foreach ($uids as $uid) {
-            $course = Http::get('https://gong.sky31.com/api/course/extra/' . $uid);
+            $course = Http::get('http://123.57.211.11:10302/api/course/extra/' . $uid);
             $course_list = json_decode($course->body(),true)['data'];
 //            return $course_list;
             foreach ($course_list as $i => $item) {
