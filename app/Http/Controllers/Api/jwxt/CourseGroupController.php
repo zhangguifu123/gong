@@ -204,7 +204,10 @@ class CourseGroupController extends Controller
         $memberUid = json_decode($courseGroup[0]['member'],true);
         //获取创建人信息
         foreach ($memberUid as $item) {
-            $response = json_decode(Http::get('http://159.75.6.240:8080/api/student/' . $item . '/info')->body(),true)['data'];
+            $response = json_decode(Http::get('https://jwxt.sky31.com/api/student/' . $item . '/info')->body(),true)['data'];
+            if (!is_array($response)) {
+                return msg(3, "个人信息获取失败,请重新登陆");
+            }
 	    $avatar = (User::query()->where('stu_id', $item)->get('avatar')->toArray())[0]['avatar'];
             $member[] = [
                 'uid' => $response['sid'],
