@@ -298,10 +298,8 @@ class CourseController extends Controller
         foreach ($uids as $uid) {
             $course = Http::get('https://jwxt.sky31.com/api/student/'.$uid.'/course');
             $course_list = json_decode($course->body(),true)['data'];
-            return $course_list;
-            return gettype($course_list);
-            if (!is_object($course_list)) {
-                return msg(5, '课表初始化失败,请重新登陆');
+            if (!is_array($course_list)) {
+                return msg(5, $course_list);
 //                $course_list = [];
             }
 //            return $course_list;
