@@ -331,11 +331,11 @@ class CourseController extends Controller
                 $memberName = [];
                 $memberUid = array_values(array_diff($uids,$value));
                 foreach ($memberUid as $uid) {
-                    $memberName[] = json_decode(Http::get('https://jwxt.sky31.com/api/student/' . $uid . '/info')->body(),true)['data'];
-                    if (!is_array($memberName)) {
+                    $member = json_decode(Http::get('https://jwxt.sky31.com/api/student/' . $uid . '/info')->body(),true)['data'];
+                    if (!is_array($member)) {
                         return msg(5, '个人信息初始化失败,请重新登陆');
                     }
-                    $memberName = $memberName['name'];
+                    $memberName[] = $member['name'];
                 }
                 if($memberName == []){
                     unset($list[$key1][$key2]);
