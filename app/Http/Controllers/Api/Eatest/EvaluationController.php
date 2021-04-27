@@ -317,8 +317,8 @@ class EvaluationController extends Controller
         if ($request->route("page") == 1) {
             $evaluation_list = array_merge($new_list, $evaluation_list);
         }
-        foreach ($evaluation_list as $item){
-            $item->commentSum = EatestComments::query()->where('eatest_id',$item->id)->count();
+        foreach ($evaluation_list as $i => $item){
+            $evaluation_list[$i]['commentSum'] = EatestComments::query()->where('eatest_id',$item['id'])->count();
         }
         $message = $this->isLike_Collection($request,$evaluation_list);
         if (isset($message['token'])){
