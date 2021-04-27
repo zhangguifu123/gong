@@ -312,8 +312,8 @@ class CourseController extends Controller
         //初始化空课表(默认为空)
         foreach ($uids as $uid) {
             $response = json_decode(Http::get('https://jwxt.sky31.com/api/student/' . $uid . '/info')->body(),true)['data'];
-            if (!is_object($response)) {
-                $response = [];
+            if (!is_array($response)) {
+                return msg(5, '个人信息初始化失败,请重新登陆');
             }
             $names[] = $response['name'];
         }
@@ -332,8 +332,8 @@ class CourseController extends Controller
                 $memberUid = array_values(array_diff($uids,$value));
                 foreach ($memberUid as $uid) {
                     $memberName[] = json_decode(Http::get('https://jwxt.sky31.com/api/student/' . $uid . '/info')->body(),true)['data'];
-                    if (!is_object($memberName)) {
-                        $memberName = [];
+                    if (!is_array($memberName)) {
+                        return msg(5, '个人信息初始化失败,请重新登陆');
                     }
                     $memberName = $memberName['name'];
                 }
