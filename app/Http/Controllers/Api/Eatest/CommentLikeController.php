@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class LikeController extends Controller
+class CommentLikeController extends Controller
 {
     /**
      * @api {post} /api/keep/:id     收藏/取消收藏评测
