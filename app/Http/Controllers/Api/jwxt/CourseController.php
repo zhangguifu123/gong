@@ -68,7 +68,7 @@ class CourseController extends Controller
         $uid = handleStuId($request);
         //
         $course = Course::query()->where('id', $id);
-        if ($course->get()->first()->toArray() == null) {
+        if ($course->get()->first() == null) {
             $deleteMsg = Http::delete('https://jwxt.sky31.com/api/student/' . $uid . '/course/' . $id);
             return $deleteMsg;
         } else {
@@ -127,9 +127,9 @@ class CourseController extends Controller
         $data = $request->only(array_keys($params));
         //修改
         $course = Course::query()->where('id', $id);
-        if ($course->get()->first()->toArray() == null) {
-            $deleteMsg = Http::put('https://jwxt.sky31.com/api/student/' . $uid . '/course/' . $id, $data);
-            return $deleteMsg;
+        if ($course->get()->first() == null) {
+            $updateMsg = Http::put('https://jwxt.sky31.com/api/student/' . $uid . '/course/' . $id, $data);
+            return $updateMsg;
         } else {
             $course = $course->update($data);
             if ($course) {
