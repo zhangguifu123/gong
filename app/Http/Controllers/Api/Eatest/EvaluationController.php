@@ -296,12 +296,12 @@ class EvaluationController extends Controller
         //分页，每页10条
         $offset = $request->route("page") * 10 - 10;
         //获取session
-        if (!$request->session()->has('collect_count')) {
+        if ($request->session()->has('collect_count')) {
             $value = session('collect_count');
+        } else {
+            $value = [];
+            $new_list = [];
         }
-//        else {
-//            $value = [];
-//        }
         //若与前面的推荐美文重复，将其剔除 whereNotIn()
         $evaluation_list = Evaluation::query()->limit(10)
             ->offset($offset)->orderByDesc("evaluations.created_at")
