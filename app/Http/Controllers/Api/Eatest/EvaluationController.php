@@ -298,9 +298,10 @@ class EvaluationController extends Controller
         //获取session
         if (!$request->session()->has('collect_count')) {
             $value = session('collect_count');
-        } else {
-            $value = [];
         }
+//        else {
+//            $value = [];
+//        }
         //若与前面的推荐美文重复，将其剔除 whereNotIn()
         $evaluation_list = Evaluation::query()->limit(10)
             ->offset($offset)->orderByDesc("evaluations.created_at")
