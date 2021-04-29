@@ -117,7 +117,7 @@ function handleUid(Request $request){
 }
 
 function handleStuId(Request $request){
-    //获取id
+    //获取学号
     $StuId = JWTAuth::parseToken()->authenticate()->stu_id;
     if ($StuId == null){
         $StuId = $request->header('StuId');

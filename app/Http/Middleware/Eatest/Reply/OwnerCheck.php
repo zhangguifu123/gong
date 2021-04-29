@@ -17,9 +17,10 @@ class OwnerCheck
      */
     public function handle($request, Closure $next)
     {
+        $uid = handleUid($request);
         $user = EatestReplies::query()->find($request->route('id'));
         $comment = EatestComments::query()->find($user->comment_id);
-        if($user->fromId != session('uid') && $user->toId != session('uid') && $comment->toId != session('uid')) {
+        if($user->fromId != $uid && $user->toId != $uid && $comment->toId != $uid) {
             return response(msg(11,  __LINE__));
         } else {
             return $next($request);
