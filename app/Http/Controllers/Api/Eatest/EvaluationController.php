@@ -161,7 +161,8 @@ class EvaluationController extends Controller
         //拉取我的列表
         $eatest = User::query()->find($uid)->eatest;
         $eatest = array_keys(json_decode($eatest,true));
-        $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$eatest)->where('evaluations.status', "!=", 2)
+        $evaluation = Evaluation::query()->whereIn('evaluations.id',$eatest)->where('evaluations.status', "!=", 2);
+        $evaluation_list = $evaluation
             ->limit(5)
             ->offset($offset)
             ->orderByDesc('evaluations.created_at')
@@ -172,8 +173,8 @@ class EvaluationController extends Controller
             ]);
         foreach ($evaluation_list as $item){
             $item->commentSum = EatestComments::query()->where('eatest_id',$item->id)->count();
-        }
-        $msg = ['total' => count($evaluation_list), 'msg' => $evaluation_list];
+        }   
+        $msg = ['total' => $evaluation->count(), 'msg' => $evaluation_list];
         return msg(0,$msg);
     }
 
