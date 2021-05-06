@@ -82,13 +82,13 @@ class TopicController extends Controller
         //提取数据
         $page = $request->route('page');
         //查看话题
-        $offset = $page * 9 - 9;
+        $offset = $page * 10 - 10;
         $showTopics = EatestTopics::query()
-            ->limit(9)
+            ->limit(10)
             ->offset($offset)
             ->orderByDesc('isTop')
             ->orderByDesc('created_at')
-            ->get('id','topicName','eatestSum');
+            ->get(['id','topicName','eatestSum']);
         if(!$showTopics){
             return msg(4, __LINE__);
         }
