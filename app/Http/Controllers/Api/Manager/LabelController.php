@@ -64,7 +64,7 @@ class LabelController extends Controller
         //查看标签
         $showLabels = EatestLabels::query()
 //            ->where('type',$type)
-            ->get('id','labelName','UsageTime','type');
+            ->get(['id','labelName','UsageTime','type']);
         if(!$showLabels){
             return msg(4, __LINE__);
         }
