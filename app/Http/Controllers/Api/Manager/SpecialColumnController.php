@@ -36,7 +36,8 @@ class SpecialColumnController extends Controller
         $page = $request->route('page');
         $offset = $page * 5 - 5;
         //分页查看
-        $getList = SpecialColumn::query()
+        $specialColumn = SpecialColumn::query();
+        $getList = $specialColumn
             ->limit(5)
             ->offset($offset)
             ->orderByDesc('created_at')
@@ -45,7 +46,7 @@ class SpecialColumnController extends Controller
             return msg(4,__LINE__);
         }
         $data = $getList->toArray();
-        $message = ['total' => count($data), 'list' => $data];
+        $message = ['total' => $specialColumn->count(), 'list' => $data];
         return msg(0,$message);
     }
 

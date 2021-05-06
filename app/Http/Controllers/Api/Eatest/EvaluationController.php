@@ -173,7 +173,7 @@ class EvaluationController extends Controller
             ]);
         foreach ($evaluation_list as $item){
             $item->commentSum = EatestComments::query()->where('eatest_id',$item->id)->count();
-        }   
+        }
         $msg = ['total' => $evaluation->count(), 'msg' => $evaluation_list];
         return msg(0,$msg);
     }

@@ -83,7 +83,8 @@ class TopicController extends Controller
         $page = $request->route('page');
         //查看话题
         $offset = $page * 10 - 10;
-        $showTopics = EatestTopics::query()
+        $topic = EatestTopics::query();
+        $showTopics = $topic
             ->limit(10)
             ->offset($offset)
             ->orderByDesc('isTop')
@@ -93,7 +94,7 @@ class TopicController extends Controller
             return msg(4, __LINE__);
         }
         $data = $showTopics->toArray();
-        $message = [ 'total' => count($data), 'list' => $data];
+        $message = [ 'total' => $topic->count(), 'list' => $data];
         return msg(0, $message);
     }
 }
