@@ -176,7 +176,8 @@ class ReviewController extends Controller
         $page = $request->route('page');
         //查看评测
         $offset = $page * 13 - 13;
-        $list = EatestReview::query()
+        $eatestReview = EatestReview::query();
+        $list = $eatestReview
 //            ->where('status',0)
             ->limit(13)
             ->offset($offset)
@@ -185,7 +186,7 @@ class ReviewController extends Controller
         if(!$list){
             return msg(4,__LINE__);
         }
-        $message = ['total' => count($list),'list' => $list];
+        $message = ['total' => $eatestReview->count(),'list' => $list];
         return msg(0,$message);
     }
 
@@ -196,7 +197,8 @@ class ReviewController extends Controller
         $page = $request->route('page');
         //查看评论
         $offset = $page * 13 -13;
-        $list = CommentReview::query()
+        $commentReview = CommentReview::query();
+        $list = $commentReview
 //            ->where('status',0)
             ->limit(13)
             ->offset($offset)
@@ -205,7 +207,7 @@ class ReviewController extends Controller
         if(!$list){
             return msg(4,__LINE__);
         }
-        $message = ['total' => count($list),'list' => $list];
+        $message = ['total' => $commentReview->count(),'list' => $list];
         return msg(0,$message);
     }
 
@@ -215,7 +217,8 @@ class ReviewController extends Controller
         $page = $request->route('page');
         //查看评论
         $offset = $page * 13 -13;
-        $list = ReplyReview::query()
+        $replyReview = ReplyReview::query();
+        $list = $replyReview
 //            ->where('status',0)
             ->limit(13)
             ->offset($offset)
@@ -224,7 +227,7 @@ class ReviewController extends Controller
         if(!$list){
             return msg(4,__LINE__);
         }
-        $message = ['total' => count($list),'list' => $list];
+        $message = ['total' => $replyReview->count(),'list' => $list];
         return msg(0,$message);
     }
 

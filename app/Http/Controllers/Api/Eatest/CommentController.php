@@ -61,11 +61,12 @@ class CommentController extends Controller
         $page = $request->route('page');
         $offset = $page * 13 -13;
         //查看评论
-        $list = EatestComments::query()
+        $comment = EatestComments::query()
             ->where([
                 ['fromId', $uid],
                 ['status', 0]
-            ])
+            ]);
+        $list = $comment
             ->limit(13)
             ->offset($offset)
             ->orderByDesc('created_at')
@@ -73,7 +74,7 @@ class CommentController extends Controller
         if(!$list){
             return msg(4,__LINE__);
         }
-        $message = ['total' => count($list),'list' => $list];
+        $message = ['total' => $comment->count(),'list' => $list];
         return msg(0,$message);
     }
 

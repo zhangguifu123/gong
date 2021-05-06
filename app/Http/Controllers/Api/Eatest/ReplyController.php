@@ -50,11 +50,12 @@ class ReplyController extends Controller
         $page = $request->route('page');
         $offset = $page * 13 -13;
         //查看评论
-        $list = EatestReplies::query()
+        $reply = EatestReplies::query()
             ->where([
                 ['fromId', $uid],
                 ['status', 0]
-            ])
+            ]);
+        $list = $reply
             ->limit(13)
             ->offset($offset)
             ->orderByDesc('created_at')
@@ -62,7 +63,7 @@ class ReplyController extends Controller
         if(!$list){
             return msg(4,__LINE__);
         }
-        $message = ['total' => count($list),'list' => $list];
+        $message = ['total' => $reply->count(),'list' => $list];
         return msg(0,$message);
     }
 
