@@ -311,6 +311,7 @@ class EvaluationController extends Controller
         $evaluation = Evaluation::query()
             ->whereNotIn('evaluations.id',$value)
             ->whereIn('evaluations.status',[0,1]);
+        $evaluationSum = $evaluation->count();
         //若与前面的推荐美文重复，将其剔除 whereNotIn()
         $evaluation_list = $evaluation
             ->limit(10)
@@ -330,7 +331,7 @@ class EvaluationController extends Controller
             $evaluation_list[$i]['commentSum'] = EatestComments::query()->where('eatest_id',$item['id'])->count();
         }
         $message = $this->isLike_Collection($request,$evaluation_list);
-        $message['total'] = $evaluation->count();
+        $message['total'] = $evaluationSum;
         if (isset($message['token'])){
             return msg(13,$message);
         }
