@@ -135,7 +135,8 @@ class EvaluationController extends Controller
         //拉取我的列表
         $eatest = User::query()->find($uid)->eatest;
         $eatest = array_keys(json_decode($eatest,true));
-        $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$eatest)
+        $evaluation = Evaluation::query()->whereIn('evaluations.id',$eatest);
+        $evaluation_list = $evaluation
 //            ->limit(5)
 //            ->offset($offset)
             ->orderByDesc('evaluations.created_at')
@@ -148,6 +149,7 @@ class EvaluationController extends Controller
             $item->commentSum = EatestComments::query()->where('eatest_id',$item->id)->count();
         }
         $message = $this->isLike_Collection($request,$evaluation_list->toArray());
+        $message['total'] = $evaluation->count();
 //        $msg = ['total' => count($evaluation_list), 'msg' => $evaluation_list];
         return msg(0,$message);
     }
@@ -183,7 +185,8 @@ class EvaluationController extends Controller
         $uid = $request->route('uid');
         $like = User::query()->find($uid)->like;
         $like = array_keys(json_decode($like,true));
-        $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$like)
+        $evaluation = Evaluation::query()->whereIn('evaluations.id',$like);
+        $evaluation_list = $evaluation
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
@@ -191,7 +194,7 @@ class EvaluationController extends Controller
             ])->toArray();
 
         $message = $this->isLike_Collection($request,$evaluation_list);
-
+        $message['total'] = $evaluation->count();
         return msg(0,$message);
     }
     /** 拉取我的收藏 */
@@ -199,7 +202,8 @@ class EvaluationController extends Controller
         $uid = $request->route('uid');
         $collection = User::query()->find($uid)->collection;
         $collection = array_keys(json_decode($collection,true));
-        $evaluation_list = Evaluation::query()->whereIn('evaluations.id',$collection)
+        $evaluation = Evaluation::query()->whereIn('evaluations.id',$collection);
+        $evaluation_list = $evaluation
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
             "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
@@ -207,6 +211,7 @@ class EvaluationController extends Controller
         ])->toArray();
 
         $message = $this->isLike_Collection($request,$evaluation_list);
+        $message['total'] = $evaluation->count();
         return msg(0,$message);
     }
     /** 拉取单篇信息 */
@@ -303,11 +308,13 @@ class EvaluationController extends Controller
             $value = [];
             $new_list = [];
         }
-        //若与前面的推荐美文重复，将其剔除 whereNotIn()
-        $evaluation_list = Evaluation::query()->limit(10)
-            ->offset($offset)->orderByDesc("evaluations.created_at")
+        $evaluation = Evaluation::query()
             ->whereNotIn('evaluations.id',$value)
-            ->whereIn('evaluations.status',[0,1])
+            ->whereIn('evaluations.status',[0,1]);
+        //若与前面的推荐美文重复，将其剔除 whereNotIn()
+        $evaluation_list = $evaluation
+            ->limit(10)
+            ->offset($offset)->orderByDesc("evaluations.created_at")
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
@@ -323,6 +330,7 @@ class EvaluationController extends Controller
             $evaluation_list[$i]['commentSum'] = EatestComments::query()->where('eatest_id',$item['id'])->count();
         }
         $message = $this->isLike_Collection($request,$evaluation_list);
+        $message['total'] = $evaluation->count();
         if (isset($message['token'])){
             return msg(13,$message);
         }
