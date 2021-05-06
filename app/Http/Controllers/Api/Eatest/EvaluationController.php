@@ -332,6 +332,7 @@ class EvaluationController extends Controller
         }
         $message = $this->isLike_Collection($request,$evaluation_list);
         $message['total'] = $evaluationSum;
+        $message['limit'] = 10;
         if (isset($message['token'])){
             return msg(13,$message);
         }
