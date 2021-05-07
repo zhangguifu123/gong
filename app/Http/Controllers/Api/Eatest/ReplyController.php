@@ -48,7 +48,8 @@ class ReplyController extends Controller
         //提取数据
         $uid = $request->route('uid');
         $page = $request->route('page');
-        $offset = $page * 13 -13;
+        $limit = 13;
+        $offset = $page * $limit - $limit;
         //查看评论
         $reply = EatestReplies::query()
             ->where([
@@ -63,7 +64,7 @@ class ReplyController extends Controller
         if(!$list){
             return msg(4,__LINE__);
         }
-        $message = ['total' => $reply->count(),'list' => $list];
+        $message = ['total' => $reply->count(), 'limit' => $limit, 'list' => $list];
         return msg(0,$message);
     }
 

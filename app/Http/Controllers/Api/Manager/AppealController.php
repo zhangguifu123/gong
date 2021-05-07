@@ -64,9 +64,11 @@ class AppealController extends Controller
             $status = [1,2];
         }
         //分页，每页10条
-        $offset = $request->route("page") * 13 - 13;
-        $showAppeals = EatestAppeal::query()
-            ->whereIn('status',$status)
+        $limit = 13;
+        $offset = $request->route("page") * $limit - $limit;
+        $appeal = EatestAppeal::query()
+            ->whereIn('status',$status);
+        $showAppeals = $appeal
             ->limit(13)
             ->offset($offset)
             ->orderByDesc("created_at")
@@ -78,7 +80,7 @@ class AppealController extends Controller
             $showAppeal->userName = (User::query()->find($showAppeal->userId)->get('nickname')->toArray())[0]['nickname'];
         }
         $data = $showAppeals->toArray();
-        $message = ['total' => count($data), 'list' => $data];
+        $message = ['total' => $appeal->count(), 'limit' => $limit, 'list' => $data];
         return msg(0, $message);
     }
 

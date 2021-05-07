@@ -82,7 +82,8 @@ class TopicController extends Controller
         //提取数据
         $page = $request->route('page');
         //查看话题
-        $offset = $page * 10 - 10;
+        $limit = 10;
+        $offset = $page * $limit - $limit;
         $topic = EatestTopics::query();
         $showTopics = $topic
             ->limit(10)
@@ -94,7 +95,7 @@ class TopicController extends Controller
             return msg(4, __LINE__);
         }
         $data = $showTopics->toArray();
-        $message = [ 'total' => $topic->count(), 'list' => $data];
+        $message = [ 'total' => $topic->count(), 'limit' => $limit, 'list' => $data];
         return msg(0, $message);
     }
 }
