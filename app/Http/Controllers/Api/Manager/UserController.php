@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Model\Eatest\Evaluation;
 use App\User;
 use Illuminate\Http\Request;
+use Symfony\Component\Config\Definition\Exception\Exception;
 
 
 /**
@@ -66,6 +67,39 @@ class UserController extends Controller
             return msg(0,__LINE__);
         }
         return msg(4,__LINE__);
+    }
+
+    /**
+     * 搜索用户
+     * @param Request $request
+     * @return string
+     */
+    public function searchUser (Request $request)
+    {
+        //检查数据格式
+//        $params = [
+//            'index' => ['string']
+//        ];
+//        $request = handleData($request,$params);
+//        if (!is_object($request)) {
+//            return $request;
+//        }
+        //提取数据
+        $index = $request->route('index');
+        try {
+            $datas = User::query()
+                ->where('nickname', 'like', $index)
+                ->get(['id','nickname','stu_id','status'])
+                ->toArray();
+        } catch (Exception $e) {
+            return msg(4, __LINE__);
+        }
+        foreach ($datas as $dat){
+            $eatestSum = Evaluation::query()->where('publisher',$dat['id'])->count();
+            $dat['eatestSum'] = $eatestSum;
+            $data[] = $dat;
+        }
+        return msg(0, $data);
     }
 
 }
