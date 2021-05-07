@@ -34,7 +34,8 @@ class SpecialColumnController extends Controller
     public function getList(Request $request){
         //提取数据
         $page = $request->route('page');
-        $offset = $page * 5 - 5;
+        $limit = 5;
+        $offset = $page * $limit - $limit;
         //分页查看
         $specialColumn = SpecialColumn::query();
         $getList = $specialColumn
@@ -46,7 +47,7 @@ class SpecialColumnController extends Controller
             return msg(4,__LINE__);
         }
         $data = $getList->toArray();
-        $message = ['total' => $specialColumn->count(), 'list' => $data];
+        $message = ['total' => $specialColumn->count(), 'limit' => $limit, 'list' => $data];
         return msg(0,$message);
     }
 

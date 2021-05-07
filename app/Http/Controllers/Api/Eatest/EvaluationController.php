@@ -159,7 +159,8 @@ class EvaluationController extends Controller
         //提取数据
         $uid = $request->route('uid'); //学生id
         $page = $request->route('page');
-        $offset = $page * 5 - 5;
+        $limit = 5;
+        $offset = $page * $limit - $limit;
         //拉取我的列表
         $eatest = User::query()->find($uid)->eatest;
         $eatest = array_keys(json_decode($eatest,true));
@@ -176,7 +177,7 @@ class EvaluationController extends Controller
         foreach ($evaluation_list as $item){
             $item->commentSum = EatestComments::query()->where('eatest_id',$item->id)->count();
         }
-        $msg = ['total' => $evaluation->count(), 'msg' => $evaluation_list];
+        $msg = ['total' => $evaluation->count(), 'limit' => $limit, 'msg' => $evaluation_list];
         return msg(0,$msg);
     }
 
@@ -300,7 +301,8 @@ class EvaluationController extends Controller
         }
 
         //分页，每页10条
-        $offset = $request->route("page") * 10 - 10;
+        $limit = 10;
+        $offset = $request->route("page") * $limit - $limit;
         //获取session
         if ($request->session()->has('collect_count')) {
             $value = session('collect_count');
@@ -332,7 +334,7 @@ class EvaluationController extends Controller
         }
         $message = $this->isLike_Collection($request,$evaluation_list);
         $message['total'] = $evaluationSum;
-        $message['limit'] = 10;
+        $message['limit'] = $limit;
         if (isset($message['token'])){
             return msg(13,$message);
         }

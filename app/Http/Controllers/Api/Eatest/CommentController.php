@@ -59,7 +59,8 @@ class CommentController extends Controller
         //提取数据
         $uid = $request->route('uid');
         $page = $request->route('page');
-        $offset = $page * 13 -13;
+        $limit = 13;
+        $offset = $page * $limit - $limit;
         //查看评论
         $comment = EatestComments::query()
             ->where([
@@ -74,7 +75,7 @@ class CommentController extends Controller
         if(!$list){
             return msg(4,__LINE__);
         }
-        $message = ['total' => $comment->count(),'list' => $list];
+        $message = ['total' => $comment->count(), 'limit' => $limit, 'list' => $list];
         return msg(0,$message);
     }
 

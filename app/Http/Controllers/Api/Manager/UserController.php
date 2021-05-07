@@ -25,7 +25,8 @@ class UserController extends Controller
     {
         //提取数据
         $page = $request->route('page');
-        $offset = $page * 13 - 13;
+        $limit = 13;
+        $offset = $page * $limit - $limit;
         $user = User::query();
         $showUser = $user
             ->limit(13)
@@ -41,7 +42,7 @@ class UserController extends Controller
             $dat['eatestSum'] = $eatestSum;
             $data[] = $dat;
         }
-        $message = ['total' => $user->count(),'list' => $data];
+        $message = ['total' => $user->count(), 'limit' => $limit, 'list' => $data];
         return msg(0,$message);
     }
 

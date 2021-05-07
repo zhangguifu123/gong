@@ -66,8 +66,8 @@ class ReportController extends Controller
             $status = [1,2];
         }
         //查看举报
-
-        $offset = $request->route('page') * 5 - 5;
+        $limit = 5;
+        $offset = $request->route('page') * $limit - $limit;
         $report = EatestReports::query()
             ->whereIn('status',$status);
         $showReports = $report
@@ -87,7 +87,7 @@ class ReportController extends Controller
             $showReport->time = $showReport->created_at->format('Y-m-d');
         }
         $data = $showReports->toArray();
-        $message = ['total' => $report->count(), 'list' => $data];
+        $message = ['total' => $report->count(), 'limit' => $limit, 'list' => $data];
         return msg(0,$message);
     }
 
