@@ -88,12 +88,13 @@ class UserController extends Controller
         $index = $request->route('index');
         try {
             $datas = User::query()
-                ->where('nickname', 'like', $index)
+                ->where('nickname', 'like', '%' . $index . '%')
                 ->get(['id','nickname','stu_id','status'])
                 ->toArray();
         } catch (Exception $e) {
             return msg(4, __LINE__);
         }
+        $data = [];
         foreach ($datas as $dat){
             $eatestSum = Evaluation::query()->where('publisher',$dat['id'])->count();
             $dat['eatestSum'] = $eatestSum;
