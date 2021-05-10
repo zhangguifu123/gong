@@ -99,7 +99,7 @@ class searchEatestController extends Controller
             ->offset($offset)
             ->leftJoin('users', 'evaluations.publisher', '=', 'users.id')
             ->orderByDesc($orderBy);
-        if ($topic != 0) {
+        if ($topic == 0) {
             $evaluation_list = $evaluation_list->orWhere('evaluations.topic', 'like', '%' . $index . '%');       //话题
         } else {
             $evaluation_list = $evaluation_list->where('evaluations.topic', $topic);
