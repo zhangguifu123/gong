@@ -61,7 +61,7 @@ Route::namespace('Api')->group(function (){
             /** user */
             Route::get('/manager/user/list/{page}','Manager\UserController@showUser')->where(["page" => "[0-9]+"]);
             Route::put('/manager/user/{id}/status','Manager\UserController@updateStatus')->where(["id" => "[0-9]+"]);
-            Route::get('/manager/user/{index}','Manager\UserController@searchUser');
+            Route::get('/manager/user/{index}/{page}','Manager\UserController@searchUser')->where(["page" => "[0-9]+"]);
             /** EatestReview */
             Route::get('manager/eatestReview/list/{page}/evaluation','Manager\ReviewController@getEvaluationList')->where(["page" => "[0-9]+"]);
             Route::get('manager/eatestReview/list/{page}/comment','Manager\ReviewController@getCommentList')->where(["page" => "[0-9]+"]);

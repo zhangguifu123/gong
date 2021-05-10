@@ -86,8 +86,15 @@ class UserController extends Controller
 //        }
         //提取数据
         $index = $request->route('index');
+        $page = $request->route('page');
+        $limit = 13;
+        $offset = $page * $limit - $limit;
         try {
-            $datas = User::query()
+            $user = User::query();
+            $datas = $user
+                ->limit(13)
+                ->offset($offset)
+                ->orderByDesc('created_at')
                 ->where('nickname', 'like', '%' . $index . '%')
                 ->get(['id','nickname','stu_id','status'])
                 ->toArray();
@@ -100,7 +107,8 @@ class UserController extends Controller
             $dat['eatestSum'] = $eatestSum;
             $data[] = $dat;
         }
-        return msg(0, $data);
+        $message = ['total' => $user->count(), 'limit' => $limit, 'list' => $data];
+        return msg(0,$message);
     }
 
 }
