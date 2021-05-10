@@ -91,13 +91,20 @@ class searchEatestController extends Controller
             ->where('title', 'like', '%' . $index . '%')      //标题
             ->orwhere('content', 'like', '%' . $index . '%')      //内容
             ->orWhere('label', 'like', '%' . $index . '%')      //标签
-            ->orWhere('topic', 'like', '%' . $index . '%')       //话题
+//            ->orWhere('topic', 'like', '%' . $index . '%')       //话题
             ->whereIn('evaluations.status', [0, 1]);
         $evaluation_sum = $evaluation->count();
         $evaluation_list = $evaluation
             ->limit(8)
             ->offset($offset)
             ->leftJoin('users', 'evaluations.publisher', '=', 'users.id')
+            ->orderByDesc($orderBy);
+        if ($topic != 0) {
+            $evaluation_list = $evaluation_list->orWhere('topic', 'like', '%' . $index . '%');       //话题
+        } else {
+            $evaluation_list = $evaluation_list->where('topic', $topic);
+        }
+        $evaluation_list = $evaluation_list
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "topic", "views", "evaluations.like",
                 "collections", "top", "img", "title", "users.avatar", "evaluations.created_at as time"
