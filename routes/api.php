@@ -80,6 +80,8 @@ Route::namespace('Api')->group(function (){
             /** EatestLabel */
 //            Route::post('manager/label','Manager\LabelController@addLabel');
             Route::delete('manager/label/{id}','Manager\LabelController@dropLabel')->where(["id" => "[0-9]+"]);
+            //模糊搜索
+            Route::get('eatest/fuzzySearch/{index}/{topic}/{orderBy}/{page}','Eatest\searchEatestController@search')->where(['page' => '[0-9]+', 'orderBy' => '[a-zA-Z]+']);
 
 
 //            /** Eatest */
