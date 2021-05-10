@@ -77,7 +77,7 @@ class searchEatestController extends Controller
 
 
     //条件搜索
-    public function cdSearch(Request $request, $topic = null, $orderBy = null)
+    public function cdSearch(Request $request)
     {
         //获取数据
         $index = $request->route('index');
@@ -88,9 +88,9 @@ class searchEatestController extends Controller
         $offset = $page * $limit - $limit;
         //拉取所有符合条件的评测
         $evaluation = Evaluation::query()
-            ->where('title', 'like', '%' . $index . '%')      //标题
-            ->orwhere('content', 'like', '%' . $index . '%')      //内容
-            ->orWhere('label', 'like', '%' . $index . '%')      //标签
+            ->where('evaluations.title', 'like', '%' . $index . '%')      //标题
+            ->orwhere('evaluations.content', 'like', '%' . $index . '%')      //内容
+            ->orWhere('evaluations.label', 'like', '%' . $index . '%')      //标签
 //            ->orWhere('topic', 'like', '%' . $index . '%')       //话题
             ->whereIn('evaluations.status', [0, 1]);
         $evaluation_sum = $evaluation->count();
@@ -100,9 +100,9 @@ class searchEatestController extends Controller
             ->leftJoin('users', 'evaluations.publisher', '=', 'users.id')
             ->orderByDesc($orderBy);
         if ($topic != 0) {
-            $evaluation_list = $evaluation_list->orWhere('topic', 'like', '%' . $index . '%');       //话题
+            $evaluation_list = $evaluation_list->orWhere('evaluations.topic', 'like', '%' . $index . '%');       //话题
         } else {
-            $evaluation_list = $evaluation_list->where('topic', $topic);
+            $evaluation_list = $evaluation_list->where('evaluations.topic', $topic);
         }
         $evaluation_list = $evaluation_list
             ->get([
