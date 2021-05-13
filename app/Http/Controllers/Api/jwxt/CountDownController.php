@@ -38,7 +38,11 @@ class CountDownController extends Controller
     public function query(Request $request){
         //提取数据
         $uid = $request->route('uid');
-        $sid = (User::query()->where('id',$uid)->get('stu_id')->toArray())[0]['stu_id'];
+        try {
+            $sid = (User::query()->where('id',$uid)->get('stu_id')->toArray())[0]['stu_id'];
+        } catch (Exception $e) {
+            return msg(4, __LINE__);
+        }
 //	$sid = '201905962202';
         //拉取数据
 
