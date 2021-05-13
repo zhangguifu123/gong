@@ -53,9 +53,9 @@ class ReplyController extends Controller
         //查看评论
         $reply = EatestReplies::query()
             ->where([
-                ['fromId', $uid],
-                ['status', 0]
-            ]);
+                ['fromId', $uid]
+            ])
+            ->whereIn('handleStatus', [0,1]);
         $list = $reply
             ->limit(13)
             ->offset($offset)

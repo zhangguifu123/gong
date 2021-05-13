@@ -65,8 +65,8 @@ class CommentController extends Controller
         $comment = EatestComments::query()
             ->where([
                 ['fromId', $uid],
-                ['status', 0]
-            ]);
+            ])
+            ->whereIn('handleStatus', [0, 1]);
         $list = $comment
             ->limit(13)
             ->offset($offset)
