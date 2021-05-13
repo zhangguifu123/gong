@@ -40,7 +40,7 @@ class CountDownController extends Controller
         $uid = $request->route('uid');
         try {
             $sid = (User::query()->where('id',$uid)->get('stu_id')->toArray())[0]['stu_id'];
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             return msg(4, __LINE__);
         }
 //	$sid = '201905962202';
