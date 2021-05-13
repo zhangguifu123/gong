@@ -222,6 +222,9 @@ paths:
                   total:
                     description: 申诉总数
                     type: integer
+                  limit:
+                    description: 每页最大条数
+                    type: integer
                   list:
                     description: 申诉列表
                     type: array
@@ -232,6 +235,7 @@ paths:
                 status: "成功"
                 data:
                   total: 2
+                  limit: 13
                   list:
                     - id: 1,
                       eatestId: 2
@@ -288,6 +292,9 @@ paths:
                   total:
                     description: 管理员总数
                     type: integer
+                  limit:
+                    description: 每页最大条数
+                    type: integer
                   list:
                     description: 管理员列表
                     type: array
@@ -298,6 +305,7 @@ paths:
                 status: "成功"
                 data:
                   total: 2
+                  limit: 5
                   list:
                     - id: 1,
                       eatestId: 2
@@ -410,7 +418,10 @@ paths:
                     description: 返回数据
                     type: array
                   total:
-                    description: 当页用户总数
+                    description: 用户总数
+                    type: integer
+                  limit:
+                    description: 每页最大条数
                     type: integer
                   list:
                     description: 管理员列表
@@ -422,6 +433,7 @@ paths:
                 status: "成功"
                 data:
                   total: 2
+                  limit: 13
                   list:
                     - id: 1,
                       nickname: '敢敢' 
@@ -468,6 +480,9 @@ paths:
                   total:
                     description: 总评测数
                     type: integer
+                  limit:
+                    description: 每页最大条数
+                    type: integer
                   list:
                     description: 我的评测列表
                     type: array
@@ -477,7 +492,8 @@ paths:
                 code: 0
                 status: 成功
                 data:
-                  total: 2
+                  total: 9
+                  limit: 5
                   list: 
                     - id: 1,
                       publisher_name: 我是你的小可爱吗
@@ -550,6 +566,9 @@ paths:
                   total:
                     description: 总评测数
                     type: integer
+                  limit:
+                    description: 每页最大条数
+                    type: integer
                   list:
                     description: 我的评测列表
                     type: array
@@ -560,6 +579,7 @@ paths:
                 status: 成功
                 data:
                   total: 2
+                  limit: 13
                   list: 
                     - id: 1,
                       publisher_name: 我是你的小可爱吗
@@ -632,6 +652,9 @@ paths:
                   total:
                     description: 总评测数
                     type: integer
+                  limit:
+                    description: 每页最大条数
+                    type: integer
                   list:
                     description: 我的评测列表
                     type: array
@@ -642,6 +665,7 @@ paths:
                 status: 成功
                 data:
                   total: 2
+                  limit: 13
                   list: 
                     - id: 1,
                       publisher_name: 我是你的小可爱吗
@@ -1577,7 +1601,7 @@ paths:
                     description: 返回数据
                     type: array
                   total:
-                    description: 当页话题总数
+                    description: 话题总数
                     type: integer
                   list:
                     description: 话题列表
@@ -5865,6 +5889,10 @@ components:
           description: 学号
           type: integer
           example: 201805710601
+        department:
+          description: 部门
+          type: string
+          example: 技术开发部
         level:
           description: 权限
           type: string
