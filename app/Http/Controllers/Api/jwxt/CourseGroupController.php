@@ -79,7 +79,7 @@ class CourseGroupController extends Controller
         return msg(0,$message);
     }
 
-    //查看小组(关联码获取)
+    //小组信息(关联码获取)
     public function getOneGroup(Request $request)
     {
         //提取数据
