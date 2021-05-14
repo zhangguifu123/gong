@@ -14,6 +14,10 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 class CountDownController extends Controller
 {
 
+    /** 添加倒计时
+     * @param Request $request
+     * @return string
+     */
     public function addCountDown(Request $request){
         //通过路由获取前端数据，并判断数据格式
         $data = $this->data_handle($request);
@@ -40,7 +44,7 @@ class CountDownController extends Controller
         $uid = $request->route('uid');
         try {
             $sid = (User::query()->where('id',$uid)->get('stu_id')->toArray())[0]['stu_id'];
-        } catch (Exception $exception) {
+        } catch (\ErrorException $exception) {
             return msg(4, __LINE__);
         }
 //	$sid = '201905962202';
