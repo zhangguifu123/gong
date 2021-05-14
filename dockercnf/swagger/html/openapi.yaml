@@ -3114,16 +3114,19 @@ paths:
                     remarks: null
                     end_time: '2020-03-09'
                     location: 逸夫楼-111
+                    type: 1
                   - id: 2
                     target: 高等数学
                     remarks: null
                     end_time: '2020-03-11'
                     location: 逸夫楼-102
+                    type: 1
                   - id: 3
                     target: 周末海底捞
                     remarks: 周末都给我嗨起来!
                     end_time: '2020-03-22'
                     location: 万达
+                    type: 1
         '401':
           $ref: '#/components/responses/NotAuthorization'
         '403':
@@ -5559,6 +5562,10 @@ components:
                 type: string
                 description: 备注
                 example: 会员卡别忘带了
+              type:
+                description: 倒计时类型 0自定义 1考试
+                type: integer
+                example: 1
     UpdateCountDownBody:
       description: 倒计时信息
       required: true
@@ -7119,6 +7126,10 @@ components:
                 description: 倒计时地点
                 type: string
                 example: 逸夫楼-111
+              type:
+                description: 倒计时类型 0自定义 1考试
+                type: integer
+                example: 1
     GuluMessage:
       description: 咕噜消息
       type: object
