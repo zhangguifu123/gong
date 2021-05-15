@@ -119,7 +119,7 @@ class NoticeController extends Controller
     public function getEatestLikeList (Request $request)
     {
         //提取数据
-        $fromId = $request->route('id');   //点赞用户id
+        $fromId = $request->route('id');   //被点赞用户id
         $list = EatestLikes::query()
             ->leftJoin('evaluations', 'evaluations.id','=','eatest_likes.evaluation')
             ->leftJoin('users', 'users.id', '=', 'eatest_likes.user')
