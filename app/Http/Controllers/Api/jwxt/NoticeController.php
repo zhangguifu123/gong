@@ -128,7 +128,7 @@ class NoticeController extends Controller
 //                ['users', 'user.id', '=', 'eatest_likes.user']
 //            ])
             ->where([
-                ['users.id', '=', 'eatest_likes.user'],
+//                ['users.id', '=', 'eatest_likes.user'],
                 ['evaluations.publisher', '=', $toId]
             ])
             ->get(['eatest_likes.id', 'user', 'evaluation', 'users.nickname', 'avatar', 'evaluations.img'])
