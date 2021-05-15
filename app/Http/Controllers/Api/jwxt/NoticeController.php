@@ -121,10 +121,12 @@ class NoticeController extends Controller
         //提取数据
         $fromId = $request->route('id');   //点赞用户id
         $list = EatestLikes::query()
-            ->leftJoin([
-                ['evaluations', 'evaluations.id','=','eatest_likes.evaluation'],
-                ['users', 'user.id', '=', 'eatest_likes.user']
-            ])
+            ->leftJoin('evaluations', 'evaluations.id','=','eatest_likes.evaluation')
+            ->leftJoin('users', 'user.id', '=', 'eatest_likes.user')
+//            ->leftJoin([
+//                ['evaluations', 'evaluations.id','=','eatest_likes.evaluation'],
+//                ['users', 'user.id', '=', 'eatest_likes.user']
+//            ])
             ->where([
                 ['user.id', $fromId]
 //                ['eatest_likes.evalu']
