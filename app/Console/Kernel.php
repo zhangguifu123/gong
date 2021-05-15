@@ -14,7 +14,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         //
-        \App\Console\Commands\DeleteUnusedImages::class
+        \App\Console\Commands\DeleteUnusedImages::class,
+        Commands\DeleteCouponUsers::class
     ];
 
     /**
@@ -25,6 +26,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('delete:couponusers')->everyMinute();
         $schedule->command('delete:image')
             ->timezone('Asia/Shanghai')
             ->everyMinute();

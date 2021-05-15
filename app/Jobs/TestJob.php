@@ -52,16 +52,16 @@ class TestJob implements ShouldQueue
 
         DB::beginTransaction();
         try {
-            //优惠劵数量减一
+            //优惠劵数量减一,使用数量加一
             $update_stock = $this->updateCouponStock($coupon_type, $coupon_id);
-            echo $update_stock;
-            //插入已使用优惠劵
+//            dd($update_stock);
+            //插入已使用优惠劵用户
             $user = CouponUser::insert(['user_id'=>$user_id, 'coupon_id'=>$coupon_id, 'coupon_type'=>$coupon_type, 'use_time'=>$use_time]);
-            echo $user;
+//            echo $user;
         } catch(\Exception $e)
         {
             DB::rollback();//事务回滚
-            throw CommonException::msg(5,$e->getMessage());
+            echo CommonException::msg(5,$e->getMessage());
         }
 
         DB::commit();
@@ -70,22 +70,25 @@ class TestJob implements ShouldQueue
 
     public function updateCouponStock(string $type, string $id)
     {
-        $coupon = "";
         switch($type)
         {
             case "1":
-                $stock = Coupon_fir::where('id','=',$id)->value('stock');
-                $coupon = Coupon_fir::where('id','=',$id)->update(['stock'=>($stock-1)]);
+                $stock = Coupon_Sec::where('id','=',$id)->decrement('stock');
+                $quantity_used  = Coupon_Sec::where('id','=',$id)->increment('quantity_used');
                 break;
             case "2":
-                $stock = Coupon_Sec::where('id','=',$id)->value('stock');
-                $coupon = Coupon_Sec::where('id','=',$id)->update(['stock'=>($stock-1)]);
+                $stock = Coupon_Sec::where('id','=',$id)->decrement('stock');
+                $quantity_used  = Coupon_Sec::where('id','=',$id)->increment('quantity_used');
                 break;
             case "3":
-                $stock = Coupon_Thi::where('id','=',$id)->value('stock');
-                $coupon = Coupon_Thi::where('id','=',$id)->update(['stock'=>($stock-1)]);
+                $stock = Coupon_Sec::where('id','=',$id)->decrement('stock');
+                $quantity_used  = Coupon_Sec::where('id','=',$id)->increment('quantity_used');
                 break;
         }
+        $coupon=array(
+            "stock" => $stock,
+            "quantity_used"=>$quantity_used
+        );
         return $coupon;
     }
 

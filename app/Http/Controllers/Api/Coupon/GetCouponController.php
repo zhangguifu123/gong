@@ -23,13 +23,10 @@ class GetCouponController extends Controller
      */
     public function getCoupon(Request $request)
     {
-//        return "s";
         //获取商家
         if($request->get('store_id') == "all"){
             return Coupon_Type::select('id','store','location','images','remark')->get();
         }
-
-        return 0;
         //找到商家
         $store = Coupon_Type::where('id','=',$request->get('store_id'))->get()->first();
         if (empty($store)){
@@ -68,11 +65,11 @@ class GetCouponController extends Controller
         $res['type_two'] = $coupon_two;
         $res['type_three'] = $coupon_three;
 
-        return $res;
         if($res == []){
             return CommonException::msg(4,"");
         }
-        return CommonException::msg(0,$res);
+        return $res;
+//        return CommonException::msg(0,$res);
     }
 
     public function addStatusToCoupon(object $store_coupons, string $user_id, string $type)
@@ -98,8 +95,8 @@ class GetCouponController extends Controller
     }
 
     /**使用优惠劵
-     *
-     *
+     * @param Request $request
+     * @return CommonException
      */
     public function useCoupon(Request $request)
     {
@@ -109,22 +106,18 @@ class GetCouponController extends Controller
             return CommonException::msg(4,"参数缺失");
         }
         $coupon = $this->switchCouponType($request->post('coupon_type'),$request->post('coupon_id'));
-        $res = TestJob::dispatch("201905962202","1","2");
-
-        if (empty($empty)){
+        if (empty($coupon)){
             return CommonException::msg(4,"优惠劵未找到");
         }
         if ($coupon['secret_key'] != $request->post('secret_key')){
             return CommonException::msg(8,'');
         }
-//        try{
-//            $stock = Coupon::where('store', '=', $request->post('store'))->where('location','=',$request->post('location'))->where('value','=',$request->post('value'))->value('stock');
         if ($coupon['stock'] <= 0){
             return CommonException::msg(6,"");
         }
 
         $res = TestJob::dispatch($request->post('user_id'),$coupon['id'],$request->post('coupon_type'));
-        return CommonException::msg(0,"");
+        return CommonException::msg(0,"");//此返回值不做判断事务是否成功的标准
 //        }catch(\Exception $e){
 //            return CommonException::msg(5,$e->getMessage());
 //        }

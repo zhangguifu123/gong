@@ -22,6 +22,7 @@ class CreateCouponSecsTable extends Migration
             $table->string('detail')->comment('详情图片');
             $table->integer('stock')->comment('库存');
             $table->string('secret_key')->comment('密钥');
+            $table->string('quantity_used')->default('0')->comment('使用数量');
 //            $table->string('remarks')->comment('备注');
             $table->date('start_time')->comment('开始时间');
             $table->date('end_time')->comment('结束时间');

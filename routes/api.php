@@ -280,6 +280,10 @@ Route::namespace('Api')->group(function (){
         Route::get('/coupon/getStore','Coupon\GetCouponController@getStore');
         //使用优惠劵
         Route::post('/coupon/use','Coupon\GetCouponController@useCoupon');
+        //添加商家
+        Route::post('/coupon/addStore','Coupon\StoreController@addStore');
+        //修改商家
+        Route::post('/coupon/updateStore','Coupon\StoreController@updateStore');
 
 
    });
