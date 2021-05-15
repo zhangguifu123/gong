@@ -366,20 +366,29 @@ class EvaluationController extends Controller
     //辅助函数
     private function get_orderBy_score_list()
     {
+        //初始化
+        $new_list = [];
+        $new_list_count = [];
         //获取活动eatest
-//        $acEvaluation = Evaluation::query()
-//            ->where("evaluations.id", "312")
-//            ->leftJoin('users','evaluations.publisher','=','users.id')
-//            ->get([
-//                "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
-//                "collections", "top", "img", "title", "users.avatar","evaluations.created_at as time"
-//            ])
-//            ->toArray();
+        $acEvaluation = Evaluation::query()
+            ->where("top", 1)
+            ->leftJoin('users','evaluations.publisher','=','users.id')
+            ->get([
+                "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
+                "collections", "top", "img", "title", "users.avatar","evaluations.created_at as time"
+            ])
+            ->toArray();
+        $i = 0;
+        while (count($new_list_count) < 3) {
+            $new_list[] = $acEvaluation[$i];
+            $new_list_count[] = $acEvaluation[$i]["id"];
+            $i++;
+        }
 //        return $acEvaluation;
 
         //获取前20推荐分值最高美文
         $list = Evaluation::query()->limit(20)->orderByDesc("score")
-            ->where("top", "=", "0")
+            ->where("top", "=", 0)
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->whereIn('evaluations.status',[0,1])
             ->get([
@@ -388,20 +397,19 @@ class EvaluationController extends Controller
             ])
             ->toArray();
         if(count($list) == 0){
-            $new_list = [];
-            $new_list_count = [];
+//            $new_list = [];
+//            $new_list_count = [];
             session(['collect_count' => $new_list_count]);
             return $new_list;
         }
 
-        $new_list = [];
-        $new_list_count = [];
+//        $new_list = [];
+//        $new_list_count = [];
         $begin = rand(0, 20);
         //随机抽取三个go
-        for ($i = 0; $i < 3; $i += 1) {
+        for ($i = 0; count($new_list_count) < 3; $i += 1) {
             $new_list[] = $list[($begin + $i * 6) % count($list)];
             $new_list_count[] = $list[($begin + $i * 6) % count($list)]["id"];
-
         }
         echo count($new_list_count);
         //创建需要剔除美文id的session数组
