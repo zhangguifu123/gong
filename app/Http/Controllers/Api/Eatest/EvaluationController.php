@@ -411,7 +411,7 @@ class EvaluationController extends Controller
             $new_list[] = $list[($begin + $i * 6) % count($list)];
             $new_list_count[] = $list[($begin + $i * 6) % count($list)]["id"];
         }
-        echo count($new_list_count);
+//        echo count($new_list_count);
         //创建需要剔除美文id的session数组
         session(['collect_count' => $new_list_count]);
         return $new_list;
