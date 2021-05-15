@@ -119,16 +119,20 @@ class NoticeController extends Controller
     public function getEatestLikeList (Request $request)
     {
         //提取数据
-        $toId = $request->route('id');   //用户id
+        $fromId = $request->route('id');   //点赞用户id
         $list = EatestLikes::query()
-            ->leftJoin('evaluations', 'evaluations.id','=','eatest_likes.evaluation')
-            ->where([
-                ['eatest_likes.status', 0],
-                ['evaluations.publisher', $toId]
+            ->leftJoin([
+                ['evaluations', 'evaluations.id','=','eatest_likes.evaluation'],
+                ['users', 'user.id', '=', 'eatest_likes.user']
             ])
-            ->get(
-                ['eatest_likes.id','evaluations.title','evaluations.id','toId','fromId','fromName','fromAvatar','eatest_likes.user','eatest_likes.evaluation','evaluations.img']
-            )
+            ->where([
+                ['user.id', $fromId]
+//                ['eatest_likes.evalu']
+            ])
+            ->get(['eatest_likes.id', 'user', 'evaluation', 'users.nickname', 'avatar', 'evaluations.img'])
+//            ->get(
+//                ['eatest_likes.id','evaluations.title','evaluations.id','fromName','fromAvatar','eatest_likes.user','eatest_likes.evaluation','evaluations.img']
+//            )
             ->toArray();
         $message = ['total' => count($list), 'list' => $list];
         return msg(0,$message);

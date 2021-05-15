@@ -30,14 +30,14 @@ Route::namespace('Api')->group(function (){
     Route::post('/image','ImageController@upload');
     //Eatest 帖子、评论、回复列表
     Route::get('/eatest/list/{page}', "Eatest\EvaluationController@get_list")->where(["page" => "[0-9]+"]);
-    Route::get('eatest/{id}/comments','Eatest\CommentController@get_list')->where(["id"=>"[0-9]+"])->middleware(['eatest.exist.check']);
+    Route::get('/eatest/{id}/comments','Eatest\CommentController@get_list')->where(["id"=>"[0-9]+"])->middleware(['eatest.exist.check']);
     Route::get('/eatest/comment/{id}/reply','Eatest\ReplyController@get_list')->where(["id"=>"[0-9]+"])->middleware(['comment.exist.check']);
 
     Route::post('/eatest/image/delete','ImageController@delete');
     //Eatest拉取单页详情
     Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware(['eatest.exist.check']);
     //模糊搜索
-    Route::get('eatest/fuzzySearch/{index}/{page}','Eatest\searchEatestController@search')->where(['page' => '[0-9]+']);
+    Route::get('/eatest/fuzzySearch/{index}/{page}','Eatest\searchEatestController@search')->where(['page' => '[0-9]+']);
 //        ->where(['index' => '[0-9A-Za-z]+']);
     //添加标签
     Route::post('manager/label','Manager\LabelController@addLabel');
@@ -191,8 +191,8 @@ Route::namespace('Api')->group(function (){
 //        Route::get('/course/extra/{uid}',"jwxt\CourseController@get_list")->middleware("owner.check");
         Route::get('/course/extra/{uid}',"jwxt\CourseController@get_list");
 //        Route::group(["middleware" => ['owner.course.check']], function (){
-            Route::put('/course/extra/{id}',"jwxt\CourseController@update");
-            Route::delete('/course/extra/{id}',"jwxt\CourseController@delete");
+        Route::put('/course/extra/{id}',"jwxt\CourseController@update");
+        Route::delete('/course/extra/{id}',"jwxt\CourseController@delete");
 //        });
         /**Eatest */
         Route::post('/test','Eatest\EvaluationController@test');
@@ -203,7 +203,7 @@ Route::namespace('Api')->group(function (){
         Route::get('/eatest/like/{uid}','Eatest\EvaluationController@get_like_list');
         Route::get('/eatest/collection/{uid}','Eatest\EvaluationController@get_collection_list');
 
-            // 测评所有者和管理员均可操作
+        // 测评所有者和管理员均可操作
         Route::group(["middleware" => ["eatest.exist.check",'owner.eatest.check']], function () {
 
             Route::put('/eatest/{id}','Eatest\EvaluationController@update')->where(["id" => "[0-9]+"]);
@@ -230,10 +230,10 @@ Route::namespace('Api')->group(function (){
         Route::delete('/eatest/reply/{id}','Eatest\ReplyController@delete')->where(["id"=>"[0-9]+"])->middleware(['reply.exist.check','reply.owner.check']);
         /**User */
         Route::group(["middleware" => ['owner.check']], function () {
-        //获取收藏列表
-        Route::get('/user/{uid}/keep', "Eatest\CollectionController@get_user_collection_list")->where(["uid" => "[0-9]+"]);
-        //获取我的Eatest列表
-        Route::get('/user/{uid}/publish', "UserLoginController@get_user_publish_list")->where(["uid" => "[0-9]+"]);
+            //获取收藏列表
+            Route::get('/user/{uid}/keep', "Eatest\CollectionController@get_user_collection_list")->where(["uid" => "[0-9]+"]);
+            //获取我的Eatest列表
+            Route::get('/user/{uid}/publish', "UserLoginController@get_user_publish_list")->where(["uid" => "[0-9]+"]);
         });
 
         /**Notice */
@@ -289,7 +289,8 @@ Route::namespace('Api')->group(function (){
         Route::post('/coupon/updateStore','Coupon\StoreController@updateStore');
 
 
-   });
+
+    });
 
 
 
