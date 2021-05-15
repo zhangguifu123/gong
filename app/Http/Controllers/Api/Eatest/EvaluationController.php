@@ -379,7 +379,7 @@ class EvaluationController extends Controller
             ])
             ->toArray();
         $i = 0;
-        while (count($new_list_count) < 3) {
+        while (count($new_list_count) < 3 && count($new_list_count) < count($acEvaluation)) {
             $new_list[] = $acEvaluation[$i];
             $new_list_count[] = $acEvaluation[$i]["id"];
             $i++;
