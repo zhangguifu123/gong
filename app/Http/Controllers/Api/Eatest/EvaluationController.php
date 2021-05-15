@@ -366,6 +366,17 @@ class EvaluationController extends Controller
     //辅助函数
     private function get_orderBy_score_list()
     {
+        //获取活动eatest
+        $acEvaluation = Evaluation::query()
+            ->where("id", "312")
+            ->leftJoin('users','evaluations.publisher','=','users.id')
+            ->get([
+                "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
+                "collections", "top", "img", "title", "users.avatar","evaluations.created_at as time"
+            ])
+            ->toArray();
+        return $acEvaluation;
+
         //获取前20推荐分值最高美文
         $list = Evaluation::query()->limit(20)->orderByDesc("score")
             ->where("top", "=", "0")
