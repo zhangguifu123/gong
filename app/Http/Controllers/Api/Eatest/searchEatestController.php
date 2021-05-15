@@ -46,17 +46,20 @@ class searchEatestController extends Controller
         //获取数据
         $index = $request->route('index');
         $page = $request->route('page');
-        $offset = $page * 8 - 8;
+        $limit = 8;
+        $offset = $page * $limit - $limit;
         //拉取所有符合条件的评测
-        $evaluation_list = Evaluation::query()
-            ->limit(8)
-            ->offset($offset)
-            ->orderByDesc("evaluations.created_at")
+        $evaluation = Evaluation::query()
             ->where('title', 'like', '%' . $index . '%')      //标题
             ->orwhere('content', 'like', '%' . $index . '%')      //内容
             ->orWhere('label', 'like', '%' . $index . '%')      //标签
             ->orWhere('topic', 'like', '%' . $index . '%')       //话题
-            ->whereIn('evaluations.status', [0, 1])
+            ->whereIn('evaluations.status', [0, 1]);
+        $evaluation_sum = $evaluation->count();
+        $evaluation_list = $evaluation
+            ->limit(8)
+            ->offset($offset)
+            ->orderByDesc("evaluations.created_at")
             ->leftJoin('users', 'evaluations.publisher', '=', 'users.id')
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "topic", "views", "evaluations.like",
@@ -67,29 +70,41 @@ class searchEatestController extends Controller
             return msg(4, __LINE__);
         }
         $message = $this->isLike_Collection($request, $evaluation_list);
+        $message['total'] = $evaluation_sum;
+        $message['limit'] = $limit;
         return msg(0, $message);
     }
 
 
     //条件搜索
-    public function cdSearch(Request $request, $topic = null, $orderBy = null)
+    public function cdSearch(Request $request)
     {
         //获取数据
         $index = $request->route('index');
         $topic = $request->route('topic');
         $orderBy = $request->route('orderBy');
         $page = $request->route('page');
-        $offset = $page * 8 - 8;
+        $limit = 8;
+        $offset = $page * $limit - $limit;
         //拉取所有符合条件的评测
-        $evaluation_list = Evaluation::query()
+        $evaluation = Evaluation::query()
+            ->where('evaluations.title', 'like', '%' . $index . '%')      //标题
+            ->orwhere('evaluations.content', 'like', '%' . $index . '%')      //内容
+            ->orWhere('evaluations.label', 'like', '%' . $index . '%')      //标签
+//            ->orWhere('topic', 'like', '%' . $index . '%')       //话题
+            ->whereIn('evaluations.status', [0, 1]);
+        $evaluation_sum = $evaluation->count();
+        $evaluation_list = $evaluation
             ->limit(8)
             ->offset($offset)
-            ->where('title', 'like', '%' . $index . '%')      //标题
-            ->orwhere('content', 'like', '%' . $index . '%')      //内容
-            ->orWhere('label', 'like', '%' . $index . '%')      //标签
-            ->orWhere('topic', 'like', '%' . $index . '%')       //话题
-            ->whereIn('evaluations.status', [0, 1])
             ->leftJoin('users', 'evaluations.publisher', '=', 'users.id')
+            ->orderByDesc($orderBy);
+        if ($topic == 0) {
+            $evaluation_list = $evaluation_list->orWhere('evaluations.topic', 'like', '%' . $index . '%');       //话题
+        } else {
+            $evaluation_list = $evaluation_list->where('evaluations.topic', $topic);
+        }
+        $evaluation_list = $evaluation_list
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "topic", "views", "evaluations.like",
                 "collections", "top", "img", "title", "users.avatar", "evaluations.created_at as time"
@@ -99,6 +114,8 @@ class searchEatestController extends Controller
             return msg(4, __LINE__);
         }
         $message = $this->isLike_Collection($request, $evaluation_list);
+        $message['total'] = $evaluation_sum;
+        $message['limit'] = $limit;
         return msg(0, $message);
     }
 

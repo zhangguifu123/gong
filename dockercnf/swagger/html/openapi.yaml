@@ -222,6 +222,9 @@ paths:
                   total:
                     description: 申诉总数
                     type: integer
+                  limit:
+                    description: 每页最大条数
+                    type: integer
                   list:
                     description: 申诉列表
                     type: array
@@ -232,6 +235,7 @@ paths:
                 status: "成功"
                 data:
                   total: 2
+                  limit: 13
                   list:
                     - id: 1,
                       eatestId: 2
@@ -288,6 +292,9 @@ paths:
                   total:
                     description: 管理员总数
                     type: integer
+                  limit:
+                    description: 每页最大条数
+                    type: integer
                   list:
                     description: 管理员列表
                     type: array
@@ -298,6 +305,7 @@ paths:
                 status: "成功"
                 data:
                   total: 2
+                  limit: 5
                   list:
                     - id: 1,
                       eatestId: 2
@@ -410,7 +418,10 @@ paths:
                     description: 返回数据
                     type: array
                   total:
-                    description: 当页用户总数
+                    description: 用户总数
+                    type: integer
+                  limit:
+                    description: 每页最大条数
                     type: integer
                   list:
                     description: 管理员列表
@@ -422,6 +433,7 @@ paths:
                 status: "成功"
                 data:
                   total: 2
+                  limit: 13
                   list:
                     - id: 1,
                       nickname: '敢敢' 
@@ -468,6 +480,9 @@ paths:
                   total:
                     description: 总评测数
                     type: integer
+                  limit:
+                    description: 每页最大条数
+                    type: integer
                   list:
                     description: 我的评测列表
                     type: array
@@ -477,7 +492,8 @@ paths:
                 code: 0
                 status: 成功
                 data:
-                  total: 2
+                  total: 9
+                  limit: 5
                   list: 
                     - id: 1,
                       publisher_name: 我是你的小可爱吗
@@ -550,6 +566,9 @@ paths:
                   total:
                     description: 总评测数
                     type: integer
+                  limit:
+                    description: 每页最大条数
+                    type: integer
                   list:
                     description: 我的评测列表
                     type: array
@@ -560,44 +579,33 @@ paths:
                 status: 成功
                 data:
                   total: 2
+                  limit: 13
                   list: 
                     - id: 1,
-                      publisher_name: 我是你的小可爱吗
-                      label: 
-                      - 好吃
-                        贼好吃
-                      topic: 螺蛳粉
-                      views: 0
-                      like: 12
-                      collections: 43
-                      top: 0
-                      img: 
-                        - 太长了
-                          太长了
-                      title: 小可爱开店啦！
-                      location: 联建
-                      shop_name: 小可爱的店铺
-                      time: 2020-08-24 18:48:16
-                      commentSum: 2
+                      eatest_id: 2
+                      toId: 3
+                      fromId: 4
+                      status: 1
+                      fromName: 带篮子
+                      fromAvatar: https://gong.sky31.com/storage/avatar/7afd081d746164cae94a374cb5349346.jpg
+                      content: 没看见葫芦呀
+                      like: 0
+                      handleStatus: 0
+                      created_at: "2021-04-28T03:36:46.000000Z"
+                      updated_at: "2021-05-13T05:07:14.000000Z"
                       
                     - id: 2
-                      publisher_name: 我是你的小可爱吗
-                      label: 
-                      - 难吃
-                        贼难吃
-                      topic: 螺蛳粉
-                      views: 66
-                      like: 12
-                      collections: 54
-                      top: 1
-                      img: 
-                        - 太长了
-                          太长了
-                      title: 小可爱开店啦！
-                      location: 联建
-                      shop_name: 小可爱的店铺
-                      time: 2020-08-24 19:48:16
-                      commentSum: 2
+                      eatest_id: 2
+                      toId: 3
+                      fromId: 4
+                      status: 1
+                      fromName: 带篮子
+                      fromAvatar: https://gong.sky31.com/storage/avatar/7afd081d746164cae94a374cb5349346.jpg
+                      content: "没看见葫芦呀"
+                      like: 0
+                      handleStatus: 0
+                      created_at: "2021-04-28T03:36:46.000000Z"
+                      updated_at: "2021-05-13T05:07:14.000000Z"
         '403':
           $ref: '#/components/responses/InvalidProperties'
   /eatest/reply/{uid}/{page}:
@@ -632,54 +640,44 @@ paths:
                   total:
                     description: 总评测数
                     type: integer
+                  limit:
+                    description: 每页最大条数
+                    type: integer
                   list:
                     description: 我的评测列表
                     type: array
                     items:
-                      $ref: '#/components/schemas/EatestMessage'
+                      $ref: '#/components/schemas/EatestCommentMessage'
               example:
                 code: 0
                 status: 成功
                 data:
                   total: 2
+                  limit: 13
                   list: 
                     - id: 1,
-                      publisher_name: 我是你的小可爱吗
-                      label: 
-                      - 好吃
-                        贼好吃
-                      topic: 螺蛳粉
-                      views: 0
-                      like: 12
-                      collections: 43
-                      top: 0
-                      img: 
-                        - 太长了
-                          太长了
-                      title: 小可爱开店啦！
-                      location: 联建
-                      shop_name: 小可爱的店铺
-                      time: 2020-08-24 18:48:16
-                      commentSum: 2
+                      comment_id: 2
+                      toId: 3
+                      fromId: 4
+                      status: 1
+                      fromName: 带篮子
+                      fromAvatar: https://gong.sky31.com/storage/avatar/7afd081d746164cae94a374cb5349346.jpg
+                      content: 没看见葫芦呀
+                      handleStatus: 0
+                      created_at: "2021-04-28T03:36:46.000000Z"
+                      updated_at: "2021-05-13T05:07:14.000000Z"
                       
                     - id: 2
-                      publisher_name: 我是你的小可爱吗
-                      label: 
-                      - 难吃
-                        贼难吃
-                      topic: 螺蛳粉
-                      views: 66
-                      like: 12
-                      collections: 54
-                      top: 1
-                      img: 
-                        - 太长了
-                          太长了
-                      title: 小可爱开店啦！
-                      location: 联建
-                      shop_name: 小可爱的店铺
-                      time: 2020-08-24 19:48:16
-                      commentSum: 2
+                      comment_id: 2
+                      toId: 3
+                      fromId: 4
+                      status: 1
+                      fromName: 带篮子
+                      fromAvatar: https://gong.sky31.com/storage/avatar/7afd081d746164cae94a374cb5349346.jpg
+                      content: "没看见葫芦呀"
+                      handleStatus: 0
+                      created_at: "2021-04-28T03:36:46.000000Z"
+                      updated_at: "2021-05-13T05:07:14.000000Z"
         '403':
           $ref: '#/components/responses/InvalidProperties'
   /manager/user/{id}/status:
@@ -1497,6 +1495,7 @@ paths:
                     collectedSum: 9
                     eatestSum: 3
                     commentSum: 1
+                    isFocus: false
 
                   - id: 2
                     nickName: 啦啦啦
@@ -1530,6 +1529,7 @@ paths:
                     collectedSum: 9
                     eatestSum: 3
                     commentSum: 1
+                    isFocus: false
         '403':
           $ref: '#/components/responses/InvalidProperties'
   # /users/me:
@@ -1577,7 +1577,10 @@ paths:
                     description: 返回数据
                     type: array
                   total:
-                    description: 当页话题总数
+                    description: 话题总数
+                    type: integer
+                  limit: 
+                    description: 当页最大条数
                     type: integer
                   list:
                     description: 话题列表
@@ -1589,6 +1592,7 @@ paths:
                 status: "成功"
                 data:
                   total: 2
+                  limit: 10
                   list:
                     - id: 1,
                       topicName: 金翰林螺蛳粉
@@ -1708,6 +1712,7 @@ paths:
                         - 1
                         - 2
                       Founder: 啦啦啦
+                      FounderUid: 201999999999
                       sharingCode: SKY21235
                       
                     - id: 2,
@@ -1719,6 +1724,7 @@ paths:
                         - 1
                         - 2
                       Founder: 啦啦啦
+                      FounderUid: 201999999999
                       sharingCode: SKY21235
         '403':
           $ref: '#/components/responses/InvalidProperties'
@@ -1778,6 +1784,7 @@ paths:
                         - 1
                         - 2
                       Founder: 啦啦啦
+                      FounderUid: 201999999999
                       sharingCode: SKY21235
                       
                     - id: 2,
@@ -1789,7 +1796,53 @@ paths:
                         - 1
                         - 2
                       Founder: 啦啦啦
+                      FounderUid: 201999999999
                       sharingCode: SKY21235
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
+  /CourseGroup/{sharingCode}:
+    get:
+      summary: 小组介绍 (分享码筛选)
+      operationId: getOneGroup
+      tags:
+        - user
+      parameters:
+        - name: sharingCode
+          description: 小组分享码
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  # page:
+                  #   description: 页码
+                  #   type: integer
+                  # limit:
+                  #   description: 每页限制
+                  #   type: integer
+                  code:
+                    description: 状态码
+                    type: integer
+                  data:
+                    description: 返回数据
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CourseGroupMessage'
+              example:
+                code: 0
+                status: "成功"
+                data:
+                  - id: 1
+                    groupName: 技术开发部
+                    Founder: 啦啦啦
+                    sharingCode: SKY21235
         '403':
           $ref: '#/components/responses/InvalidProperties'
   /CourseGroup/sharingCode:
@@ -1822,9 +1875,7 @@ paths:
                 code: 0
                 status: "成功"
                 data:
-                  total: 2
-                  list:
-                    - sharingCode: SKY21235
+                  - sharingCode: SKY21235
         '403':
           $ref: '#/components/responses/InvalidProperties'
   /CourseGroup/{id}/member/list:
@@ -1903,8 +1954,8 @@ paths:
                     sharingCode: SKY21235
         '403':
           $ref: '#/components/responses/InvalidProperties'
-  /CourseGroup/{id}/emptyCourse/{uid}:
-    get:
+  /CourseGroup/{id}/emptyCourse:
+    post:
       summary: 获取空课表
       operationId: EmptyCourse
       tags:
@@ -1923,6 +1974,16 @@ paths:
           schema:
             type: string
             example: '[1,2,3]'
+      requestBody:
+        content:
+          multipart/application/json:
+            schema:
+              type: object
+              properties:
+                uids:
+                  description: 成员学号
+                  type: string
+                  example: "[201999999999,201888888888]"
       responses:
         '200':
           description: 获取成功
@@ -2531,101 +2592,101 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Association'
-  /course:
-    post:
-      summary: 查看课表(url不需要/api 端口5000)
-      tags:
-        - course
-      requestBody:
-        $ref: '#/components/requestBodies/JwxtBody'
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Course'
-              example:
-                code: 0
-                status: 成功
-                data:
-                  '2':
-                    '1':
-                      - course: 数据结构
-                        location: 计算机中心406
-                        teacher: 谢勇
-                        week: 2,3.4,5,6.7,8,9
-                        week_string: 2-9
-                        day: 1
-                        section_length: 2
-                        section_start: 1
-                        section_end: 2
-                        start_time: 08:00
-                        end_time: 09:40
-                      - course: 宏观经济学
-                        location: 计算机中心406
-                        teacher: 谢勇
-                        week: 2,3.4,5,6.7,8,9
-                        week_string: 2-9
-                        day: 1
-                        section_length: 2
-                        section_start: 1
-                        section_end: 2
-                        start_time: 08:00
-                        end_time: 09:40
-                    '2':
-                      - course: 软件工程
-                        location: 计算机中心306
-                        teacher: 谢智
-                        week: 2,3.4,5,6.7,8,9
-                        week_string: 2-9
-                        day: 2
-                        section_length: 2
-                        section_start: 1
-                        section_end: 2
-                        start_time: 08:00
-                        end_time: 09:40
-                      - course: 软件测试
-                        location: 计算机中心206
-                        teacher: 谢伟
-                        week: 2,3.4,5,6.7,8,9
-                        week_string: 2-9
-                        day: 2
-                        section_length: 4
-                        section_start: 5
-                        section_end: 8
-                        start_time: 14:00
-                        end_time: 17:50
-                  '3':
-                    '1':
-                      - course: 数据结构
-                        location: 计算机中心406
-                        teacher: 谢勇
-                        week: 2,3.4,5,6.7,8,9
-                        week_string: 2-9
-                        day: 1
-                        section_length: 2
-                        section_start: 1
-                        section_end: 2
-                        start_time: 08:00
-                        end_time: 09:40
-                      - course: 宏观经济学
-                        location: 计算机中心406
-                        teacher: 谢勇
-                        week: 2,3.4,5,6.7,8,9
-                        week_string: 2-9
-                        day: 1
-                        section_length: 2
-                        section_start: 1
-                        section_end: 2
-                        start_time: 08:00
-                        end_time: 09:40
-        '401':
-          $ref: '#/components/responses/NotAuthorization'
-        '403':
-          $ref: '#/components/responses/NoPermission'
-        '404':
-          $ref: '#/components/responses/NotFound'
+  # /course:
+  #   post:
+  #     summary: 查看课表(url不需要/api 端口5000)
+  #     tags:
+  #       - course
+  #     requestBody:
+  #       $ref: '#/components/requestBodies/JwxtBody'
+  #     responses:
+  #       '200':
+  #         description: 成功
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/Course'
+  #             example:
+  #               code: 0
+  #               status: 成功
+  #               data:
+  #                 '2':
+  #                   '1':
+  #                     - course: 数据结构
+  #                       location: 计算机中心406
+  #                       teacher: 谢勇
+  #                       week: 2,3.4,5,6.7,8,9
+  #                       week_string: 2-9
+  #                       day: 1
+  #                       section_length: 2
+  #                       section_start: 1
+  #                       section_end: 2
+  #                       start_time: 08:00
+  #                       end_time: 09:40
+  #                     - course: 宏观经济学
+  #                       location: 计算机中心406
+  #                       teacher: 谢勇
+  #                       week: 2,3.4,5,6.7,8,9
+  #                       week_string: 2-9
+  #                       day: 1
+  #                       section_length: 2
+  #                       section_start: 1
+  #                       section_end: 2
+  #                       start_time: 08:00
+  #                       end_time: 09:40
+  #                   '2':
+  #                     - course: 软件工程
+  #                       location: 计算机中心306
+  #                       teacher: 谢智
+  #                       week: 2,3.4,5,6.7,8,9
+  #                       week_string: 2-9
+  #                       day: 2
+  #                       section_length: 2
+  #                       section_start: 1
+  #                       section_end: 2
+  #                       start_time: 08:00
+  #                       end_time: 09:40
+  #                     - course: 软件测试
+  #                       location: 计算机中心206
+  #                       teacher: 谢伟
+  #                       week: 2,3.4,5,6.7,8,9
+  #                       week_string: 2-9
+  #                       day: 2
+  #                       section_length: 4
+  #                       section_start: 5
+  #                       section_end: 8
+  #                       start_time: 14:00
+  #                       end_time: 17:50
+  #                 '3':
+  #                   '1':
+  #                     - course: 数据结构
+  #                       location: 计算机中心406
+  #                       teacher: 谢勇
+  #                       week: 2,3.4,5,6.7,8,9
+  #                       week_string: 2-9
+  #                       day: 1
+  #                       section_length: 2
+  #                       section_start: 1
+  #                       section_end: 2
+  #                       start_time: 08:00
+  #                       end_time: 09:40
+  #                     - course: 宏观经济学
+  #                       location: 计算机中心406
+  #                       teacher: 谢勇
+  #                       week: 2,3.4,5,6.7,8,9
+  #                       week_string: 2-9
+  #                       day: 1
+  #                       section_length: 2
+  #                       section_start: 1
+  #                       section_end: 2
+  #                       start_time: 08:00
+  #                       end_time: 09:40
+  #       '401':
+  #         $ref: '#/components/responses/NotAuthorization'
+  #       '403':
+  #         $ref: '#/components/responses/NoPermission'
+  #       '404':
+  #         $ref: '#/components/responses/NotFound'
   /course/info:
     post:
       summary: 获取关联人信息
@@ -2651,85 +2712,85 @@ paths:
                     example: 成功
                   data:
                     $ref: '#/components/schemas/Info'
-  /course/empty:
-    post: 
-      summary: 组织空课表
-      tags:
-        - course
-      requestBody:
-        $ref: '#/components/requestBodies/AssocationsBody'
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    description: 状态码
-                    type: integer
-                    example: 0
-                  status:
-                    description: 状态
-                    type: string
-                    example: 成功
-                  data:
-                    $ref: '#/components/schemas/EmptyCourse'
-                example:
-                  code: 0
-                  status: 成功
-                  data:
-                    - name: 张桂福
-                      1:
-                        '1': 1
-                        '2': 1
-                        '3': 1
-                        '4': 1
-                        '5': 1
-                        '6': 1
-                        '7': 0
-                        '8': 0
-                        '9': 1
-                        '10': 1
-                        '11': 1
-                      2:
-                        '1': 1
-                        '2': 1
-                        '3': 1
-                        '4': 1
-                        '5': 1
-                        '6': 1
-                        '7': 0
-                        '8': 0
-                        '9': 1
-                        '10': 1
-                        '11': 1
-                    - name: 罗青云
-                      1:
-                        '1': 1
-                        '2': 1
-                        '3': 1
-                        '4': 1
-                        '5': 1
-                        '6': 1
-                        '7': 0
-                        '8': 0
-                        '9': 1
-                        '10': 1
-                        '11': 1
-                      2:
-                        '1': 1
-                        '2': 1
-                        '3': 1
-                        '4': 1
-                        '5': 1
-                        '6': 1
-                        '7': 0
-                        '8': 0
-                        '9': 1
-                        '10': 1
-                        '11': 1
+  # /course/empty:
+  #   post: 
+  #     summary: 组织空课表
+  #     tags:
+  #       - course
+  #     requestBody:
+  #       $ref: '#/components/requestBodies/AssocationsBody'
+  #     responses:
+  #       '200':
+  #         description: 成功
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               properties:
+  #                 code:
+  #                   description: 状态码
+  #                   type: integer
+  #                   example: 0
+  #                 status:
+  #                   description: 状态
+  #                   type: string
+  #                   example: 成功
+  #                 data:
+  #                   $ref: '#/components/schemas/EmptyCourse'
+  #               example:
+  #                 code: 0
+  #                 status: 成功
+  #                 data:
+  #                   - name: 张桂福
+  #                     1:
+  #                       '1': 1
+  #                       '2': 1
+  #                       '3': 1
+  #                       '4': 1
+  #                       '5': 1
+  #                       '6': 1
+  #                       '7': 0
+  #                       '8': 0
+  #                       '9': 1
+  #                       '10': 1
+  #                       '11': 1
+  #                     2:
+  #                       '1': 1
+  #                       '2': 1
+  #                       '3': 1
+  #                       '4': 1
+  #                       '5': 1
+  #                       '6': 1
+  #                       '7': 0
+  #                       '8': 0
+  #                       '9': 1
+  #                       '10': 1
+  #                       '11': 1
+  #                   - name: 罗青云
+  #                     1:
+  #                       '1': 1
+  #                       '2': 1
+  #                       '3': 1
+  #                       '4': 1
+  #                       '5': 1
+  #                       '6': 1
+  #                       '7': 0
+  #                       '8': 0
+  #                       '9': 1
+  #                       '10': 1
+  #                       '11': 1
+  #                     2:
+  #                       '1': 1
+  #                       '2': 1
+  #                       '3': 1
+  #                       '4': 1
+  #                       '5': 1
+  #                       '6': 1
+  #                       '7': 0
+  #                       '8': 0
+  #                       '9': 1
+  #                       '10': 1
+  #                       '11': 1
   /course/associate:
     post:
       summary: 关联课表
@@ -2960,45 +3021,45 @@ paths:
           $ref: '#/components/responses/NoPermission'
         '404':
           $ref: '#/components/responses/NotFound'
-  /countdown/exam:
-    post:
-      summary: 考试安排(url不需要/api 端口5000)
-      tags:
-        - countdown
-      requestBody:
-        $ref: '#/components/requestBodies/JwxtBody'
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ExamInfo'
-              example:
-                code: 0
-                status: 成功
-                data:
-                  - course: 操作系统
-                    date: "2020-09-14"
-                    week: 4
-                    day: 星期一
-                    start_time: "10:20"
-                    end_time: "12:20"
-                    location: 逸夫楼-310
-                  - course: 数据结构
-                    date: "2020-09-21"
-                    week: 5
-                    day: 星期一
-                    start_time: "10:20"
-                    end_time: "12:20"
-                    location: 逸夫楼-107
-        '401':
-          $ref: '#/components/responses/NotAuthorization'
-        '403':
-          $ref: '#/components/responses/NoPermission'
-        '404':
-          $ref: '#/components/responses/NotFound'
-      deprecated: false
+  # /countdown/exam:
+  #   post:
+  #     summary: 考试安排(url不需要/api 端口5000)
+  #     tags:
+  #       - countdown
+  #     requestBody:
+  #       $ref: '#/components/requestBodies/JwxtBody'
+  #     responses:
+  #       '200':
+  #         description: 成功
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ExamInfo'
+  #             example:
+  #               code: 0
+  #               status: 成功
+  #               data:
+  #                 - course: 操作系统
+  #                   date: "2020-09-14"
+  #                   week: 4
+  #                   day: 星期一
+  #                   start_time: "10:20"
+  #                   end_time: "12:20"
+  #                   location: 逸夫楼-310
+  #                 - course: 数据结构
+  #                   date: "2020-09-21"
+  #                   week: 5
+  #                   day: 星期一
+  #                   start_time: "10:20"
+  #                   end_time: "12:20"
+  #                   location: 逸夫楼-107
+  #       '401':
+  #         $ref: '#/components/responses/NotAuthorization'
+  #       '403':
+  #         $ref: '#/components/responses/NoPermission'
+  #       '404':
+  #         $ref: '#/components/responses/NotFound'
+  #     deprecated: false
   /countdown/top/{id}:
     put:
       summary: 置顶
@@ -3053,16 +3114,19 @@ paths:
                     remarks: null
                     end_time: '2020-03-09'
                     location: 逸夫楼-111
+                    type: 1
                   - id: 2
                     target: 高等数学
                     remarks: null
                     end_time: '2020-03-11'
                     location: 逸夫楼-102
+                    type: 1
                   - id: 3
                     target: 周末海底捞
                     remarks: 周末都给我嗨起来!
                     end_time: '2020-03-22'
                     location: 万达
+                    type: 1
         '401':
           $ref: '#/components/responses/NotAuthorization'
         '403':
@@ -5288,7 +5352,7 @@ components:
                 type: string
                 description: 开始小节
                 example: 5
-              end_start:
+              section_end:
                 type: string
                 description: 结束小节
                 example: 6
@@ -5498,6 +5562,10 @@ components:
                 type: string
                 description: 备注
                 example: 会员卡别忘带了
+              type:
+                description: 倒计时类型 0自定义 1考试
+                type: integer
+                example: 1
     UpdateCountDownBody:
       description: 倒计时信息
       required: true
@@ -5865,6 +5933,10 @@ components:
           description: 学号
           type: integer
           example: 201805710601
+        department:
+          description: 部门
+          type: string
+          example: 技术开发部
         level:
           description: 权限
           type: string
@@ -6251,8 +6323,8 @@ components:
         type: object
         properties:
           id:
-            description: 编号
-            type: string
+            description: 评测id
+            type: integer
             example: 1
           publisher_name:
             description: 昵称
@@ -6309,6 +6381,105 @@ components:
             description: 是否关注
             type: boolean
             example: true
+    EatestCommentMessage:
+      description: 美食评测评论列表
+      type: array
+      items:
+        description: 单条信息
+        type: object
+        properties:
+          id:
+            description: 评论id
+            type: integer
+            example: 1
+          eatest_id:
+            description: eatest id
+            type: integer
+            example: 2
+          toId:
+            description: 被评论者id
+            type: integer
+            example: 4
+          fromId:
+            description: 评论者id
+            type: integer
+            example: 5
+          status:
+            description: 查看状态 0未查看 1未查看
+            type: integer
+            example: 1
+          fromName:
+            description: 评论者昵称
+            type: string
+            example: 啦啦啦
+          fromAvatar: 
+            description: 评论者头像
+            type: string
+            example: https://gong.sky31.com/storage/avatar/7afd081d746164cae94a374cb5349346.jpg
+          content:
+            description: 评论内容
+            type: string
+            example: 没看见葫芦呀
+          like:
+            description: 点赞量
+            type: integer
+            example: 1
+          handleStatus:
+            description: 评论状态 0未处理 1上架 2下架
+            type: integer
+            example: 1
+          created_at:
+            description: 发布时间
+            type: string
+            example: "2021-04-28T03:36:46.000000Z"
+
+    EatestReplyMessage:
+      description: 美食评测评论回复列表
+      type: array
+      items:
+        description: 单条信息
+        type: object
+        properties:
+          id:
+            description: 评论回复id
+            type: integer
+            example: 1
+          comment_id:
+            description: 评论 id
+            type: integer
+            example: 2
+          fromId:
+            description: 回复者id
+            type: integer
+            example: 5
+          fromName:
+            description: 回复者昵称
+            type: string
+            example: 啦啦啦
+          status:
+            description: 查看状态 0未查看 1未查看
+            type: integer
+            example: 1
+          toId:
+            description: 被回复者id
+            type: integer
+            example: 4
+          fromAvatar: 
+            description: 回复者头像
+            type: string
+            example: https://gong.sky31.com/storage/avatar/7afd081d746164cae94a374cb5349346.jpg
+          content:
+            description: 回复内容
+            type: string
+            example: 没看见葫芦呀
+          handleStatus:
+            description: 回复状态 0未处理 1上架 2下架
+            type: integer
+            example: 1
+          created_at:
+            description: 发布时间
+            type: string
+            example: "2021-04-28T03:36:46.000000Z"
     TopicMessage:
       description: 话题列表
       type: array
@@ -6357,6 +6528,14 @@ components:
             example: 
               - 1
               - 2
+          Founder:
+            description: 创建人姓名
+            type: string
+            example: 张gay福
+          FounderUid:
+            description: 创建人学号
+            type: string
+            example: 201999999999
           created_at:
             description: 小组创建时间
             type: string
@@ -6581,6 +6760,11 @@ components:
             description: 被收藏数
             type: integer
             example: 1 
+          isFocus: 
+            description: 是否关注当前用户 
+            type: boolean
+            example: true
+
     
     GuideMessage:
       description: 地点信息
@@ -6942,6 +7126,10 @@ components:
                 description: 倒计时地点
                 type: string
                 example: 逸夫楼-111
+              type:
+                description: 倒计时类型 0自定义 1考试
+                type: integer
+                example: 1
     GuluMessage:
       description: 咕噜消息
       type: object

@@ -15,7 +15,7 @@ class CreateCountDownTable extends Migration {
             $table->string('remarks',50)->comment('备注')->nullable();
             $table->date('end_time')->comment('截止日期');
             $table->integer("top")->default(0)->comment("置顶");
-            $table->integer('type')->comment('0考试 1自定义');
+            $table->integer('type')->comment('0自定义 1考试');
             $table->timestamp('time')->default(\Illuminate\Support\Facades\DB::raw('CURRENT_TIMESTAMP'));
 
         });

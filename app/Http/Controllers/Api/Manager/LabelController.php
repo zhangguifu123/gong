@@ -62,14 +62,15 @@ class LabelController extends Controller
         //提取数据
 //        $type = $request->route('type');
         //查看标签
-        $showLabels = EatestLabels::query()
+        $label = EatestLabels::query();
+        $showLabels = $label
 //            ->where('type',$type)
-            ->get('id','labelName','UsageTime','type');
+            ->get(['id','labelName','UsageTime','type']);
         if(!$showLabels){
             return msg(4, __LINE__);
         }
         $data = $showLabels->toArray();
-        $message = [ 'total' => count($data), 'list' => $data];
+        $message = [ 'total' => $label->count(), 'list' => $data];
         return msg(0, $message);
     }
 }

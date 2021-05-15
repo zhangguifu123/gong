@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Model\Eatest\Evaluation;
 use App\User;
 use Illuminate\Http\Request;
+use Symfony\Component\Config\Definition\Exception\Exception;
 
 
 /**
@@ -25,8 +26,10 @@ class UserController extends Controller
     {
         //提取数据
         $page = $request->route('page');
-        $offset = $page * 13 - 13;
-        $showUser = User::query()
+        $limit = 13;
+        $offset = $page * $limit - $limit;
+        $user = User::query();
+        $showUser = $user
             ->limit(13)
             ->offset($offset)
             ->orderByDesc('created_at');
@@ -40,7 +43,7 @@ class UserController extends Controller
             $dat['eatestSum'] = $eatestSum;
             $data[] = $dat;
         }
-        $message = ['total' => count($data),'list' => $data];
+        $message = ['total' => $user->count(), 'limit' => $limit, 'list' => $data];
         return msg(0,$message);
     }
 
@@ -64,6 +67,48 @@ class UserController extends Controller
             return msg(0,__LINE__);
         }
         return msg(4,__LINE__);
+    }
+
+    /**
+     * 搜索用户
+     * @param Request $request
+     * @return string
+     */
+    public function searchUser (Request $request)
+    {
+        //检查数据格式
+//        $params = [
+//            'index' => ['string']
+//        ];
+//        $request = handleData($request,$params);
+//        if (!is_object($request)) {
+//            return $request;
+//        }
+        //提取数据
+        $index = $request->route('index');
+        $page = $request->route('page');
+        $limit = 13;
+        $offset = $page * $limit - $limit;
+        try {
+            $user = User::query();
+            $datas = $user
+                ->limit(13)
+                ->offset($offset)
+                ->orderByDesc('created_at')
+                ->where('nickname', 'like', '%' . $index . '%')
+                ->get(['id','nickname','stu_id','status'])
+                ->toArray();
+        } catch (Exception $e) {
+            return msg(4, __LINE__);
+        }
+        $data = [];
+        foreach ($datas as $dat){
+            $eatestSum = Evaluation::query()->where('publisher',$dat['id'])->count();
+            $dat['eatestSum'] = $eatestSum;
+            $data[] = $dat;
+        }
+        $message = ['total' => $user->count(), 'limit' => $limit, 'list' => $data];
+        return msg(0,$message);
     }
 
 }

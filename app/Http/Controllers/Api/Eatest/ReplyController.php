@@ -48,13 +48,15 @@ class ReplyController extends Controller
         //提取数据
         $uid = $request->route('uid');
         $page = $request->route('page');
-        $offset = $page * 13 -13;
+        $limit = 13;
+        $offset = $page * $limit - $limit;
         //查看评论
-        $list = EatestReplies::query()
+        $reply = EatestReplies::query()
             ->where([
-                ['fromId', $uid],
-                ['status', 0]
+                ['fromId', $uid]
             ])
+            ->whereIn('handleStatus', [0,1]);
+        $list = $reply
             ->limit(13)
             ->offset($offset)
             ->orderByDesc('created_at')
@@ -62,7 +64,7 @@ class ReplyController extends Controller
         if(!$list){
             return msg(4,__LINE__);
         }
-        $message = ['total' => count($list),'list' => $list];
+        $message = ['total' => $reply->count(), 'limit' => $limit, 'list' => $list];
         return msg(0,$message);
     }
 
