@@ -191,7 +191,7 @@ Route::namespace('Api')->group(function (){
 //        Route::get('/course/extra/{uid}',"jwxt\CourseController@get_list")->middleware("owner.check");
         Route::get('/course/extra/{uid}',"jwxt\CourseController@get_list");
 //        Route::group(["middleware" => ['owner.course.check']], function (){
-        Route::put('/course/extra/{id}',"jwxt\CourseController@update");
+        Route::put('/course/extra/{id}',"jwxt\CourseController@update")->where(['id' => '[0-9a-zA-Z]+']);
         Route::delete('/course/extra/{id}',"jwxt\CourseController@delete");
 //        });
         /**Eatest */
