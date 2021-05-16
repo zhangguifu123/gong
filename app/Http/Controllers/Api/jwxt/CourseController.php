@@ -127,6 +127,7 @@ class CourseController extends Controller
         $data = $request->only(array_keys($params));
         //修改
         $course = Course::query()->where('id', $id);
+        return $course->get()->first();
         if ($course->get()->first() == null) {
             $updateMsg = Http::put('https://jwxt.sky31.com/api/student/' . $uid . '/course/' . $id, $data);
             return $updateMsg;
