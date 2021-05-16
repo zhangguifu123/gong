@@ -23,6 +23,53 @@ use Illuminate\Support\Facades\DB;
 class NoticeController extends Controller
 {
     /**
+     * 所有通知
+     * @param Request $request
+     * @return string
+     */
+    public function getList (Request$request)
+    {
+        //评论
+        //获取被评论者Id
+        $toId = $request->route("id");
+        $comment_list = EatestComments::query()
+            ->where('toId','=',$toId)
+            ->orderByDesc("eatest_comments.created_at")
+            ->leftJoin('evaluations','eatest_comments.eatest_id','=','evaluations.id')
+            ->leftJoin('users', 'eatest_comments.fromId', '=', 'users.id')
+//            ->get(
+//                ['eatest_comments.id','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar','eatest_comments.content','eatest_comments.created_at as time','evaluations.img']
+//            )
+            ->get(['eatest_comments.id', 'fromId', 'eatest_comments.eatest_id as parentId', 'eatest_comments.content', 'eatest_comments.created_at as time', 'users.nickname as fromName', 'users.avatar as fromAvatar', 'evaluations.img', 'evaluations.content as parentContent'])
+            ->toArray();
+        foreach ($comment_list as $key => $item) {
+            $comment_list[$key]['type'] = 0;
+        }
+        //回复
+        $reply_list = EatestReplies::query()
+            ->where('toId','=',$toId)
+            ->orderByDesc("eatest_replies.created_at")
+            ->leftJoin('eatest_comments','eatest_replies._id','=','eatest_comments.id')
+            ->leftJoin('users', 'eatest_replies.fromId', '=', 'users.id')
+//            ->get(
+//                ['eatest_comments.id','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar','eatest_comments.content','eatest_comments.created_at as time','evaluations.img']
+//            )
+//            ->get(['eatest_replies.id', 'fromId', 'eatest_replies.comment_id as parentId', 'eatest_replies.content', 'eatest_replies.created_at as time', 'users.nickname as fromName', 'users.avatar as fromAvatar', 'evaluations.img', 'eatest_comments.content as parentContent'])
+            ->get(['eatest_replies.id', 'fromId', 'eatest_replies.comment_id as parentId', 'eatest_replies.content', 'eatest_replies.created_at as time', 'users.nickname as fromName', 'users.avatar as fromAvatar', 'eatest_comments.content as parentContent'])
+            ->toArray();
+        foreach ($reply_list as $key => $item) {
+            $reply_list[$key]['type'] = 0;
+        }
+        $list = $comment_list + $reply_list;
+
+        $list_count = (EatestComments::query()->where('toId','=',$toId)->count()) + (EatestReplies::query()->where('toId','=',$toId)->count());
+        $message = ['total'=>$list_count, 'list'=>$list];
+        return msg(0, $message);
+    }
+
+
+
+    /**
      * Eatest Comment 未查看消息
      * @param Request $request
      * @return string
