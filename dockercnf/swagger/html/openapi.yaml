@@ -4198,7 +4198,7 @@ paths:
           $ref: '#/components/responses/NotFound'
   /eatest/like/{id}:
     post:
-      summary: 我的喜欢
+      summary: 帖子点赞
       tags:
         - eatest
       parameters:
