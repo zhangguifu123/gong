@@ -30,7 +30,7 @@ class NoticeController extends Controller
 //            ->get(
 //                ['eatest_comments.id','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar','eatest_comments.content','eatest_comments.created_at as time','evaluations.img']
 //            )
-            ->get(['eatest_comments.id', 'fromId', 'eatest_id as parentId', 'eatest_comments.content', 'created_at as time', 'users.nickname', 'avatar', 'evaluations.img', 'evaluations.content as parentContent'])
+            ->get(['eatest_comments.id', 'fromId', 'eatest_comments.eatest_id as parentId', 'content', 'eatest_comments.created_at as time', 'users.nickname', 'avatar', 'evaluations.img', 'evaluations.content as parentContent'])
             ->toArray();
 
 
