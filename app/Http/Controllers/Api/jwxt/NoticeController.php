@@ -58,7 +58,7 @@ class NoticeController extends Controller
             ->get(['eatest_replies.id', 'fromId', 'eatest_replies.comment_id as parentId', 'eatest_replies.content', 'eatest_replies.created_at as time', 'users.nickname as fromName', 'users.avatar as fromAvatar', 'eatest_comments.content as parentContent'])
             ->toArray();
         foreach ($reply_list as $key => $item) {
-            $reply_list[$key]['type'] = 0;
+            $reply_list[$key]['type'] = 1;
         }
         $list = $comment_list + $reply_list;
 
