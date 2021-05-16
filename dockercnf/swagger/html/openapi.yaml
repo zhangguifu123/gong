@@ -6020,22 +6020,22 @@ components:
           type: integer
           description: 编号
           example: 1
-        title:
-          type: string
-          description: 标题
-          example: 茶颜悦色
-        eatest_id:
-          type: integer
-          description: Eatest编号
-          example: 1
-        toId:
-          type: integer
-          description: 被回复者Id
-          example: 1
         fromId:
           type: integer
           description: 回复者Id
           example: 1
+        parentId:
+          type: integer
+          description: eatest/comment id
+          example: 1
+        content:
+          type: string
+          description: 内容
+          example: 这个感觉真不错啊
+        time:
+          type: string
+          description: 回复时间
+          example: "2021-04-30 08:20:26"
         fromName:
           type: string
           description: 评论者昵称
@@ -6044,17 +6044,14 @@ components:
           type: string
           description: 回复者头像
           example: "\"https:\\\\/\\\\/gong.sky31.com\\\\/storage\\\\/avatar\\\\/avatar.jpg\""
-        content:
-          type: string
-          description: 内容
-          example: 这个感觉真不错啊
-        time:
-          type: string
-          description: 回复时间
         img:
           type: string
           description: 回复者头像
           example: "[\"https://gong.sky31.com/storage/image/6c43ede209ce36d2466ce57d7c3656a8.jpg\"]"
+        parentContent:
+          type: string
+          description: 内容
+          example: 这个感觉真不错啊
     EatestReplyNotice:
       description: 回复消息推送
       type: object

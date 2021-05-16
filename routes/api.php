@@ -238,6 +238,7 @@ Route::namespace('Api')->group(function (){
 
         /**Notice */
         Route::group(["middleware" => ['user.exist.check']],function (){
+            Route::get('/notice/eatest/{id}',"jwxt\NoticeController@getList")->where(["id" => "[0-9]+"]);
             Route::get('/notice/eatest/comments/{id}',"jwxt\NoticeController@get_eatest_comments_list")->where(["id" => "[0-9]+"]);
             Route::get('/notice/eatest/reply/{id}',"jwxt\NoticeController@get_eatest_reply_list")->where(["id" => "[0-9]+"]);
             Route::get('/notice/eatest/like/{id}',"jwxt\NoticeController@getEatestLikeList")->where(["id" => "[0-9]+"]);
