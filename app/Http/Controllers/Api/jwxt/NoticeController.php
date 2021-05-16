@@ -20,13 +20,18 @@ class NoticeController extends Controller
      */
     public function get_eatest_comments_list(Request $request)
     {
-        //获取作者Id
+        //获取被评论者Id
         $toId = $request->route("id");
-        $notice_list = EatestComments::query()->where('toId','=',$toId)->where('eatest_comments.status',0)
+        $notice_list = EatestComments::query()
+            ->where('toId','=',$toId)
+            ->orderByDesc("eatest_comments.created_at")
             ->leftJoin('evaluations','eatest_comments.eatest_id','=','evaluations.id')
-            ->get(
-            ['eatest_comments.id','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar','eatest_comments.content','eatest_comments.created_at as time','evaluations.img']
-        )->toArray();
+            ->leftJoin('users', 'eatest_comments.fromId', '=', 'users.id')
+//            ->get(
+//                ['eatest_comments.id','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar','eatest_comments.content','eatest_comments.created_at as time','evaluations.img']
+//            )
+            ->get(['eatest_comments.id', 'fromId', 'eatest_id as parentId', 'content', 'created_at as time', 'users.nickname', 'avatar', 'evaluations.img', 'content as parentContent'])
+            ->toArray();
 
 
         $list_count = EatestComments::query()->where('toId','=',$toId)->count();
