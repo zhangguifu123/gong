@@ -72,10 +72,10 @@ class SaveCouponController extends Controller
                 return substr($link,27);
                 unlink("storage/coupon/" . $newName);
                 $r = $img->move("storage/coupon",$newName);
-                $res ="http://159.75.6.240:10302/" . $r;
+                $res ="https://gong.sky31.com/" . $r;
             }else{
                 $r = $img->move("storage/coupon",$newName);
-                $res ="http://159.75.6.240:10302/" . $r;
+                $res ="https://gong.sky31.com/" . $r;
             }
         }else{
             $res = NULL;

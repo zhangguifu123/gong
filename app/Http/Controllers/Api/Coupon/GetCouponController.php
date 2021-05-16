@@ -25,7 +25,7 @@ class GetCouponController extends Controller
     {
         //获取商家
         if($request->get('store_id') == "all"){
-            return Coupon_Type::select('id','store','location','images','remark')->get();
+            return Coupon_Type::select('id','store','location','image','remark')->get();
         }
         //找到商家
         $store = Coupon_Type::where('id','=',$request->get('store_id'))->get()->first();
