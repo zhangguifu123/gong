@@ -11,6 +11,15 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+
+/**
+ * Class NoticeController
+ * @package App\Http\Controllers\Api\jwxt
+ * @type = {
+ *      0 => eatest,
+ *      1 => comment
+ * }
+ */
 class NoticeController extends Controller
 {
     /**
@@ -22,7 +31,7 @@ class NoticeController extends Controller
     {
         //获取被评论者Id
         $toId = $request->route("id");
-        $notice_list = EatestComments::query()
+        $comment_list = EatestComments::query()
             ->where('toId','=',$toId)
             ->orderByDesc("eatest_comments.created_at")
             ->leftJoin('evaluations','eatest_comments.eatest_id','=','evaluations.id')
@@ -30,12 +39,14 @@ class NoticeController extends Controller
 //            ->get(
 //                ['eatest_comments.id','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar','eatest_comments.content','eatest_comments.created_at as time','evaluations.img']
 //            )
-            ->get(['eatest_comments.id', 'fromId', 'eatest_comments.eatest_id as parentId', 'eatest_comments.content', 'eatest_comments.created_at as time', 'users.nickname', 'avatar', 'evaluations.img', 'evaluations.content as parentContent'])
+            ->get(['eatest_comments.id', 'fromId', 'eatest_comments.eatest_id as parentId', 'eatest_comments.content', 'eatest_comments.created_at as time', 'users.nickname as fromName', 'users.avatar as fromAvatar', 'evaluations.img', 'evaluations.content as parentContent'])
             ->toArray();
-
+        foreach ($comment_list as $key => $item) {
+            $comment_list[$key]['type'] = 0;
+        }
 
         $list_count = EatestComments::query()->where('toId','=',$toId)->count();
-        $message = ['total'=>$list_count,'list'=>$notice_list];
+        $message = ['total'=>$list_count,'list'=>$comment_list];
         return msg(0, $message);
     }
 
