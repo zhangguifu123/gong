@@ -49,7 +49,7 @@ class NoticeController extends Controller
         $reply_list = EatestReplies::query()
             ->where('toId','=',$toId)
             ->orderByDesc("eatest_replies.created_at")
-            ->leftJoin('eatest_comments','eatest_replies._id','=','eatest_comments.id')
+            ->leftJoin('eatest_comments','eatest_replies.comment_id','=','eatest_comments.id')
             ->leftJoin('users', 'eatest_replies.fromId', '=', 'users.id')
 //            ->get(
 //                ['eatest_comments.id','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar','eatest_comments.content','eatest_comments.created_at as time','evaluations.img']
