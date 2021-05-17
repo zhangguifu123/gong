@@ -176,6 +176,8 @@ class NoticeController extends Controller
         return msg(4, __LINE__);
     }
 
+
+
     /**
      * Eatest Like 未查看评测点赞
      * @param Request $request
@@ -204,6 +206,39 @@ class NoticeController extends Controller
         $message = ['total' => count($list), 'list' => $list];
         return msg(0,$message);
     }
+
+
+
+
+
+//    /**
+//     * Eatest Like 未查看评测点赞
+//     * @param Request $request
+//     * @return string
+//     */
+//    public function getEatestLikeList (Request $request)
+//    {
+//        //提取数据
+//        $toId = $request->route('id');   //被点赞用户id
+//        $list = EatestLikes::query()
+//            ->leftJoin('evaluations', 'evaluations.id','=','eatest_likes.evaluation')
+//            ->leftJoin('users', 'users.id', '=', 'eatest_likes.user')
+////            ->leftJoin([
+////                ['evaluations', 'evaluations.id','=','eatest_likes.evaluation'],
+////                ['users', 'user.id', '=', 'eatest_likes.user']
+////            ])
+//            ->where([
+////                ['users.id', '=', 'eatest_likes.user'],
+//                ['evaluations.publisher', '=', $toId]
+//            ])
+//            ->get(['eatest_likes.id', 'user', 'evaluation', 'users.nickname', 'avatar', 'evaluations.img'])
+////            ->get(
+////                ['eatest_likes.id','evaluations.title','evaluations.id','fromName','fromAvatar','eatest_likes.user','eatest_likes.evaluation','evaluations.img']
+////            )
+//            ->toArray();
+//        $message = ['total' => count($list), 'list' => $list];
+//        return msg(0,$message);
+//    }
 
     public function getAllEatestLikeList (Request $request)
     {

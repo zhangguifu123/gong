@@ -4690,6 +4690,48 @@ paths:
           $ref: '#/components/responses/NoPermission'
         '404':
           $ref: '#/components/responses/NotFound'
+
+  /notice/eatest/{id}:
+    get:
+      summary: 获取当前用户的评论和回复
+      tags:
+       - notice
+      parameters:
+        - name: id
+          description: 发布者id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: integer
+                    example: 0
+                  status:
+                    description: 状态
+                    type: string
+                    example: 成功
+                  data:
+                    description: 数据
+                    type: object
+                    properties:
+                      total:
+                        description: 条数
+                        type: integer
+                        example: 1
+                      list:
+                        description: 消息列表
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/EatestNotice'
   /notice/eatest/comments/{id}:
     get:
       summary: 获取Eatest未读取Comments
@@ -6012,6 +6054,50 @@ components:
           type: string
           description: 我也不知道是啥
           example: '1032'
+    EatestNotice:
+      description: 评论消息推送
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 编号
+          example: 1
+        fromId:
+          type: integer
+          description: 回复者Id
+          example: 1
+        parentId:
+          type: integer
+          description: eatest/comment id
+          example: 1
+        content:
+          type: string
+          description: 内容
+          example: 这个感觉真不错啊
+        time:
+          type: string
+          description: 回复时间
+          example: "2021-04-30 08:20:26"
+        fromName:
+          type: string
+          description: 评论者昵称
+          example: 快来想个昵称吧
+        fromAvatar:
+          type: string
+          description: 回复者头像
+          example: "\"https:\\\\/\\\\/gong.sky31.com\\\\/storage\\\\/avatar\\\\/avatar.jpg\""
+        img:
+          type: string
+          description: 回复者头像
+          example: "[\"https://gong.sky31.com/storage/image/6c43ede209ce36d2466ce57d7c3656a8.jpg\"]"
+        parentContent:
+          type: string
+          description: 内容
+          example: 这个感觉真不错啊
+        type:
+          type: integer
+          description: 记录类型 0评论 1回复
+          example: 0
     EatestCommentsNotice:
       description: 评论消息推送
       type: object
