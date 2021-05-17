@@ -34,6 +34,7 @@ class NoticeController extends Controller
         $toId = $request->route("id");
         $comment_list = EatestComments::query()
             ->where('eatest_comments.toId','=',$toId)
+            ->where('eatest_comments.fromId','!=',$toId)
             ->orderByDesc("eatest_comments.created_at")
             ->leftJoin('evaluations','eatest_comments.eatest_id','=','evaluations.id')
             ->leftJoin('users', 'eatest_comments.fromId', '=', 'users.id')
@@ -48,6 +49,7 @@ class NoticeController extends Controller
         //回复
         $reply_list = EatestReplies::query()
             ->where('eatest_replies.toId','=',$toId)
+            ->where('eatest_replies.fromId','!=',$toId)
             ->orderByDesc("eatest_replies.created_at")
             ->leftJoin('eatest_comments','eatest_replies.comment_id','=','eatest_comments.id')
             ->leftJoin('users', 'eatest_replies.fromId', '=', 'users.id')
