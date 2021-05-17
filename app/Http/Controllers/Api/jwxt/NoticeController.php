@@ -33,21 +33,21 @@ class NoticeController extends Controller
         //获取被评论者Id
         $toId = $request->route("id");
         $comment_list = EatestComments::query()
-            ->where('toId','=',$toId)
+            ->where('eatest_comments.toId','=',$toId)
             ->orderByDesc("eatest_comments.created_at")
             ->leftJoin('evaluations','eatest_comments.eatest_id','=','evaluations.id')
             ->leftJoin('users', 'eatest_comments.fromId', '=', 'users.id')
 //            ->get(
 //                ['eatest_comments.id','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar','eatest_comments.content','eatest_comments.created_at as time','evaluations.img']
 //            )
-            ->get(['eatest_comments.id', 'fromId', 'eatest_comments.eatest_id as parentId', 'eatest_comments.content', 'eatest_comments.created_at as time', 'users.nickname as fromName', 'users.avatar as fromAvatar', 'evaluations.img', 'evaluations.content as parentContent'])
+            ->get(['eatest_comments.id', 'eatest_comments.fromId', 'eatest_comments.eatest_id as parentId', 'eatest_comments.content', 'eatest_comments.created_at as time', 'users.nickname as fromName', 'users.avatar as fromAvatar', 'evaluations.img', 'evaluations.content as parentContent'])
             ->toArray();
         foreach ($comment_list as $key => $item) {
             $comment_list[$key]['type'] = 0;
         }
         //回复
         $reply_list = EatestReplies::query()
-            ->where('toId','=',$toId)
+            ->where('eatest_replies.toId','=',$toId)
             ->orderByDesc("eatest_replies.created_at")
             ->leftJoin('eatest_comments','eatest_replies.comment_id','=','eatest_comments.id')
             ->leftJoin('users', 'eatest_replies.fromId', '=', 'users.id')
@@ -55,7 +55,7 @@ class NoticeController extends Controller
 //                ['eatest_comments.id','evaluations.title','eatest_id','toId','fromId','fromName','fromAvatar','eatest_comments.content','eatest_comments.created_at as time','evaluations.img']
 //            )
 //            ->get(['eatest_replies.id', 'fromId', 'eatest_replies.comment_id as parentId', 'eatest_replies.content', 'eatest_replies.created_at as time', 'users.nickname as fromName', 'users.avatar as fromAvatar', 'evaluations.img', 'eatest_comments.content as parentContent'])
-            ->get(['eatest_replies.id', 'fromId', 'eatest_replies.comment_id as parentId', 'eatest_replies.content', 'eatest_replies.created_at as time', 'users.nickname as fromName', 'users.avatar as fromAvatar', 'eatest_comments.content as parentContent'])
+            ->get(['eatest_replies.id', 'eatest_replies.fromId', 'eatest_replies.comment_id as parentId', 'eatest_replies.content', 'eatest_replies.created_at as time', 'users.nickname as fromName', 'users.avatar as fromAvatar', 'eatest_comments.content as parentContent'])
             ->toArray();
         foreach ($reply_list as $key => $item) {
             $reply_list[$key]['type'] = 1;
