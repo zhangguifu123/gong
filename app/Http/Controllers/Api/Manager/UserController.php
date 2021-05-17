@@ -87,14 +87,22 @@ class UserController extends Controller
         //提取数据
         $index = $request->route('index');
         $page = $request->route('page');
+        $status = $request->route('status');
         $limit = 13;
         $offset = $page * $limit - $limit;
+        if ($status == 0) {
+            $StatusIndex = '=';
+        } else {
+            $StatusIndex = '!=';
+        }
+//        $StatusIndex = '';
         try {
             $user = User::query();
             $datas = $user
                 ->limit(13)
                 ->offset($offset)
                 ->orderByDesc('created_at')
+                ->where('status' , $StatusIndex, 0)
                 ->where('nickname', 'like', '%' . $index . '%')
                 ->get(['id','nickname','stu_id','status'])
                 ->toArray();
