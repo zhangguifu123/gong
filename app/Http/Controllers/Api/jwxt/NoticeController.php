@@ -60,8 +60,8 @@ class NoticeController extends Controller
         foreach ($reply_list as $key => $item) {
             $reply_list[$key]['type'] = 1;
         }
-        $list = $comment_list + $reply_list;
-
+//        $list = $comment_list + $reply_list;
+        $list = array_merge($comment_list, $reply_list);
         $list_count = (EatestComments::query()->where('toId','=',$toId)->count()) + (EatestReplies::query()->where('toId','=',$toId)->count());
         $message = ['total'=>$list_count, 'list'=>$list];
         return msg(0, $message);
