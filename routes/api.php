@@ -22,27 +22,26 @@ Route::namespace('Api')->group(function (){
     /** 公共区 */
     Route::post('/login','StudentLoginController@login');
     Route::post('/manager/login', "ManagerController@login");
-    Route::get('/upick', "Eatest\FoodController@get_list");
-    Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware("eatest.exist.check");
+//    Route::get('/upick', "Eatest\FoodController@get_list");
     //个人信息
     Route::get('/manager/user/{id}','StudentLoginController@userMsg')->where(["id" => "[0-9]+"]);
     //图片上传
     Route::post('/image','ImageController@upload');
+    //Eatest拉取单页详情
+    Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware("eatest.exist.check");
     //Eatest 帖子、评论、回复列表
     Route::get('/eatest/list/{page}', "Eatest\EvaluationController@get_list")->where(["page" => "[0-9]+"]);
     Route::get('/eatest/{id}/comments','Eatest\CommentController@get_list')->where(["id"=>"[0-9]+"])->middleware(['eatest.exist.check']);
     Route::get('/eatest/comment/{id}/reply','Eatest\ReplyController@get_list')->where(["id"=>"[0-9]+"])->middleware(['comment.exist.check']);
 
-    Route::post('/eatest/image/delete','ImageController@delete');
-    //Eatest拉取单页详情
-    Route::get('/eatest/{id}', "Eatest\EvaluationController@get")->where(["id" => "[0-9]+"])->middleware(['eatest.exist.check']);
     //模糊搜索
     Route::get('/eatest/fuzzySearch/{index}/{page}','Eatest\searchEatestController@search')->where(['page' => '[0-9]+']);
-//        ->where(['index' => '[0-9A-Za-z]+']);
     //添加标签
     Route::post('manager/label','Manager\LabelController@addLabel');
 
-
+    /** 后台 */
+    //定时删除垃圾图片 **
+    Route::post('/eatest/image/delete','ImageController@delete');
     //测试
     Route::get('/image', "ImageController@get");
 

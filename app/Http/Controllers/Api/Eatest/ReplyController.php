@@ -26,7 +26,7 @@ class ReplyController extends Controller
         $reply = new EatestReplies($data);
 
         if ($reply->save()) {
-            return msg(0, __LINE__);
+            return msg(0, $reply->id);
         }
         //未知错误
         return msg(4, __LINE__);
