@@ -1429,6 +1429,80 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+
+  /manager/user/{index}/{page}/{status}:
+    get:
+      summary: 搜索用户
+      operationId: SearchUser
+      tags:
+        - user
+      parameters:
+        - name: index
+          description: 搜索关键词 (昵称)
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: status
+          description: 用户状态 0正常 1禁言
+          in: path
+          required: true
+          schema:
+            type: integer
+        - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  # page:
+                  #   description: 页码
+                  #   type: integer
+                  # limit:
+                  #   description: 每页限制
+                  #   type: integer
+                  code:
+                    description: 状态码
+                    type: integer
+                  data:
+                    description: 返回数据
+                    type: array
+                  total:
+                    description: 用户总数
+                    type: integer
+                  limit: 
+                    description: 当页最大条数
+                    type: integer
+                  list:
+                    $ref: '#/components/schemas/UserMessage'
+                    # description: 话题列表
+                    # type: array
+                    # items:
+                    #   $ref: '#/components/schemas/UserMessage'
+              example:
+                code: 0
+                status: "成功"
+                data:
+                  total: 2
+                  limit: 13
+                  list:
+                    - id: 1,
+                      nickname: lalala
+                      stu_id: 201999999999
+                      status: 0
+                      eatestSum: 3
+                      
+                    - id: 2,
+                      nickname: hahaha
+                      stu_id: 201999999999
+                      status: 0
+                      eatestSum: 3
+        '403':
+          $ref: '#/components/responses/InvalidProperties'
+
   /user/{id}:
     get:
       summary: 用户个人信息
@@ -5391,13 +5465,17 @@ components:
                 type: integer
                 example: 2
               describe: 
-                description: 举报描述/内容 (用户自填)
+                description: 举报描述/内容 (用户自填,可选)
                 type: string
                 example: "他不是良民，必须要禁它"
               reason:
                 description: 举报理由 (单选)
                 type: string
                 example: 发布不良信息  
+              prove:
+                description: 举报证明 (可选)
+                type: string
+                example: "[]"
     AppealBody:
       description: 申诉信息
       required: true
@@ -6194,6 +6272,19 @@ components:
           type: integer
           description: 评测id
           example: 1
+        nickname:
+          type: string
+          description: 点赞者昵称
+          example: 噜啦噜啦嘞
+        avatar:
+          type: string
+          description: 点赞者头像
+          example: "http://zgf.jsky31.cn/storage/image/1bc5b36f5bd71e32c89fb7b48063b06c.jpg"
+        img:
+          type: string
+          description: eatest封面
+          example: "[\"https://gong.sky31.com/storage/image/6c43ede209ce36d2466ce57d7c3656a8.jpg\"]"
+
     EatestCommentLikeNotice:
       description: 评论点赞信息
       type: object

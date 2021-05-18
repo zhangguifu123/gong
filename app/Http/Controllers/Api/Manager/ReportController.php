@@ -38,9 +38,9 @@ class ReportController extends Controller
                 'userId' => ['integer'],
                 'targetId' => ['integer'],
                 'type' => ['integer'],
-                'describe' => ['string'],
-                'reason' => ['string'],
-                'prove' => ['json']
+                'describe' => ['string', 'nullable'],
+                'reason' => ['string', 'nullable'],
+                'prove' => ['json', 'nullable']
             ];
             $request = handleData($request,$params);
             if(!is_object($request)){
