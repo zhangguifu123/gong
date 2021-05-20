@@ -36,7 +36,7 @@ class AppealController extends Controller
             "userId" => ["integer"],
             "type" => ["integer"],
             "content" => ['string'],
-            "describe" => ["string"]
+            "describe" => ["string", 'nullable']
         ];
         $request = handleData($request, $params);
         if (!is_object($request)) {
