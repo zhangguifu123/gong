@@ -311,13 +311,13 @@ class EvaluationController extends Controller
             $new_list = [];
         }
         $evaluation = Evaluation::query()
-            ->whereNotIn('evaluations.id',$value)
-            ->whereIn('evaluations.status',[0,1]);
+            ->whereNotIn('evaluations.id', $value)
+            ->whereIn('evaluations.status', [0,1]);
         $evaluationSum = $evaluation->count();
         //若与前面的推荐美文重复，将其剔除 whereNotIn()
         $evaluation_list = $evaluation
             ->limit(10)
-            ->offset($offset)->orderByDesc("evaluations.created_at")
+            ->offset($offset)->orderByDesc("evaluations.created_at")->orderByDesc("evaluations.top")
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
