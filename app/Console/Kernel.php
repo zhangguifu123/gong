@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('delete:couponusers')->everyMinute();
+        $schedule->command('delete:couponusers')->daily();
         $schedule->command('delete:image')
             ->timezone('Asia/Shanghai')
             ->everyMinute();

@@ -22,7 +22,6 @@ Route::namespace('Api')->group(function (){
     /** 公共区 */
     Route::post('/login','StudentLoginController@login');
     Route::post('/manager/login', "ManagerController@login");
-//    Route::get('/upick', "Eatest\FoodController@get_list");
     //个人信息
     Route::get('/manager/user/{id}','StudentLoginController@userMsg')->where(["id" => "[0-9]+"]);
     //图片上传
@@ -41,13 +40,13 @@ Route::namespace('Api')->group(function (){
 
     /** 后台 */
     //定时删除垃圾图片 **
-    Route::post('/eatest/image/delete','ImageController@delete');
+//    Route::post('/eatest/image/delete','ImageController@delete');
     //测试
-    Route::get('/image', "ImageController@get");
+//    Route::get('/image', "ImageController@get");
 
     /**管理员*/
-    //用户登录验证
-    Route::get('/food', "Eatest\FoodController@get");
+//    用户登录验证
+//    Route::get('/food', "Eatest\FoodController@get");
     //管理员登录验证区
     Route::group(['middleware' => 'manager.login.check'], function () {
         //超级管理员验证
