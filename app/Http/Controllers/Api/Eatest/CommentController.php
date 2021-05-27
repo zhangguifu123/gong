@@ -67,6 +67,7 @@ class CommentController extends Controller
                 ['fromId', $uid],
             ])
             ->whereIn('handleStatus', [0, 1]);
+        $listSum = $comment->count();
         $list = $comment
             ->limit(13)
             ->offset($offset)
@@ -75,7 +76,7 @@ class CommentController extends Controller
         if(!$list){
             return msg(4,__LINE__);
         }
-        $message = ['total' => $comment->count(), 'limit' => $limit, 'list' => $list];
+        $message = ['total' => $listSum, 'limit' => $limit, 'list' => $list];
         return msg(0,$message);
     }
 
