@@ -122,7 +122,7 @@ Route::namespace('Api')->group(function (){
         Route::post('/review/eatest/comment',"Manager\ReviewController@commentFilter");
         Route::post('/review/eatest/comment/reply',"Manager\ReviewController@replyFilter");
         //个人信息
-        Route::get('/user/{id}','StudentLoginController@userMsg')->where(["id" => "[0-9]+"]);
+        Route::get('/user/{id}','StudentLoginController@userMsg')->where(["id" => "[0-9]+"])->middleware(['stu.exist.check']);
         //退出登录
         Route::post('/logout','StudentLoginController@logout');
         /** 关注 */
@@ -187,7 +187,7 @@ Route::namespace('Api')->group(function (){
         Route::post('/course/extra',"jwxt\CourseController@publish");
         //测评所有者和管理员均可操作
 //        Route::get('/course/extra/{uid}',"jwxt\CourseController@get_list")->middleware("owner.check");
-        Route::get('/course/extra/{uid}',"jwxt\CourseController@get_list");
+        Route::get('/course/extra/{uid}',"jwxt\CourseController@get_list")->middleware(['stu.exist.check']);
 //        Route::group(["middleware" => ['owner.course.check']], function (){
         Route::put('/course/extra/{id}',"jwxt\CourseController@update")->where(['id' => '[0-9a-zA-Z]+']);
         Route::delete('/course/extra/{id}',"jwxt\CourseController@delete");
