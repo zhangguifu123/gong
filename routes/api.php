@@ -115,7 +115,7 @@ Route::namespace('Api')->group(function (){
 
     /** 用户区 */
 
-    Route::group(['middleware' => ['login.check','auth.check']], function () {
+    Route::group(['middleware' => ['auth.check']], function () {
         //审核
         Route::post('/review/sensitiveWord',"Manager\ReviewController@sensitiveFilter");
         Route::post('/review/eatest',"Manager\ReviewController@eatestFilter");
@@ -165,7 +165,7 @@ Route::namespace('Api')->group(function (){
             Route::put('/countdown/top/{id}','jwxt\CountDownController@top')->where(["id" => "[0-9]+"]);
         });
 
-        Route::get('/countdown/{uid}', 'jwxt\CountDownController@query')->where(["uid" => "[0-9]+"]);
+        Route::get('/countdown/{uid}', 'jwxt\CountDownController@query')->where(["uid" => "[0-9]+"])->middleware(['stu.exist.check']);
 //            ->middleware("owner.check");
 
         /** 多人空课表 */
@@ -207,8 +207,8 @@ Route::namespace('Api')->group(function (){
             Route::put('/eatest/{id}','Eatest\EvaluationController@update')->where(["id" => "[0-9]+"]);
             Route::delete('/eatest/{id}', "Eatest\EvaluationController@delete")->where(["id" => "[0-9]+"]);
         });
-        //Eatest上传图片
-        Route::post('/eatest/image', "Eatest\ImageController@upload");
+//        Eatest上传图片 **作废**
+//        Route::post('/eatest/image', "Eatest\ImageController@upload");
 
         Route::group(["middleware" => 'eatest.exist.check'], function () {
             //Eatest点赞收藏

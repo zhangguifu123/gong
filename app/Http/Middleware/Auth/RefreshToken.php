@@ -21,6 +21,12 @@ class RefreshToken extends BaseMiddleware
         if (session()->has('ManagerLogin') && session('ManagerLogin') === true) {
             return $next($request);
         }
+        //检查请求是否带有token
+        $authorization = $request->header('Authorization');
+        if((isset($authorization) && $authorization !=null)) {
+            return $next($request);
+        }
+        //检查token状态
         $newToken = null;
         $auth = JWTAuth::parseToken();
         if (! $token = $auth->setRequest($request)->getToken()) {
