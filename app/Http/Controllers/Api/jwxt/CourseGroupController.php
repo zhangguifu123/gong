@@ -196,19 +196,20 @@ class CourseGroupController extends Controller
     {
         //提取数据
         $id = $request->route('id');
-        //获取成员信息
+        //获取成员
         $courseGroup = CourseGroup::query()->where('id',$id)->get(['id','groupName','memberSum','member','Founder','FounderUid','sharingCode'])->toArray();
         if(!$courseGroup){
             msg(4,__LINE__);
         }
         $memberUid = json_decode($courseGroup[0]['member'],true);
-        //获取创建人信息
+        //获取成员个人信息
         foreach ($memberUid as $item) {
             $response = json_decode(Http::get('https://jwxt.sky31.com/api/student/' . $item . '/info')->body(),true)['data'];
             if (!is_array($response)) {
-                return msg(3, "个人信息获取失败,请重新登陆");
+                continue;
+//                return msg(3, "个人信息获取失败,请重新登陆");
             }
-	    $avatar = (User::query()->where('stu_id', $item)->get('avatar')->toArray())[0]['avatar'];
+	        $avatar = (User::query()->where('stu_id', $item)->get('avatar')->toArray())[0]['avatar'];
             $member[] = [
                 'uid' => $response['sid'],
                 'name' => $response['name'],
@@ -219,7 +220,7 @@ class CourseGroupController extends Controller
         }
         $courseGroup[0]['member'] = $member;
         $data = $courseGroup;
-        return msg(0,$data);
+        return msg(0, $data);
     }
 
 
