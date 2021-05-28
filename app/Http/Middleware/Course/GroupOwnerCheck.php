@@ -19,7 +19,13 @@ class GroupOwnerCheck
      */
     public function handle($request, Closure $next)
     {
-        $stu_id = JWTAuth::parseToken()->authenticate()->stu_id;
+//        try {
+//            $stu_id = JWTAuth::parseToken()->authenticate()->stu_id;
+//        } catch (TokenExpiredException $e){
+//            $stu_id = 0;
+//        }
+//        $stu_id = JWTAuth::parseToken()->authenticate()->stu_id;
+        $stu_id = handleStuId($request);
         $course = CourseGroup::query()->find($request->route('id'));
         if( $course->FounderUid == $stu_id // 发布者本人
             || session("ManagerLogin") == true // 或者管理员
