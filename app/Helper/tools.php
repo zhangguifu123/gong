@@ -120,7 +120,7 @@ function handleStuId(Request $request){
     //获取学号
     try {
         $StuId= JWTAuth::parseToken()->authenticate()->stu_id;
-    } catch (TokenExpiredException $e){
+    } catch (Exception $e){
         $StuId = $request->header('StuId');
     }
 //    $StuId = JWTAuth::parseToken()->authenticate()->stu_id;
