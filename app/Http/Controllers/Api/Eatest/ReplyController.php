@@ -34,9 +34,10 @@ class ReplyController extends Controller
 
     public function get_list(Request $request){
         $reply_list = EatestReplies::query()
-            ->where('comment_id','=',$request->route('id'))
+            ->where('eatest_replies.comment_id','=',$request->route('id'))
+            ->leftJoin('users','eatest_replies.fromId','=','users.id')
             ->get([
-                'id','fromId','fromName','toId','comment_id','fromAvatar','content','created_at as time'
+                'eatest_replies.id','eatest_replies.fromId','users.nickname as fromName','eatest_replies.toId','eatest_replies.comment_id','users.avatar as fromAvatar','eatest_replies.content','eatest_replies.created_at as time'
             ])->toArray();
         $message = ['total' => count($reply_list), 'list' => $reply_list];
         return msg(0, $message);
@@ -53,14 +54,15 @@ class ReplyController extends Controller
         //查看评论
         $reply = EatestReplies::query()
             ->where([
-                ['fromId', $uid]
+                ['eatest_replies.fromId', $uid]
             ])
-            ->whereIn('handleStatus', [0,1]);
+            ->whereIn('eatest_replies.handleStatus', [0,1])
+            ->leftJoin('users','eatest_replies.fromId','=','users.id');
         $list = $reply
             ->limit(13)
             ->offset($offset)
-            ->orderByDesc('created_at')
-            ->get();
+            ->orderByDesc('eatest_replies.created_at')
+            ->get('eatest_replies.id', 'eatest_replies.comment_id', 'eatest_replies.fromId', 'users.nickname as fromName', 'eatest_replies.status', 'eatest_replies.toId', 'users.avatar as fromAvatar', 'eatest_replies.content', 'eatest_replies.handleStatus', 'eatest_replies.created_at', 'eatest_replies.updated_at');
         if(!$list){
             return msg(4,__LINE__);
         }
