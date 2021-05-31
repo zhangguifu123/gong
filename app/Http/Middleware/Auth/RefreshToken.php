@@ -19,13 +19,14 @@ class RefreshToken extends BaseMiddleware
 
     public function handle($request, Closure $next)
     {
-//        if (session()->has('ManagerLogin') && session('ManagerLogin') === true) {
-//            return $next($request);
-//        }
         //检查请求是否带有token
         $authorization = $request->header('Authorization');
         if(!((isset($authorization) && $authorization !=null)||(session()->has('ManagerLogin') && session('ManagerLogin') === true))) {
             return response(msg(6, __LINE__));
+        }
+        //管理员跳过token验证
+        if (session()->has('ManagerLogin') && session('ManagerLogin') === true) {
+            return $next($request);
         }
         //检查token状态
         try {
