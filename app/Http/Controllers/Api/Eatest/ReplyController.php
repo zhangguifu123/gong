@@ -62,7 +62,7 @@ class ReplyController extends Controller
             ->limit(13)
             ->offset($offset)
             ->orderByDesc('eatest_replies.created_at')
-            ->get('eatest_replies.id', 'eatest_replies.comment_id', 'eatest_replies.fromId', 'users.nickname as fromName', 'eatest_replies.status', 'eatest_replies.toId', 'users.avatar as fromAvatar', 'eatest_replies.content', 'eatest_replies.handleStatus', 'eatest_replies.created_at', 'eatest_replies.updated_at');
+            ->get(['eatest_replies.id', 'eatest_replies.comment_id', 'eatest_replies.fromId', 'users.nickname as fromName', 'eatest_replies.status', 'eatest_replies.toId', 'users.avatar as fromAvatar', 'eatest_replies.content', 'eatest_replies.handleStatus', 'eatest_replies.created_at', 'eatest_replies.updated_at']);
         if(!$list){
             return msg(4,__LINE__);
         }
