@@ -67,13 +67,13 @@ class CommentController extends Controller
                 ['eatest_comments.fromId', $uid],
             ])
             ->leftJoin('users', 'eatest_comments.fromId', '=', 'users.id')
-            ->whereIn('handleStatus', [0, 1]);
+            ->whereIn('eatest.comments.handleStatus', [0, 1]);
         $listSum = $comment->count();
         $list = $comment
             ->limit(13)
             ->offset($offset)
-            ->orderByDesc('created_at')
-            ->get('eatest_comments.id', 'eatest_comments.eatest_id', 'eatest_comments.toId', 'eatest_comments.fromId', 'eatest_comments.status', 'users.nickname as fromName', 'users.avatar as fromAvatar', 'eatest_comments.content', 'eatest_comments.like', 'eatest_comments.handleStauts', 'eatest_comments.created_at', 'eatest_comments.updated_at');
+            ->orderByDesc('eatest_comments.created_at')
+            ->get('eatest_comments.id', 'eatest_comments.eatest_id', 'eatest_comments.toId', 'eatest_comments.fromId', 'eatest_comments.status', 'users.nickname as fromName', 'users.avatar as fromAvatar', 'eatest_comments.content', 'eatest_comments.like', 'eatest_comments.handleStatus', 'eatest_comments.created_at', 'eatest_comments.updated_at');
         if(!$list){
             return msg(4,__LINE__);
         }
