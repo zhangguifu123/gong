@@ -177,6 +177,8 @@ class CourseGroupController extends Controller
             return msg(4,__LINE__);
         }
         $record = $courseGroup->get('member')->first();
+        //成员是否存在
+
         //移除成员
         $member = json_decode($record->member,true);
         $member = array_diff($member,[$memberUid]);
