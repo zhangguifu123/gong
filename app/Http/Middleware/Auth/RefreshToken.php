@@ -57,5 +57,16 @@ class RefreshToken extends BaseMiddleware
         } catch (JWTException $e) {
             return response(msg(6, __LINE__));
         }
+
+
+//        } catch (TokenExpiredException $e) {
+//            return response(msg(6, __LINE__));
+//        } catch (Exception $e) {
+//            return response(msg(6, __LINE__));
+//        } catch (JWTException $e) {
+//            return response(msg(6, __LINE__));
+//        } catch (ErrorException $e) {
+//            return response(msg(6, __LINE__));
+//        }
     }
 }
