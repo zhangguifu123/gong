@@ -67,7 +67,7 @@ class CommentController extends Controller
                 ['eatest_comments.fromId', $uid],
             ])
             ->leftJoin('users', 'eatest_comments.fromId', '=', 'users.id')
-            ->whereIn('eatest.comments.handleStatus', [0, 1]);
+            ->whereIn('eatest_comments.handleStatus', [0, 1]);
         $listSum = $comment->count();
         $list = $comment
             ->limit(13)
