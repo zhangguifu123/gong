@@ -132,7 +132,7 @@ class EvaluationController extends Controller
         $uid = $request->route('uid'); //学生id
 //        $page = $request->route('page');
 //        $offset = $page * 5 - 5;
-        //拉取我的列表
+//        拉取我的列表
         $eatest = User::query()->find($uid)->eatest;
         $eatest = array_keys(json_decode($eatest,true));
         $evaluation = Evaluation::query()->whereIn('evaluations.id',$eatest);
@@ -371,7 +371,11 @@ class EvaluationController extends Controller
         $new_list_count = [];
         //获取活动eatest
         $acEvaluation = Evaluation::query()
-            ->where("top", 1)
+            ->where([
+                ["evaluations.top", 1],
+//                ["status", ]
+            ])
+            ->whereIn("evaluations.status", [0, 1])
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->get([
                 "evaluations.id", "users.nickname as publisher_name", "label", "topic" , "views","evaluations.like",
@@ -388,7 +392,8 @@ class EvaluationController extends Controller
 
         //获取前20推荐分值最高美文
         $list = Evaluation::query()->limit(20)->orderByDesc("score")
-            ->where("top", "=", 0)
+            ->where("evaluations.top", "=", 0)
+            ->whereIn("evaluations.status", [0, 1])
             ->leftJoin('users','evaluations.publisher','=','users.id')
             ->whereIn('evaluations.status',[0,1])
             ->get([

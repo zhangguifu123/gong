@@ -121,7 +121,11 @@ function handleStuId(Request $request){
     try {
         $StuId= JWTAuth::parseToken()->authenticate()->stu_id;
     } catch (Exception $e){
-        $StuId = $request->header('StuId');
+        if (!$request->header('StuId')) {
+            $StuId = '0';
+        } else {
+            $StuId = $request->header('StuId');
+        }
     }
 //    $StuId = JWTAuth::parseToken()->authenticate()->stu_id;
 //    if ($StuId == null){
