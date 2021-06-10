@@ -109,9 +109,14 @@ function IGtTransmissionTemplateDemo($title,$content){
 
 function handleUid(Request $request){
     //获取id
-    $uid = Auth::guard('api')->user()->getAuthIdentifier();
-    if ($uid == null){
-        $uid = $request->header('uid');
+    try {
+        $uid = Auth::guard('api')->user()->getAuthIdentifier();
+    } catch (Exception $e) {
+        if (!$request->header('StuId')) {
+            $uid = 0;
+        } else {
+            $uid = $request->header('uid');
+        }
     }
     return $uid;
 }
@@ -127,10 +132,6 @@ function handleStuId(Request $request){
             $StuId = $request->header('StuId');
         }
     }
-//    $StuId = JWTAuth::parseToken()->authenticate()->stu_id;
-//    if ($StuId == null){
-//        $StuId = $request->header('StuId');
-//    }
     return $StuId;
 }
 
