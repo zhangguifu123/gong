@@ -111,7 +111,7 @@ function handleUid(Request $request){
     //获取id
     try {
         $uid = Auth::guard('api')->user()->getAuthIdentifier();
-    } catch (Exception $e) {
+    } catch (Error $e) {
         if (!$request->header('StuId')) {
             $uid = 0;
         } else {
