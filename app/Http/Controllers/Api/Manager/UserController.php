@@ -29,6 +29,7 @@ class UserController extends Controller
         $limit = 13;
         $offset = $page * $limit - $limit;
         $user = User::query();
+        $userSum = $user->count();
         $showUser = $user
             ->limit(13)
             ->offset($offset)
@@ -43,7 +44,7 @@ class UserController extends Controller
             $dat['eatestSum'] = $eatestSum;
             $data[] = $dat;
         }
-        $message = ['total' => $user->count(), 'limit' => $limit, 'list' => $data];
+        $message = ['total' => $userSum, 'limit' => $limit, 'list' => $data];
         return msg(0,$message);
     }
 
