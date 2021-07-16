@@ -180,4 +180,24 @@ class StudentLoginController extends Controller
 
         return msg(0,$list);
     }
+
+
+    /**
+     * @param $request
+     * @return mixed
+     * bcrypt编码
+     */
+    public function code ($request) {
+        return makeCode($request->input('content'));
+    }
+
+
+    /**
+     * @param $request
+     * @return mixed
+     * bcrypt解码（未完成）
+     */
+    public function decode ($request) {
+        return makeCode($request->input('content'));
+    }
 }
