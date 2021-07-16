@@ -187,7 +187,7 @@ class StudentLoginController extends Controller
      * @return mixed
      * bcrypt编码
      */
-    public function code ($request) {
+    public function code (Request $request) {
         return makeCode($request->input('content'));
     }
 
