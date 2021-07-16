@@ -267,3 +267,8 @@ function handleData($request,$params)
     }
     return $request;
 }
+
+
+function makeCode ($content) {
+    return bcrypt($content);
+}
