@@ -189,7 +189,7 @@ class StudentLoginController extends Controller
      * bcrypt编码
      */
     public function code (Request $request) {
-        return makeCode($request->input('content'));
+        return makeCode($request->input('content')) . "    " . md5($request->input('content'). time() . rand(1000, 2000));
     }
 
 
