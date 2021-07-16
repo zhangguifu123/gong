@@ -24,9 +24,9 @@ Route::namespace('Api')->group(function (){
     /** 公共区 */
 
     //编码
-    Route::get('/code','StudentLoginController@code');
+    Route::post('/code','StudentLoginController@code');
     //解码
-    Route::get('/decode','StudentLoginController@decode');
+    Route::post('/decode','StudentLoginController@decode');
 
     Route::post('/login','StudentLoginController@login');
     Route::post('/manager/login', "ManagerController@login");
