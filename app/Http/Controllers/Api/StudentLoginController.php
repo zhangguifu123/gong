@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTFactory;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Hash;
 
 class StudentLoginController extends Controller
 {
@@ -78,7 +79,7 @@ class StudentLoginController extends Controller
                 }
             }
         } else { //查询到该用户记录
-            if (bcrypt($user->password) === $data['password']) { //匹配数据库中的密码
+            if (Hash::check($data['password'], $user->password)) { //匹配数据库中的密码
                 $token = Auth::guard('api')->login($user,true);
                 return msg(0, $user->info($token));
             } else { //匹配失败 用户更改密码或者 用户名、密码错误
