@@ -28,7 +28,7 @@ Route::namespace('Api')->group(function (){
     //解码
     Route::post('/decode','StudentLoginController@decode');
 
-    Route::post('/login','StudentLoginController@login');
+    Route::post('/login','StudentLoginController@login')->middleware("stu.exist.check");
     Route::post('/manager/login', "ManagerController@login");
     //个人信息
     Route::get('/manager/user/{id}','StudentLoginController@userMsg')->where(["id" => "[0-9]+"]);
