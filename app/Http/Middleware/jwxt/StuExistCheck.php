@@ -31,7 +31,16 @@ class StuExistCheck
         if($response['code'] == 0) {
             return $next($request);
         }else{
-            return response(msg(6, __LINE__));
+            if ($request->has(["password"])) {      //带密码的请求为登陆接口
+                $output = checkUser($request->input("stu_id"), $request->input("password"));
+                if ($output['code'] == 0) {
+                    return $next($request);
+                } else {
+                    return response(msg(2, __LINE__));
+                }
+            } else {
+                return response(msg(6, __LINE__));
+            }
         }
     }
 }
